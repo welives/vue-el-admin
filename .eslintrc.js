@@ -22,9 +22,9 @@ module.exports = {
   // add your custom rules here
   rules: {
     'vue/max-attributes-per-line': [
-      'error',
+      'off',
       {
-        singleline: 10,
+        singleline: 3,
         multiline: {
           max: 1,
           allowFirstLine: false
@@ -38,6 +38,13 @@ module.exports = {
     'vue/multiline-html-element-content-newline': 'off',
     'vue/no-v-html': 'off',
     'vue/name-property-casing': ['error', 'PascalCase'], // 强制驼峰命名法
+    'vue/html-closing-bracket-newline': [
+      'off',
+      {
+        singleline: 'never',
+        multiline: 'always'
+      }
+    ],
     'vue/html-closing-bracket-spacing': [
       'error',
       {
@@ -52,14 +59,14 @@ module.exports = {
         html: {
           void: 'always',
           normal: 'never',
-          component: 'always'
+          component: 'never'
         },
         svg: 'always',
         math: 'always'
       }
     ],
     'vue/html-indent': [
-      'error',
+      'off',
       2,
       {
         attribute: 1,
@@ -70,7 +77,7 @@ module.exports = {
       }
     ],
     'vue/script-indent': [
-      'error',
+      'off',
       2,
       {
         switchCase: 1,

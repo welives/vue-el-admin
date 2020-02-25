@@ -1,0 +1,269 @@
+<template>
+  <div>
+    <el-dialog
+      title="商品图片选择"
+      :visible.sync="imageModel"
+      width="80vw"
+      top="5vh"
+      @close="hide"
+    >
+      <el-container
+        class="position-relative"
+        style="height: 70vh;margin: -30px -20px;"
+      >
+        <el-header class="d-flex align-items-center border-bottom">
+          <div class="d-flex mr-auto">
+            <el-select
+              v-model="searchForm.order"
+              placeholder="请选择图片排序方式"
+              size="small"
+            >
+              <el-option label="区域一" value="北京"></el-option>
+              <el-option label="区域二" value="上海"></el-option>
+            </el-select>
+            <el-input
+              v-model="searchForm.keyword"
+              placeholder="输入相册名称"
+              size="small"
+              class="mx-2"
+            ></el-input>
+            <el-button type="primary" size="small">搜索</el-button>
+          </div>
+          <el-button
+            v-if="chooseList.length"
+            type="warning"
+            size="small"
+            @click="unChoose"
+            >取消选中</el-button
+          >
+        </el-header>
+        <el-container>
+          <el-aside
+            width="200px"
+            style="top: 60px; bottom: 60px"
+            class="bg-white border-right position-absolute"
+          >
+            <!-- 相册列表 -->
+            <ul class="list-group list-group-flush">
+              <album-item
+                v-for="(album, index) in albumList"
+                :key="index"
+                :album="album"
+                :index="index"
+                :active="albumIndex === index"
+                :showOptions="false"
+                @choose="chooseAlbum"
+              ></album-item>
+            </ul>
+          </el-aside>
+          <el-container
+            class="position-absolute"
+            style="top: 60px; left: 200px; right: 0; bottom: 60px"
+          >
+            <el-main>
+              <!-- 图片列表 -->
+              <el-row :gutter="15">
+                <image-item
+                  v-for="(image, index) in imageList"
+                  :key="index"
+                  :index="index"
+                  :image="image"
+                  @choose="chooseImage"
+                  @view="previewImage"
+                  @update="updateImage"
+                  @del="delImage"
+                ></image-item>
+              </el-row>
+            </el-main>
+          </el-container>
+        </el-container>
+        <el-footer class="border-top d-flex align-items-center px-0">
+          <div
+            style="width: 200px;"
+            class="h-100 d-flex align-items-center justify-content-center border-right flex-shrink-0"
+          >
+            <el-button-group>
+              <el-button size="mini" icon="el-icon-arrow-left"
+                >上一页</el-button
+              >
+              <el-button size="mini"
+                >下一页<i class="el-icon-arrow-right el-icon--right"></i
+              ></el-button>
+            </el-button-group>
+          </div>
+          <div class="text-center flex-fill">
+            <el-pagination
+              :current-page="currentPage"
+              :page-sizes="[100, 200, 300, 400]"
+              :page-size="100"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="400"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            ></el-pagination>
+          </div>
+        </el-footer>
+      </el-container>
+      <span slot="footer">
+        <el-button @click="hide">取 消</el-button>
+        <el-button type="primary" @click="confirm">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 图片预览 -->
+    <el-dialog
+      :visible.sync="previewModel"
+      width="70vw"
+      top="5vh"
+      :show-close="false"
+      :destroy-on-close="true"
+      append-to-body
+    >
+      <div style="margin: -60px -20px -30px">
+        <img :src="previewUrl" class="w-100" />
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import albumItem from '@/components/image/album-item'
+import imageItem from '@/components/image/image-item'
+export default {
+  name: 'ImageDialog',
+  components: {
+    albumItem,
+    imageItem
+  },
+  props: {
+    max: { type: Number, default: 9 }
+  },
+  data() {
+    return {
+      imageModel: false,
+      callback: false,
+      searchForm: {
+        order: '',
+        keyword: ''
+      },
+      albumList: [],
+      albumIndex: 0,
+      previewModel: false,
+      previewUrl: '',
+      imageList: [],
+      chooseList: [],
+      currentPage: 1
+    }
+  },
+  created() {
+    this.__init()
+  },
+  methods: {
+    showDialog(callback) {
+      this.callback = callback
+      this.albumIndex = 0
+      this.imageModel = true
+    },
+    hide() {
+      this.unChoose()
+      this.imageModel = false
+    },
+    confirm() {
+      if (typeof this.callback === 'function' && this.chooseList.length) {
+        this.callback(this.chooseList)
+      }
+      this.hide()
+    },
+    // 页面数据初始化
+    __init() {
+      for (let i = 0; i < 20; i++) {
+        this.albumList.push({
+          name: '相册' + i,
+          num: Math.floor(Math.random() * 20),
+          order: 0
+        })
+      }
+      for (let i = 0; i < 20; i++) {
+        this.imageList.push({
+          name: '图片' + i,
+          url:
+            'http://ww1.sinaimg.cn/large/00745YaMgy1gbayr1pl2kj30xc0m7ng0.jpg',
+          isCheck: false
+        })
+      }
+    },
+    // 选择相册
+    chooseAlbum(index) {
+      if (this.albumIndex === index) return
+      this.unChoose()
+      this.albumIndex = index
+    },
+    // 图片预览
+    previewImage(image) {
+      this.previewUrl = image.url
+      this.previewModel = true
+    },
+    // 图片编辑
+    updateImage(image) {
+      this.$prompt('请输入新名称', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue: image.name,
+        inputValidator(val) {
+          if (val === '') {
+            return '图片名称不能为空'
+          }
+        }
+      })
+        .then(({ value }) => {
+          image.name = value
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+        })
+        .catch(() => {})
+    },
+    // 删除单张图片
+    delImage(index) {
+      this.imageList.splice(index, 1)
+    },
+    // 选择图片
+    chooseImage(obj) {
+      const { image, index } = obj
+      // 之前没选中
+      if (!image.isCheck) {
+        if (this.chooseList.length >= this.max) {
+          return this.$message({
+            message: '最多选择' + this.max + '张图片',
+            type: 'warning'
+          })
+        }
+        this.chooseList.push({
+          id: index,
+          url: image.url
+        })
+        image.isCheck = true
+        return
+      }
+      // 之前是选中的
+      const i = this.chooseList.findIndex((v) => v.id === index)
+      if (i === -1) return
+      image.isCheck = false
+      this.chooseList.splice(i, 1)
+    },
+    // 取消选中的图片
+    unChoose() {
+      this.chooseList = []
+      this.imageList.forEach((img) => (img.isCheck = false))
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`)
+    }
+  }
+}
+</script>
+
+<style scoped></style>
