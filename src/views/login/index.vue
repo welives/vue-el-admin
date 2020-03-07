@@ -8,7 +8,12 @@
               <h3 class="text-center mb-0 text-secondary">{{ $conf.logo }}</h3>
             </div>
             <div class="card-body">
-              <el-form ref="loginForm" :model="form" :rules="rules">
+              <el-form
+                ref="loginForm"
+                :model="form"
+                :rules="rules"
+                @keyup.enter.native="login"
+              >
                 <el-form-item prop="username">
                   <el-input
                     v-model="form.username"
@@ -30,7 +35,7 @@
                     size="medium"
                     class="w-100"
                     :disabled="isActive"
-                    @click="onSubmit"
+                    @click="login"
                     >立即登录</el-button
                   >
                 </el-form-item>
@@ -67,10 +72,22 @@ export default {
     }
   },
   methods: {
-    onSubmit() {
-      this.$refs.loginForm.validate((e) => {
-        if (!e) return
-        this.$router.push({ name: 'index' })
+    login() {
+      this.$refs.loginForm.validate((valid) => {
+        if (!valid) return
+        this.axios
+          .post('/admin/login', this.form)
+          .then((res) => {
+            console.log(res)
+            this.$store.commit('user/login', res.data.data)
+            this.$message('登录成功')
+            this.$router.push({ name: 'index' })
+          })
+          .catch((err) => {
+            if (err.response.data && err.response.data.errorCode) {
+              this.$message.error(err.response.data.msg)
+            }
+          })
       })
     }
   }

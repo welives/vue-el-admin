@@ -25,9 +25,13 @@
             <template slot="title">
               <el-avatar
                 size="small"
-                src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+                :src="
+                  user.avatar
+                    ? user.avatar
+                    : 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+                "
               ></el-avatar>
-              管理员</template
+              {{ user.username }}</template
             >
             <el-menu-item index="10-1">修改</el-menu-item>
             <el-menu-item index="10-2">退出</el-menu-item>
@@ -83,6 +87,7 @@
 
 <script>
 import common from '@/common/mixins/common.js'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Layout',
   mixins: [common],
@@ -93,6 +98,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['user']),
     // 获取,设置当前激活的侧栏菜单
     sideMenuActive: {
       get() {
@@ -140,6 +146,7 @@ export default {
         return console.log('修改资料')
       }
       if (index === '10-2') {
+        this.logout()
         return console.log('退出系统')
       }
       if (this.navBar.active === index) return
@@ -168,6 +175,22 @@ export default {
         arr.unshift({ name: 'index', path: '/index', title: '后台首页' })
       }
       this.breadcrumb = arr
+    },
+    logout() {
+      this.axios
+        .post('/admin/logout', {}, { headers: { token: this.user.token } })
+        .then((res) => {
+          this.$message('退出成功')
+          this.$store.commit('user/logout')
+          this.$router.push({ name: 'login' })
+        })
+        .catch((err) => {
+          if (err.response.data && err.response.data.errorCode) {
+            this.$message.error(err.response.data.msg)
+            this.$store.commit('user/logout')
+            this.$router.push({ name: 'login' })
+          }
+        })
     }
   }
 }

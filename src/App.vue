@@ -25,6 +25,9 @@ export default {
       maxChooseImage: 9
     }
   },
+  created() {
+    this.$store.commit('user/initUser')
+  },
   methods: {
     chooseImage(callback, max = 9) {
       this.maxChooseImage = max
