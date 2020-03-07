@@ -4,6 +4,7 @@ export default {
   namespaced: true,
   state: {
     options,
+    // 基础设置表单
     basicForm: {
       name: '',
       desc: '',
@@ -16,6 +17,7 @@ export default {
       cateVal: []
     },
     spec: 0,
+    // 商品规格/单规格
     singleSpecForm: {
       sPrice: '',
       mPrice: '',
@@ -25,31 +27,17 @@ export default {
       stock: '',
       code: ''
     },
+    // 商品规格/多规格
     multipleSpecCard: [
       {
         name: '色调',
         type: 0,
         list: [
           {
-            id: 1,
             name: '红色',
             image: '',
             color: '',
-            isCheck: false
-          },
-          {
-            id: 2,
-            name: '绿色',
-            image: '',
-            color: '',
-            isCheck: false
-          },
-          {
-            id: 3,
-            name: '蓝色',
-            image: '',
-            color: '',
-            isCheck: false
+            isCheck: true
           }
         ]
       },
@@ -58,36 +46,13 @@ export default {
         type: 0,
         list: [
           {
-            id: 1,
             name: 'S',
             image: '',
             color: '',
-            isCheck: false
+            isCheck: true
           },
           {
-            id: 2,
             name: 'M',
-            image: '',
-            color: '',
-            isCheck: false
-          },
-          {
-            id: 3,
-            name: 'L',
-            image: '',
-            color: '',
-            isCheck: false
-          },
-          {
-            id: 4,
-            name: 'XL',
-            image: '',
-            color: '',
-            isCheck: false
-          },
-          {
-            id: 5,
-            name: 'XXL',
             image: '',
             color: '',
             isCheck: false
@@ -95,6 +60,15 @@ export default {
         ]
       }
     ],
+    // 媒体设置图片列表
+    imageList: [],
+    // 商品类型
+    goodsType: '',
+    // 商品属性
+    goodsAttrs: {
+      phoneModel: ''
+    },
+    discountRate: '',
     // 表头
     thead: [
       { name: '商品规格', rowspan: 2, colspan: 1, width: 300 },
@@ -115,12 +89,12 @@ export default {
     singleSpecFormModel(state, { key, value }) {
       state.singleSpecForm[key] = value
     },
-    changeSpec(state, value) {
-      state.spec = value
+    changeState(state, { key, value }) {
+      state[key] = value
     },
     // 添加规格卡片
     addSpecCard(state) {
-      state.multipleSpecCard.push({ name: '', type: 0, list: [] })
+      state.multipleSpecCard.push({ name: '规格卡片', type: 0, list: [] })
     },
     // 修改规格卡片
     updateSpecCard(state, { cardIndex, key, value }) {
@@ -137,11 +111,10 @@ export default {
     // 增加规格卡片的属性
     addSpecCardValue(state, { cardIndex, name = '' }) {
       state.multipleSpecCard[cardIndex].list.push({
-        id: state.multipleSpecCard[cardIndex].list.length + 1,
         name,
         image: '',
         color: '',
-        isCheck: false
+        isCheck: true
       })
     },
     // 修改规格卡片的属性
@@ -155,6 +128,9 @@ export default {
     // 规格卡片属性排序
     sortSpecCardValue(state, { cardIndex, list }) {
       state.multipleSpecCard[cardIndex].list = list
+    },
+    updateGoodsAttrs(state, { key, value }) {
+      state.goodsAttrs[key] = value
     }
   },
   actions: {}

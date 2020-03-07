@@ -6,7 +6,7 @@
     >
       <el-button size="small">回到商品列表页</el-button>
     </router-link>
-    <el-tabs v-model="tabIndex" @tab-click="tabClick">
+    <el-tabs v-model="tabIndex">
       <el-tab-pane
         v-for="(tab, index) in tabBars"
         :key="index"
@@ -20,12 +20,12 @@
 
 <script>
 import common from '@/common/mixins/common.js'
-import basicSetting from '@/components/goods/basic-setting'
-import goodsSpec from '@/components/goods/goods-spec'
-import goodsAttr from '@/components/goods/goods-attr'
-import goodsDetail from '@/components/goods/goods-detail'
-import mediaSetting from '@/components/goods/media-setting'
-import discountSetting from '@/components/goods/discount-setting'
+import basicSetting from '@/components/shop/goods/basic-setting'
+import goodsSpec from '@/components/shop/goods/goods-spec'
+import goodsAttr from '@/components/shop/goods/goods-attr'
+import goodsDetail from '@/components/shop/goods/goods-detail'
+import mediaSetting from '@/components/shop/goods/media-setting'
+import discountSetting from '@/components/shop/goods/discount-setting'
 export default {
   name: 'AddGoods',
   components: {
@@ -53,9 +53,7 @@ export default {
   created() {
     this.__initTabBar(this.$options.name)
   },
-  methods: {
-    tabClick() {}
-  }
+  methods: {}
 }
 </script>
 

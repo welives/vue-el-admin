@@ -1,0 +1,68 @@
+<template>
+  <div>
+    <el-form
+      ref="accessForm"
+      :model="accessForm"
+      label-width="120px"
+      size="small"
+      class="w-50"
+    >
+      <el-form-item label="是否允许注册" prop="isReg">
+        <el-switch v-model="accessForm.isReg" active-color="#13ce66">
+        </el-switch>
+      </el-form-item>
+      <el-form-item label="注册类型" prop="regType">
+        <el-radio-group v-model="accessForm.regType">
+          <el-radio-button label="normal">普通注册</el-radio-button>
+          <el-radio-button label="email">邮箱注册</el-radio-button>
+          <el-radio-button label="phone">手机注册</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="密码最小长度" prop="passLen" class="w-50">
+        <el-input
+          v-model="accessForm.passLen"
+          type="number"
+          :min="0"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="强制密码复杂度" prop="isRegistry">
+        <el-checkbox-group v-model="accessForm.passEncrypt">
+          <el-checkbox-button label="number">数字</el-checkbox-button>
+          <el-checkbox-button label="lowercase">小写字母</el-checkbox-button>
+          <el-checkbox-button label="uppercase">大写字母</el-checkbox-button>
+          <el-checkbox-button label="symbol">符号</el-checkbox-button>
+        </el-checkbox-group>
+      </el-form-item>
+
+      <el-form-item class="text-center">
+        <el-button type="primary" size="medium">确定</el-button>
+        <el-button size="medium" @click="resetForm('accessForm')"
+          >重填</el-button
+        >
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Access',
+  data() {
+    return {
+      accessForm: {
+        isReg: true,
+        regType: 'normal',
+        passLen: 6,
+        passEncrypt: ['number']
+      }
+    }
+  },
+  methods: {
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+    }
+  }
+}
+</script>
+
+<style scoped></style>

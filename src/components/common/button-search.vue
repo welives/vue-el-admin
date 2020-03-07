@@ -2,7 +2,7 @@
   <div>
     <div class="d-flex align-items-center">
       <slot name="left"></slot>
-      <div v-show="!advancedSearch" class="ml-auto">
+      <div v-show="!advancedSearch" v-if="showSearch" class="ml-auto">
         <slot name="right">
           <el-input
             v-model="keyword"
@@ -39,7 +39,8 @@
 export default {
   name: 'ButtonSearch',
   props: {
-    placeholder: { type: String, default: '' }
+    placeholder: { type: String, default: '' },
+    showSearch: { type: Boolean, default: true }
   },
   data() {
     return {

@@ -9,11 +9,11 @@
         class="w-25 mx-2"
         @change="updateSpecCard({ cardIndex, key: 'name', value: $event })"
       >
-        <el-button
+        <!-- <el-button
           slot="append"
           icon="el-icon-more"
           @click="chooseSpec"
-        ></el-button>
+        ></el-button> -->
       </el-input>
       <el-radio-group
         v-model="card.type"
@@ -77,7 +77,7 @@ import cardValue from './card-value.vue'
 import { mapMutations, mapGetters } from 'vuex'
 export default {
   name: 'SpecCard',
-  inject: ['app'],
+  // inject: ['app'],
   components: {
     cardValue
   },
@@ -86,9 +86,7 @@ export default {
     cardIndex: Number
   },
   data() {
-    return {
-      // list: this.card.list
-    }
+    return {}
   },
   computed: {
     ...mapGetters(['multipleSpecCard'])
@@ -106,19 +104,17 @@ export default {
   methods: {
     ...mapMutations('goods', [
       'updateSpecCard',
-      'delSpecCard',
       'sortSpecCard',
+      'delSpecCard',
       'addSpecCardValue',
-      'sortSpecCardValue',
-      'updateSpecCardValue'
+      'sortSpecCardValue'
     ]),
     addSpecValue() {
-      this.$prompt('请输入规格名称', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$prompt('', '请输入规格名称', {
+        inputPlaceholder: '请输入规格名称',
         inputValue: '',
-        inputValidator(val) {
-          if (val === '') {
+        inputValidator(value) {
+          if (value === '') {
             return '规格名称不能为空'
           }
         }
@@ -134,32 +130,25 @@ export default {
           })
         })
         .catch(() => {})
-    },
-    chooseSpec() {
-      this.app.chooseSpec((res) => {
-        this.updateSpecCard({
-          cardIndex: this.cardIndex,
-          key: 'name',
-          value: res.name
-        })
-        // res.list.forEach((v) => {
-        //   this.updateSpecCard({
-        //     cardIndex: this.cardIndex,
-        //     key: 'list',
-        //     value: v.item
-        //   })
-        // })
-        res.list.forEach((v) => {
-          this.updateSpecCardValue({
-            cardIndex: this.cardIndex,
-            index: v.index,
-            key: 'isCheck',
-            value: v.isCheck
-          })
-        })
-        // this.list = res.list
-      })
     }
+    // chooseSpec() {
+    //   this.app.chooseSpec((res) => {
+    //     this.updateSpecCard({
+    //       cardIndex: this.cardIndex,
+    //       key: 'name',
+    //       value: res.name
+    //     })
+    //     const list = []
+    //     res.list.forEach((v) => {
+    //       list.push(v.item)
+    //     })
+    //     this.updateSpecCard({
+    //       cardIndex: this.cardIndex,
+    //       key: 'list',
+    //       value: list
+    //     })
+    //   })
+    // }
   }
 }
 </script>

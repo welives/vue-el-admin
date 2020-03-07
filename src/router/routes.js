@@ -16,6 +16,10 @@ const routes = [
         component: 'index/index'
       },
       {
+        meta: { title: '相册管理' },
+        component: 'image/index'
+      },
+      {
         meta: { title: '商品列表' },
         component: 'shop/goods/index'
       },
@@ -24,8 +28,56 @@ const routes = [
         component: 'shop/goods/add'
       },
       {
-        meta: { title: '相册管理' },
-        component: 'image/index'
+        meta: { title: '商品分类' },
+        component: 'shop/category/index'
+      },
+      {
+        meta: { title: '商品规格' },
+        component: 'shop/spec/index'
+      },
+      {
+        meta: { title: '商品类型' },
+        component: 'shop/type/index'
+      },
+      {
+        meta: { title: '商品评论' },
+        component: 'shop/comment/index'
+      },
+      {
+        meta: { title: '订单列表' },
+        component: 'order/index'
+      },
+      {
+        meta: { title: '发票列表' },
+        component: 'order/invoice/index'
+      },
+      {
+        meta: { title: '售后服务' },
+        component: 'order/after-sale/index'
+      },
+      {
+        meta: { title: '会员列表' },
+        component: 'user/index'
+      },
+      {
+        meta: { title: '会员等级' },
+        component: 'user/user-level/index'
+      },
+      {
+        meta: { title: '基础设置' },
+        component: 'setting/base/index'
+      },
+      {
+        meta: { title: '物流设置' },
+        component: 'setting/express/index'
+      },
+      {
+        meta: { title: '管理员设置' },
+        component: 'setting/manager/index'
+      },
+      {
+        meta: { title: '支付设置' },
+        component: 'setting/trade/index'
       },
       {
         meta: { title: '测试页' },

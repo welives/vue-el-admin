@@ -158,7 +158,6 @@ export default {
     },
     // 获取面包屑导航
     getBreadcrumb() {
-      // const b = this.$route.matched.filter((v) => v.name)
       const routes = this.$route.matched
       const arr = []
       routes.forEach((v) => {

@@ -13,7 +13,7 @@
           updateSpecCardValue({
             cardIndex,
             index,
-            key: 'name',
+            key: 'color',
             value: $event
           })
         "
@@ -72,17 +72,11 @@ export default {
     type: { type: Number, default: 0 }
   },
   data() {
-    return {
-      specValue: this.item
-    }
+    return {}
   },
-  watch: {
-    item(newValue) {
-      this.item = newValue
-    }
-  },
+  created() {},
   methods: {
-    ...mapMutations('goods', ['delSpecCardValue', 'updateSpecCardValue']),
+    ...mapMutations('goods', ['updateSpecCardValue', 'delSpecCardValue']),
     chooseImage(cardIndex, index) {
       this.app.chooseImage((res) => {
         this.updateSpecCardValue({

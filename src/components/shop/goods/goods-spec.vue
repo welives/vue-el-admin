@@ -3,7 +3,10 @@
     <!-- 规格选项 -->
     <el-form label-width="80px" size="small" class="w-100">
       <el-form-item label="商品规格" class="w-50">
-        <el-radio-group :value="spec" @input="changeSpec($event)">
+        <el-radio-group
+          :value="spec"
+          @input="changeState({ key: 'spec', value: $event })"
+        >
           <el-radio-button :label="0">单一规格</el-radio-button>
           <el-radio-button :label="1">多规格</el-radio-button>
         </el-radio-group>
@@ -111,21 +114,16 @@
           >
         </el-form-item>
         <el-form-item label="批量设置" size="medium">
-          <el-button type="text">销售价</el-button>
-          <el-button type="text">市场价</el-button>
-          <el-button type="text">成本价</el-button>
-          <el-button type="text">库存</el-button>
-          <el-button type="text">体积</el-button>
-          <el-button type="text">重量</el-button>
+          <el-button
+            v-for="(btn, index) in batchSetBtn"
+            :key="index"
+            type="text"
+            @click="batchSet(btn)"
+            >{{ btn.name }}</el-button
+          >
         </el-form-item>
         <el-form-item label="规格设置">
-          <spec-table></spec-table>
-        </el-form-item>
-        <el-form-item class="text-center">
-          <el-button type="primary" size="medium">提交</el-button>
-          <el-button size="medium" @click="resetForm('multipleSpec')"
-            >重填</el-button
-          >
+          <spec-table ref="specTable"></spec-table>
         </el-form-item>
       </el-form>
     </template>
@@ -144,7 +142,14 @@ export default {
   },
   data() {
     return {
-      specRadio: this.sepc
+      batchSetBtn: [
+        { name: '销售价', key: 'sPrice' },
+        { name: '市场价', key: 'mPrice' },
+        { name: '成本价', key: 'cPrice' },
+        { name: '库存', key: 'stock' },
+        { name: '体积', key: 'volume' },
+        { name: '重量', key: 'weight' }
+      ]
     }
   },
   computed: {
@@ -154,8 +159,26 @@ export default {
     ...mapMutations('goods', [
       'addSpecCard',
       'singleSpecFormModel',
-      'changeSpec'
+      'changeState'
     ]),
+    batchSet(btn) {
+      this.$prompt('', '批量设置' + btn.name, {
+        inputPlaceholder: '请输入' + btn.name,
+        inputType: 'number',
+        inputPattern: /^\d+(\.\d{1,6})?$/,
+        inputErrorMessage: '只能输入正数,且小数点后不超过6位'
+      })
+        .then(({ value }) => {
+          this.$refs.specTable.tableData.forEach((v) => {
+            v[btn.key] = value
+          })
+          this.$message({
+            message: '设置成功',
+            type: 'success'
+          })
+        })
+        .catch(() => {})
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields()
     }

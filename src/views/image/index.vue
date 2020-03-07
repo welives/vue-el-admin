@@ -260,8 +260,6 @@ export default {
     // 删除相册
     delAlbum(index) {
       this.$confirm('是否删除该相册?', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
@@ -313,12 +311,11 @@ export default {
     },
     // 图片编辑
     updateImage(image) {
-      this.$prompt('请输入新名称', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$prompt('', '请输入图片名称', {
+        inputPlaceholder: '请输入图片名称',
         inputValue: image.name,
-        inputValidator(val) {
-          if (val === '') {
+        inputValidator(value) {
+          if (value === '') {
             return '图片名称不能为空'
           }
         }
@@ -339,8 +336,6 @@ export default {
     // 批量删除图片
     delImages() {
       this.$confirm('是否删除选中的图片?', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {

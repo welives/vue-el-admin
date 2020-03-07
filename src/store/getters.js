@@ -18,6 +18,7 @@ const getters = {
     const specList = []
     for (let i = 0; i < length; i++) {
       if (getters.multipleSpecCard[i].list.length > 0) {
+        // specList.push(getters.multipleSpecCard[i].list.filter((v) => v.isCheck))
         specList.push(getters.multipleSpecCard[i].list)
       }
     }
@@ -37,6 +38,9 @@ const getters = {
       }
     })
   },
-  getTestList: (state) => state.test.list
+  imageList: (state) => state.goods.imageList,
+  goodsType: (state) => state.goods.goodsType,
+  goodsAttrs: (state) => state.goods.goodsAttrs,
+  discountRate: (state) => state.goods.discountRate
 }
 export default getters

@@ -31,6 +31,7 @@ module.exports = {
         }
       }
     ],
+    'vue/no-parsing-error': 'off',
     'vue/require-default-prop': 'off',
     'vue/require-prop-types': 'off',
     'vue/attribute-hyphenation': 'off',

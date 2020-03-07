@@ -81,17 +81,18 @@ export default {
     }
   },
   watch: {
-    getTbody(newVal, oldVal) {
+    getTbody(newVal) {
       this.tableData = newVal
     }
   },
   created() {
     this.tableData = this.getTbody
   },
+
   methods: {
-    chooseImage(obj) {
+    chooseImage(item) {
       this.app.chooseImage((res) => {
-        obj.image = res[0].url
+        item.image = res[0].url
       }, 1)
     }
   }

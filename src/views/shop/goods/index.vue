@@ -8,6 +8,7 @@
       >
         <button-search
           ref="buttonSearch"
+          :key="index"
           placeholder="要搜索的商品名称"
           @search="searchEvent"
         >
@@ -62,7 +63,12 @@
         >
           <el-table-column type="selection" width="40" align="center">
           </el-table-column>
-          <el-table-column #default="item" label="商品" width="350">
+          <el-table-column
+            #default="item"
+            label="商品"
+            width="350"
+            header-align="center"
+          >
             <div class="media d-flex align-items-center justify-content-center">
               <img class="mr-3" :src="item.row.cover" style="width: 60px;" />
               <div class="media-body">
@@ -76,60 +82,73 @@
               </div>
             </div>
           </el-table-column>
-          <el-table-column prop="type" label="商品类型"></el-table-column>
-          <el-table-column prop="sale_count" label="实际销量"></el-table-column>
-          <el-table-column prop="order" label="商品排序"></el-table-column>
+          <el-table-column
+            prop="type"
+            label="商品类型"
+            header-align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="sale_count"
+            label="实际销量"
+            header-align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="order"
+            label="商品排序"
+            header-align="center"
+          ></el-table-column>
           <el-table-column
             #default="item"
             label="商品状态"
-            align="center"
+            header-align="center"
             width="80"
           >
-            <div
-              class="d-flex flex-column align-items-center justify-content-center"
-            >
+            <div class="d-flex align-items-center justify-content-center">
               <el-button
-                type="success"
+                :type="item.row.isPutaway ? 'success' : 'danger'"
                 size="mini"
                 plain
-                @click="item.row.isCheck = 1"
-                >上架</el-button
-              >
-              <el-button
-                class="ml-0 mt-1"
-                type="danger"
-                size="mini"
-                plain
-                @click="item.row.isCheck = 0"
-                >下架</el-button
+                @click="putaway(item.row)"
+                >{{ item.row.isPutaway ? '上架' : '下架' }}</el-button
               >
             </div>
           </el-table-column>
-          <el-table-column prop="stock" label="总库存"></el-table-column>
-          <el-table-column prop="price" label="价格"></el-table-column>
+          <el-table-column
+            prop="stock"
+            label="总库存"
+            header-align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="price"
+            label="价格"
+            header-align="center"
+          ></el-table-column>
           <el-table-column
             #default="item"
             label="操作"
-            align="center"
+            header-align="center"
             width="150"
           >
-            <el-button type="warning" size="mini" plain class="mr-2"
-              >编辑</el-button
-            >
-            <el-popconfirm
-              title="是否删除该商品？"
-              @onConfirm="deleteItem(item.$index)"
-            >
-              <el-button slot="reference" type="danger" size="mini" plain
-                >删除</el-button
+            <div class="d-flex align-items-center justify-content-center">
+              <el-button type="warning" size="mini" plain class="mr-2"
+                >编辑</el-button
               >
-            </el-popconfirm>
+              <el-popconfirm
+                title="是否删除这个商品？"
+                @onConfirm="deleteItem(item.$index)"
+              >
+                <el-button slot="reference" type="danger" size="mini" plain
+                  >删除</el-button
+                >
+              </el-popconfirm>
+            </div>
           </el-table-column>
         </el-table>
         <!-- 分页 -->
         <div style="height: 60px;"></div>
         <el-footer
-          class="d-flex align-items-center px-0 position-fixed bg-white fixed-bottom"
+          class="border-top d-flex align-items-center px-0 position-fixed bg-white fixed-bottom"
+          style="left: 200px;"
         >
           <div class="text-center flex-fill">
             <el-pagination
@@ -152,7 +171,7 @@
 import common from '@/common/mixins/common.js'
 import buttonSearch from '@/components/common/button-search'
 export default {
-  name: 'GoodsIndex',
+  name: 'Goods',
   components: {
     buttonSearch
   },
@@ -200,17 +219,17 @@ export default {
             type: '普通商品',
             sale_count: 20,
             order: 100,
-            status: 1,
+            status: 0,
             stock: 200,
             price: 7999,
-            isCheck: 1
+            isPutaway: false
           })
         }
       }
     },
-    tabClick(e) {
-      this.$refs.buttonSearch.filter((v, k) => {
-        if (k.toString() !== this.tabIndex) {
+    tabClick() {
+      this.$refs.buttonSearch.filter((v, index) => {
+        if (index.toString() !== this.tabIndex) {
           v.advancedSearch = false
         }
       })
@@ -226,6 +245,13 @@ export default {
     },
     deleteItem(index) {
       this.tableData[this.tabIndex].list.splice(index, 1)
+    },
+    putaway(item) {
+      item.isPutaway = !item.isPutaway
+      this.$message({
+        message: item.isPutaway ? '上架' : '下架',
+        type: 'success'
+      })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
