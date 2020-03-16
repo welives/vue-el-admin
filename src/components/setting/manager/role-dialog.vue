@@ -47,17 +47,17 @@ export default {
       roleForm: {
         id: '',
         name: '',
-        status: true
+        status: true,
       },
       rules: {
-        name: [{ required: true, message: '用户名不能为空', trigger: 'blur' }]
-      }
+        name: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
+      },
     }
   },
   computed: {
     roleDialogTitle() {
       return this.editIndex === -1 ? '添加管理员' : '修改管理员'
-    }
+    },
   },
   methods: {
     showDialog(data) {
@@ -76,7 +76,7 @@ export default {
       this.roleForm = {
         id: this.nextId,
         name: '',
-        status: true
+        status: true,
       }
       this.roleDialog = false
     },
@@ -96,7 +96,7 @@ export default {
           }
           this.$message({
             message: msg + '成功',
-            type: 'success'
+            type: 'success',
           })
           this.hide()
         }
@@ -107,8 +107,8 @@ export default {
     },
     beforeAvatarUpload(e) {
       console.log(e)
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -108,15 +108,15 @@ export default {
     return {}
   },
   computed: {
-    ...mapGetters(['options', 'basicForm'])
+    ...mapGetters(['options', 'basicForm']),
   },
   mounted() {},
   methods: {
     ...mapMutations('goods', ['basicFormModel']),
     resetForm(formName) {
       this.$refs[formName].resetFields()
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -12,6 +12,6 @@ export default new Vuex.Store({
   modules: {
     user,
     menu,
-    goods
-  }
+    goods,
+  },
 })

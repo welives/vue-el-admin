@@ -53,15 +53,15 @@ export default {
         isReg: true,
         regType: 'normal',
         passLen: 6,
-        passEncrypt: ['number']
-      }
+        passEncrypt: ['number'],
+      },
     }
   },
   methods: {
     resetForm(formName) {
       this.$refs[formName].resetFields()
-    }
-  }
+    },
+  },
 }
 </script>
 

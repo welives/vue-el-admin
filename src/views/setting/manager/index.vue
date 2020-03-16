@@ -22,7 +22,7 @@ export default {
   components: {
     adminList,
     roleList,
-    permissionList
+    permissionList,
   },
   mixins: [common],
   data() {
@@ -31,13 +31,13 @@ export default {
       tabBars: [
         { name: '管理员列表', component: adminList },
         { name: '角色列表', component: roleList },
-        { name: '权限列表', component: permissionList }
-      ]
+        { name: '权限列表', component: permissionList },
+      ],
     }
   },
   created() {
     this.__initTabBar(this.$options.name)
-  }
+  },
 }
 </script>
 

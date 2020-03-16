@@ -24,11 +24,11 @@ export default {
     return {}
   },
   computed: {
-    ...mapGetters(['discountRate'])
+    ...mapGetters(['discountRate']),
   },
   methods: {
-    ...mapMutations('goods', ['changeState'])
-  }
+    ...mapMutations('goods', ['changeState']),
+  },
 }
 </script>
 

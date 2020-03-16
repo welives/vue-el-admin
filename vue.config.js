@@ -11,9 +11,9 @@ module.exports = {
         changeOrigin: true, // 是否跨域
         pathRewrite: {
           // 重写路径
-          '^/admin': ''
-        }
-      }
-    }
-  }
+          '^/admin': '',
+        },
+      },
+    },
+  },
 }

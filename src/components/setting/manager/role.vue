@@ -68,7 +68,7 @@ export default {
   name: 'RoleList',
   components: {
     buttonSearch,
-    roleDialog
+    roleDialog,
   },
   data() {
     return {
@@ -77,10 +77,10 @@ export default {
           id: 1,
           name: '超级管理员',
           createTime: '2020-03-07 03:08:31',
-          status: true
-        }
+          status: true,
+        },
       ],
-      currentPage: 1
+      currentPage: 1,
     }
   },
   methods: {
@@ -95,8 +95,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 

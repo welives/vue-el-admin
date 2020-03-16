@@ -52,15 +52,15 @@ export default {
         bucket: '',
         accessKey: '',
         secretKey: '',
-        domain: ''
-      }
+        domain: '',
+      },
     }
   },
   methods: {
     resetForm(formName) {
       this.$refs[formName].resetFields()
-    }
-  }
+    },
+  },
 }
 </script>
 

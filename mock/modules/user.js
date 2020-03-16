@@ -8,7 +8,7 @@ const userData = {
       avatar: Random.dataImage('60x60'),
       name: Random.cname(),
       age: Random.integer(10, 40),
-      email: Random.email()
+      email: Random.email(),
     },
     {
       id: 2,
@@ -17,7 +17,7 @@ const userData = {
       avatar: Random.dataImage('60x60'),
       name: Random.cname(),
       age: Random.integer(10, 40),
-      email: Random.email()
+      email: Random.email(),
     },
     {
       id: 3,
@@ -26,9 +26,9 @@ const userData = {
       avatar: Random.dataImage('60x60'),
       name: Random.cname(),
       age: Random.integer(10, 40),
-      email: Random.email()
-    }
-  ]
+      email: Random.email(),
+    },
+  ],
 }
 export default {
   login(request) {
@@ -46,5 +46,5 @@ export default {
   },
   logout() {
     return { code: 20000, msg: '退出成功' }
-  }
+  },
 }

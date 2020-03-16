@@ -109,13 +109,13 @@ export default {
   name: 'Type',
   components: {
     buttonSearch,
-    typeDialog
+    typeDialog,
   },
   filters: {
     formatValue(value) {
       const arr = value.map((v) => v.name)
       return arr.join(',')
-    }
+    },
   },
   data() {
     return {
@@ -133,7 +133,7 @@ export default {
               type: 'input',
               value: '',
               isShow: true,
-              isEdit: false
+              isEdit: false,
             },
             {
               order: 100,
@@ -141,13 +141,13 @@ export default {
               type: 'input',
               value: '',
               isShow: true,
-              isEdit: false
-            }
-          ]
-        }
+              isEdit: false,
+            },
+          ],
+        },
       ],
       currentPage: 1,
-      multipleSelection: []
+      multipleSelection: [],
     }
   },
   methods: {
@@ -174,8 +174,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 

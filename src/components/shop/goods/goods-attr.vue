@@ -41,11 +41,11 @@ export default {
     return {}
   },
   computed: {
-    ...mapGetters(['goodsType', 'goodsAttrs'])
+    ...mapGetters(['goodsType', 'goodsAttrs']),
   },
   methods: {
-    ...mapMutations('goods', ['changeState', 'updateGoodsAttrs'])
-  }
+    ...mapMutations('goods', ['changeState', 'updateGoodsAttrs']),
+  },
 }
 </script>
 

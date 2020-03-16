@@ -40,14 +40,14 @@ export default {
   name: 'ButtonSearch',
   props: {
     placeholder: { type: String, default: '' },
-    showSearch: { type: Boolean, default: true }
+    showSearch: { type: Boolean, default: true },
   },
   data() {
     return {
       keyword: '',
-      advancedSearch: false
+      advancedSearch: false,
     }
-  }
+  },
 }
 </script>
 

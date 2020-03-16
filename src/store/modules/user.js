@@ -4,7 +4,7 @@ export default {
   namespaced: true,
   state: {
     user: {},
-    token: getToken()
+    token: getToken(),
   },
   mutations: {
     SET_USER(state, user) {
@@ -12,7 +12,7 @@ export default {
     },
     SET_TOKEN(state, token) {
       state.token = token
-    }
+    },
   },
   actions: {
     initUser({ commit }) {
@@ -58,6 +58,6 @@ export default {
             reject(error)
           })
       })
-    }
-  }
+    },
+  },
 }

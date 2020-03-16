@@ -28,7 +28,7 @@ service.interceptors.request.use(
       lock: true,
       text: 'Loading',
       spinner: 'el-icon-loading',
-      background: 'rgba(255, 255, 255, 0.5)'
+      background: 'rgba(255, 255, 255, 0.5)',
     })
     return config
   },
@@ -37,7 +37,7 @@ service.interceptors.request.use(
     Message.error(error.message)
     console.log('request error:', error) // for debug
     return Promise.reject(error)
-  }
+  },
 )
 
 // 响应拦截
@@ -55,16 +55,12 @@ service.interceptors.response.use(
   },
   (error) => {
     loading.close()
-    if (
-      error.response &&
-      error.response.data &&
-      error.response.data.errorCode
-    ) {
+    if (error.response?.data?.errorCode) {
       Message.error(error.response.data.msg)
     }
     console.log('response error:', error)
     return Promise.reject(error)
-  }
+  },
 )
 
 Plugin.install = (Vue, options) => {
@@ -74,13 +70,13 @@ Plugin.install = (Vue, options) => {
     axios: {
       get() {
         return service
-      }
+      },
     },
     $axios: {
       get() {
         return service
-      }
-    }
+      },
+    },
   })
 }
 

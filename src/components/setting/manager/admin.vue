@@ -99,7 +99,7 @@ export default {
   name: 'AdminList',
   components: {
     buttonSearch,
-    adminDialog
+    adminDialog,
   },
   data() {
     return {
@@ -115,10 +115,10 @@ export default {
           groupName: '管理员',
           createTime: '2020-03-07 03:08:31',
           lastTime: '2020-03-07 03:08:31',
-          status: true
-        }
+          status: true,
+        },
       ],
-      currentPage: 1
+      currentPage: 1,
     }
   },
   methods: {
@@ -136,8 +136,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 

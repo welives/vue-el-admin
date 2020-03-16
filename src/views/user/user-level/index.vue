@@ -83,7 +83,7 @@ export default {
   name: 'UserLevel',
   components: {
     buttonSearch,
-    levelDialog
+    levelDialog,
   },
   data() {
     return {
@@ -95,11 +95,11 @@ export default {
           times: 10,
           discount: 10,
           order: 0,
-          status: true
-        }
+          status: true,
+        },
       ],
       currentPage: 1,
-      type: 0
+      type: 0,
     }
   },
   methods: {
@@ -114,8 +114,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -14,7 +14,7 @@
             cardIndex,
             index,
             key: 'color',
-            value: $event
+            value: $event,
           })
         "
       ></el-color-picker>
@@ -47,7 +47,7 @@
           cardIndex,
           index,
           key: 'name',
-          value: $event.target.value
+          value: $event.target.value,
         })
       "
     />
@@ -69,7 +69,7 @@ export default {
     item: Object,
     index: Number,
     cardIndex: Number,
-    type: { type: Number, default: 0 }
+    type: { type: Number, default: 0 },
   },
   data() {
     return {}
@@ -83,11 +83,11 @@ export default {
           cardIndex,
           index,
           key: 'image',
-          value: res[0].url
+          value: res[0].url,
         })
       }, 1)
-    }
-  }
+    },
+  },
 }
 </script>
 

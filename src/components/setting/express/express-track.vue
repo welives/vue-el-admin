@@ -44,15 +44,15 @@ export default {
     return {
       expressForm: {
         customer: '',
-        key: ''
-      }
+        key: '',
+      },
     }
   },
   methods: {
     resetForm(formName) {
       this.$refs[formName].resetFields()
-    }
-  }
+    },
+  },
 }
 </script>
 

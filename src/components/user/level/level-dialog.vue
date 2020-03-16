@@ -101,17 +101,19 @@ export default {
         times: 0,
         discount: 0,
         order: 0,
-        status: true
+        status: true,
       },
       rules: {
-        name: [{ required: true, message: '等级名称不能为空', trigger: 'blur' }]
-      }
+        name: [
+          { required: true, message: '等级名称不能为空', trigger: 'blur' },
+        ],
+      },
     }
   },
   computed: {
     levelDialogTitle() {
       return this.editIndex === -1 ? '添加会员等级' : '修改会员等级'
-    }
+    },
   },
   methods: {
     showDialog(data) {
@@ -134,7 +136,7 @@ export default {
         times: 0,
         discount: 0,
         order: 0,
-        status: true
+        status: true,
       }
       this.levelDialog = false
     },
@@ -152,12 +154,12 @@ export default {
             msg = '修改'
             Object.assign(
               this.$parent.tableData[this.editIndex],
-              this.levelForm
+              this.levelForm,
             )
           }
           this.$message({
             message: msg + '成功',
-            type: 'success'
+            type: 'success',
           })
           this.hide()
         }
@@ -168,8 +170,8 @@ export default {
     },
     beforeAvatarUpload(e) {
       console.log(e)
-    }
-  }
+    },
+  },
 }
 </script>
 

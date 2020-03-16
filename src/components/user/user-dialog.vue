@@ -104,23 +104,23 @@ export default {
         email: '',
         sex: 0,
         level: 0,
-        status: true
+        status: true,
       },
       rules: {
         username: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' }
+          { required: true, message: '用户名不能为空', trigger: 'blur' },
         ],
         password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' }
+          { required: true, message: '密码不能为空', trigger: 'blur' },
         ],
-        phone: [{ required: true, message: '手机号不能为空', trigger: 'blur' }]
-      }
+        phone: [{ required: true, message: '手机号不能为空', trigger: 'blur' }],
+      },
     }
   },
   computed: {
     userFormDialogTitle() {
       return this.editIndex === -1 ? '添加会员' : '修改会员'
-    }
+    },
   },
   methods: {
     showDialog(data) {
@@ -146,7 +146,7 @@ export default {
         email: '',
         sex: 0,
         level: 0,
-        status: true
+        status: true,
       }
       this.userFormDialog = false
     },
@@ -166,7 +166,7 @@ export default {
           }
           this.$message({
             message: msg + '成功',
-            type: 'success'
+            type: 'success',
           })
           this.hide()
         }
@@ -177,8 +177,8 @@ export default {
     },
     beforeAvatarUpload(e) {
       console.log(e)
-    }
-  }
+    },
+  },
 }
 </script>
 

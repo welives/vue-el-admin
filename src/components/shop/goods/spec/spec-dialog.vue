@@ -74,7 +74,7 @@ export default {
       callback: false,
       specIndex: 0,
       chooseList: [],
-      specList: []
+      specList: [],
     }
   },
   computed: {
@@ -90,7 +90,7 @@ export default {
         return false
       }
       return this.specValues.length === this.chooseList.length
-    }
+    },
   },
   created() {
     this.specList = this.multipleSpecCard
@@ -117,7 +117,7 @@ export default {
         this.callback({
           name: item.name,
           type: item.type,
-          list: this.chooseList
+          list: this.chooseList,
         })
       }
       this.hide()
@@ -157,8 +157,8 @@ export default {
     },
     unChoose() {
       this.chooseList = []
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -71,19 +71,19 @@ export default {
   inject: ['app'],
   data() {
     return {
-      tableData: []
+      tableData: [],
     }
   },
   computed: {
     ...mapGetters(['getThead', 'getTbody', 'multipleSpecCard']),
     specCard() {
       return this.multipleSpecCard.filter((v) => v.list.length > 0)
-    }
+    },
   },
   watch: {
     getTbody(newVal) {
       this.tableData = newVal
-    }
+    },
   },
   created() {
     this.tableData = this.getTbody
@@ -94,8 +94,8 @@ export default {
       this.app.chooseImage((res) => {
         item.image = res[0].url
       }, 1)
-    }
-  }
+    },
+  },
 }
 </script>
 

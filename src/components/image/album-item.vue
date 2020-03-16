@@ -35,8 +35,8 @@ export default {
     album: Object,
     index: Number,
     active: { type: Boolean, default: false },
-    showOptions: { type: Boolean, default: true }
-  }
+    showOptions: { type: Boolean, default: true },
+  },
 }
 </script>
 

@@ -68,20 +68,20 @@ export default {
         value: '',
         order: 100,
         status: true,
-        type: 0
+        type: 0,
       },
       rules: {
         name: [
-          { required: true, message: '规格名称不能为空', trigger: 'blur' }
+          { required: true, message: '规格名称不能为空', trigger: 'blur' },
         ],
-        value: [{ required: true, message: '规格值不能为空', trigger: 'blur' }]
-      }
+        value: [{ required: true, message: '规格值不能为空', trigger: 'blur' }],
+      },
     }
   },
   computed: {
     specFormDialogTitle() {
       return this.editIndex === -1 ? '添加规格' : '修改规格'
-    }
+    },
   },
   methods: {
     showDialog(data) {
@@ -103,7 +103,7 @@ export default {
         value: '',
         order: 100,
         status: true,
-        type: 0
+        type: 0,
       }
       this.specFormDialog = false
     },
@@ -125,13 +125,13 @@ export default {
           }
           this.$message({
             message: msg + '成功',
-            type: 'success'
+            type: 'success',
           })
           this.hide()
         }
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

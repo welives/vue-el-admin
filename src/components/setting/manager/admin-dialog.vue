@@ -101,23 +101,23 @@ export default {
         email: '',
         groupId: 0,
         groupName: '',
-        status: true
+        status: true,
       },
       rules: {
         username: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' }
+          { required: true, message: '用户名不能为空', trigger: 'blur' },
         ],
         password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' }
+          { required: true, message: '密码不能为空', trigger: 'blur' },
         ],
-        phone: [{ required: true, message: '手机号不能为空', trigger: 'blur' }]
-      }
+        phone: [{ required: true, message: '手机号不能为空', trigger: 'blur' }],
+      },
     }
   },
   computed: {
     adminDialogTitle() {
       return this.editIndex === -1 ? '添加管理员' : '修改管理员'
-    }
+    },
   },
   methods: {
     showDialog(data) {
@@ -143,7 +143,7 @@ export default {
         email: '',
         groupId: 0,
         groupName: '',
-        status: true
+        status: true,
       }
       this.adminDialog = false
     },
@@ -161,12 +161,12 @@ export default {
             msg = '修改'
             Object.assign(
               this.$parent.tableData[this.editIndex],
-              this.adminForm
+              this.adminForm,
             )
           }
           this.$message({
             message: msg + '成功',
-            type: 'success'
+            type: 'success',
           })
           this.hide()
         }
@@ -177,8 +177,8 @@ export default {
     },
     beforeAvatarUpload(e) {
       console.log(e)
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -3,8 +3,8 @@ export default {
   state: {
     navBar: {
       active: 0,
-      list: []
-    }
+      list: [],
+    },
   },
   mutations: {
     createNavbar(state, menus) {
@@ -16,14 +16,14 @@ export default {
             return {
               icon: v.icon,
               name: v.name,
-              path: v.desc
+              path: v.desc,
             }
-          })
+          }),
         }
       })
       state.navBar.list = list
       sessionStorage.setItem('navBar', JSON.stringify(state.navBar))
-    }
+    },
   },
-  actions: {}
+  actions: {},
 }

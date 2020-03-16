@@ -62,7 +62,7 @@ import buttonSearch from '@/components/common/button-search'
 export default {
   name: 'UserLevel',
   components: {
-    buttonSearch
+    buttonSearch,
   },
   data() {
     return {
@@ -72,10 +72,10 @@ export default {
           type: 0,
           createTime: '2020-03-07 03:08:31',
           order: 100,
-          status: true
-        }
+          status: true,
+        },
       ],
-      currentPage: 1
+      currentPage: 1,
     }
   },
   methods: {
@@ -90,8 +90,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 

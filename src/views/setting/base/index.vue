@@ -22,7 +22,7 @@ export default {
   components: {
     access,
     upload,
-    security
+    security,
   },
   mixins: [common],
   data() {
@@ -31,13 +31,13 @@ export default {
       tabBars: [
         { name: '注册与访问', component: access },
         { name: '上传设置', component: upload },
-        { name: 'API安全', component: security }
-      ]
+        { name: 'API安全', component: security },
+      ],
     }
   },
   created() {
     this.__initTabBar(this.$options.name)
-  }
+  },
 }
 </script>
 

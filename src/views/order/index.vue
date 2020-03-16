@@ -158,7 +158,7 @@
               <span
                 class="badge"
                 :class="[
-                  scope.row.status < 1 ? 'badge-secondary' : 'badge-success'
+                  scope.row.status < 1 ? 'badge-secondary' : 'badge-success',
                 ]"
                 >{{ scope.row.status &lt 1 ? '未付款' : '已付款' }}</span
               >
@@ -168,7 +168,7 @@
               <span
                 class="badge"
                 :class="[
-                  scope.row.status < 2 ? 'badge-secondary' : 'badge-success'
+                  scope.row.status < 2 ? 'badge-secondary' : 'badge-success',
                 ]"
                 >{{ scope.row.status &lt 2 ? '待发货' : '已发货' }}</span
               >
@@ -178,7 +178,7 @@
               <span
                 class="badge"
                 :class="[
-                  scope.row.status < 3 ? 'badge-secondary' : 'badge-success'
+                  scope.row.status < 3 ? 'badge-secondary' : 'badge-success',
                 ]"
                 >{{ scope.row.status &lt 3 ? '待收货' : '已收货' }}</span
               >
@@ -219,7 +219,7 @@ import buttonSearch from '@/components/common/button-search'
 export default {
   name: 'Order',
   components: {
-    buttonSearch
+    buttonSearch,
   },
   mixins: [common],
   data() {
@@ -234,17 +234,17 @@ export default {
         { name: '已收货' },
         { name: '已完成' },
         { name: '已关闭' },
-        { name: '退款中' }
+        { name: '退款中' },
       ],
       form: {
         serial: '',
         status: '',
         time: '',
         username: '',
-        phone: ''
+        phone: '',
       },
       tableData: [],
-      multipleSelection: []
+      multipleSelection: [],
     }
   },
   created() {
@@ -256,7 +256,7 @@ export default {
       for (let i = 0; i < this.tabBars.length; i++) {
         this.tableData.push({
           currentPage: 1,
-          list: []
+          list: [],
         })
         for (let j = 0; j < 10; j++) {
           this.tableData[i].list.push({
@@ -272,7 +272,7 @@ export default {
             freight: (Math.random() * 10 + 1).toFixed(2),
             express: '顺丰快递',
             payType: Math.floor(Math.random() * (1 - 0 + 1)) + 0,
-            status: Math.floor(Math.random() * (3 - 0 + 1)) + 0
+            status: Math.floor(Math.random() * (3 - 0 + 1)) + 0,
           })
         }
       }
@@ -300,7 +300,7 @@ export default {
       item.isPutaway = !item.isPutaway
       this.$message({
         message: item.isPutaway ? '上架' : '下架',
-        type: 'success'
+        type: 'success',
       })
     },
     handleSelectionChange(val) {
@@ -311,8 +311,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -89,11 +89,11 @@ export default {
                   id: 3,
                   label: '三级 1-1-1',
                   status: true,
-                  editStatus: false
-                }
-              ]
-            }
-          ]
+                  editStatus: false,
+                },
+              ],
+            },
+          ],
         },
         {
           id: 4,
@@ -111,9 +111,9 @@ export default {
                   id: 6,
                   label: '三级 2-1-1',
                   status: true,
-                  editStatus: false
-                }
-              ]
+                  editStatus: false,
+                },
+              ],
             },
             {
               id: 7,
@@ -125,11 +125,11 @@ export default {
                   id: 8,
                   label: '三级 2-2-1',
                   status: true,
-                  editStatus: false
-                }
-              ]
-            }
-          ]
+                  editStatus: false,
+                },
+              ],
+            },
+          ],
         },
         {
           id: 9,
@@ -147,9 +147,9 @@ export default {
                   id: 11,
                   label: '三级 3-1-1',
                   status: true,
-                  editStatus: false
-                }
-              ]
+                  editStatus: false,
+                },
+              ],
             },
             {
               id: 12,
@@ -161,18 +161,18 @@ export default {
                   id: 13,
                   label: '三级 3-2-1',
                   status: true,
-                  editStatus: false
-                }
-              ]
-            }
-          ]
-        }
+                  editStatus: false,
+                },
+              ],
+            },
+          ],
+        },
       ],
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'label',
       },
-      count: 100
+      count: 100,
     }
   },
   methods: {
@@ -186,7 +186,7 @@ export default {
           if (value === '') {
             return '分类名称不能为空'
           }
-        }
+        },
       })
         .then(({ value }) => {
           const newCate = {
@@ -194,7 +194,7 @@ export default {
             label: value,
             status: true,
             editStatus: false,
-            children: []
+            children: [],
           }
           // 新增顶级分类
           if (!data) {
@@ -214,8 +214,8 @@ export default {
       const children = parent.data.children || parent.data
       const index = children.findIndex((v) => v.id === data.id)
       children.splice(index, 1)
-    }
-  }
+    },
+  },
 }
 </script>
 

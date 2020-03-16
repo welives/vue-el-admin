@@ -173,7 +173,7 @@ import buttonSearch from '@/components/common/button-search'
 export default {
   name: 'Goods',
   components: {
-    buttonSearch
+    buttonSearch,
   },
   mixins: [common],
   data() {
@@ -185,16 +185,16 @@ export default {
         { name: '出售中' },
         { name: '已下架' },
         { name: '库存预警' },
-        { name: '回收站' }
+        { name: '回收站' },
       ],
       form: {
         name: '',
         code: '',
         type: '',
-        cate: ''
+        cate: '',
       },
       tableData: [],
-      multipleSelection: []
+      multipleSelection: [],
     }
   },
   created() {
@@ -206,7 +206,7 @@ export default {
       for (let i = 0; i < this.tabBars.length; i++) {
         this.tableData.push({
           currentPage: 1,
-          list: []
+          list: [],
         })
         for (let j = 0; j < 10; j++) {
           this.tableData[i].list.push({
@@ -222,7 +222,7 @@ export default {
             status: 0,
             stock: 200,
             price: 7999,
-            isPutaway: false
+            isPutaway: false,
           })
         }
       }
@@ -250,7 +250,7 @@ export default {
       item.isPutaway = !item.isPutaway
       this.$message({
         message: item.isPutaway ? '上架' : '下架',
-        type: 'success'
+        type: 'success',
       })
     },
     handleSelectionChange(val) {
@@ -261,8 +261,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -57,21 +57,26 @@ export default {
       loading: false,
       form: {
         username: 'admin',
-        password: 'admin'
+        password: 'admin',
       },
       rules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 4, max: 16, message: '用户名长度4到16个字符', trigger: 'blur' }
+          {
+            min: 4,
+            max: 16,
+            message: '用户名长度4到16个字符',
+            trigger: 'blur',
+          },
         ],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-      }
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+      },
     }
   },
   computed: {
     isActive() {
       return !(this.form.username !== '' && this.form.password !== '')
-    }
+    },
   },
   methods: {
     login() {
@@ -89,8 +94,8 @@ export default {
             console.log(error)
           })
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

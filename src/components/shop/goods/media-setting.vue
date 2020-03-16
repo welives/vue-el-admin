@@ -61,7 +61,7 @@ export default {
     return {}
   },
   computed: {
-    ...mapGetters(['imageList'])
+    ...mapGetters(['imageList']),
   },
   methods: {
     ...mapMutations('goods', ['changeState']),
@@ -79,15 +79,15 @@ export default {
           }
           this.changeState({ key: 'imageList', value: list })
         },
-        index === -1 ? count : 1
+        index === -1 ? count : 1,
       )
     },
     deleteImage(index) {
       const list = [...this.imageList]
       list.splice(index, 1)
       this.changeState({ key: 'imageList', value: list })
-    }
-  }
+    },
+  },
 }
 </script>
 

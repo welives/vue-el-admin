@@ -55,7 +55,7 @@
           v-dragging="{
             item: item,
             list: card.list,
-            group: `card[${cardIndex}]`
+            group: `card[${cardIndex}]`,
           }"
           :type="card.type"
           :item="item"
@@ -79,24 +79,24 @@ export default {
   name: 'SpecCard',
   // inject: ['app'],
   components: {
-    cardValue
+    cardValue,
   },
   props: {
     card: Object,
-    cardIndex: Number
+    cardIndex: Number,
   },
   data() {
     return {}
   },
   computed: {
-    ...mapGetters(['multipleSpecCard'])
+    ...mapGetters(['multipleSpecCard']),
   },
   created() {
     this.$dragging.$on('dragend', (e) => {
       if (e.group === `card[${this.cardIndex}]`) {
         this.sortSpecCardValue({
           cardIndex: this.cardIndex,
-          list: this.card.list
+          list: this.card.list,
         })
       }
     })
@@ -107,7 +107,7 @@ export default {
       'sortSpecCard',
       'delSpecCard',
       'addSpecCardValue',
-      'sortSpecCardValue'
+      'sortSpecCardValue',
     ]),
     addSpecValue() {
       this.$prompt('', '请输入规格名称', {
@@ -117,20 +117,20 @@ export default {
           if (value === '') {
             return '规格名称不能为空'
           }
-        }
+        },
       })
         .then(({ value }) => {
           this.addSpecCardValue({
             cardIndex: this.cardIndex,
-            name: value
+            name: value,
           })
           this.$message({
             message: '添加成功',
-            type: 'success'
+            type: 'success',
           })
         })
         .catch(() => {})
-    }
+    },
     // chooseSpec() {
     //   this.app.chooseSpec((res) => {
     //     this.updateSpecCard({
@@ -149,7 +149,7 @@ export default {
     //     })
     //   })
     // }
-  }
+  },
 }
 </script>
 

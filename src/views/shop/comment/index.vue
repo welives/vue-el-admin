@@ -199,7 +199,7 @@ import buttonSearch from '@/components/common/button-search'
 export default {
   name: 'Comment',
   components: {
-    buttonSearch
+    buttonSearch,
   },
   data() {
     return {
@@ -212,16 +212,16 @@ export default {
           username: '煎蛋',
           star: 4.4,
           commentTime: '2020-03-05 11:43:31',
-          isShow: true
-        }
+          isShow: true,
+        },
       ],
       currentPage: 1,
       multipleSelection: [],
       form: {
         username: '',
         type: '',
-        time: ''
-      }
+        time: '',
+      },
     }
   },
   methods: {
@@ -254,8 +254,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 

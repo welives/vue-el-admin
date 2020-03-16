@@ -44,28 +44,28 @@ export default {
           name: '银联卡支付',
           desc: '该系统支持即时到账接口',
           src: 'http://wxcs.niuteam.cn/addons/NsUnionPay/ico.png',
-          status: true
+          status: true,
         },
         {
           name: '支付宝支付',
           desc: '该系统支持即时到账接口',
           src: 'http://wxcs.niuteam.cn/addons/NsAlipay/ico.png',
-          status: true
+          status: true,
         },
         {
           name: '微信支付',
           desc: '该系统支持微信网页支付和扫码支付',
           src: 'http://wxcs.niuteam.cn/addons/NsWeixinpay/ico.png',
-          status: true
-        }
-      ]
+          status: true,
+        },
+      ],
     }
   },
   methods: {
     deleteItem(index) {
       this.tableData.splice(index, 1)
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -132,10 +132,10 @@ export default {
   name: 'ImageDialog',
   components: {
     albumItem,
-    imageItem
+    imageItem,
   },
   props: {
-    max: { type: Number, default: 9 }
+    max: { type: Number, default: 9 },
   },
   data() {
     return {
@@ -143,7 +143,7 @@ export default {
       callback: false,
       searchForm: {
         order: '',
-        keyword: ''
+        keyword: '',
       },
       albumList: [],
       albumIndex: 0,
@@ -151,7 +151,7 @@ export default {
       previewUrl: '',
       imageList: [],
       chooseList: [],
-      currentPage: 1
+      currentPage: 1,
     }
   },
   created() {
@@ -179,7 +179,7 @@ export default {
         this.albumList.push({
           name: '相册' + i,
           num: Math.floor(Math.random() * 20),
-          order: 0
+          order: 0,
         })
       }
       for (let i = 0; i < 20; i++) {
@@ -187,7 +187,7 @@ export default {
           name: '图片' + i,
           url:
             'http://ww1.sinaimg.cn/large/00745YaMgy1gbayr1pl2kj30xc0m7ng0.jpg',
-          isCheck: false
+          isCheck: false,
         })
       }
     },
@@ -212,13 +212,13 @@ export default {
           if (val === '') {
             return '图片名称不能为空'
           }
-        }
+        },
       })
         .then(({ value }) => {
           image.name = value
           this.$message({
             message: '修改成功',
-            type: 'success'
+            type: 'success',
           })
         })
         .catch(() => {})
@@ -235,12 +235,12 @@ export default {
         if (this.chooseList.length >= this.max) {
           return this.$message({
             message: '最多选择' + this.max + '张图片',
-            type: 'warning'
+            type: 'warning',
           })
         }
         this.chooseList.push({
           id: index,
-          url: image.url
+          url: image.url,
         })
         image.isCheck = true
         return
@@ -261,8 +261,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 

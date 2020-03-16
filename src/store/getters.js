@@ -34,7 +34,7 @@ const getters = {
         stock: 0,
         volume: 0,
         weight: 0,
-        code: ''
+        code: '',
       }
     })
   },
@@ -42,6 +42,6 @@ const getters = {
   goodsType: (state) => state.goods.goodsType,
   goodsAttrs: (state) => state.goods.goodsAttrs,
   discountRate: (state) => state.goods.discountRate,
-  user: (state) => state.user.user
+  user: (state) => state.user.user,
 }
 export default getters

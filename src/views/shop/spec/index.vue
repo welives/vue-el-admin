@@ -118,7 +118,7 @@ export default {
   name: 'Spec',
   components: {
     buttonSearch,
-    specDialog
+    specDialog,
   },
   data() {
     return {
@@ -129,7 +129,7 @@ export default {
           value: '红色,绿色,蓝色',
           order: 100,
           status: true,
-          type: 0
+          type: 0,
         },
         {
           id: 2,
@@ -137,7 +137,7 @@ export default {
           value: '红色,绿色,蓝色',
           order: 100,
           status: true,
-          type: 0
+          type: 0,
         },
         {
           id: 3,
@@ -145,7 +145,7 @@ export default {
           value: '红色,绿色,蓝色',
           order: 100,
           status: true,
-          type: 0
+          type: 0,
         },
         {
           id: 4,
@@ -153,11 +153,11 @@ export default {
           value: '红色,绿色,蓝色',
           order: 100,
           status: true,
-          type: 0
-        }
+          type: 0,
+        },
       ],
       currentPage: 1,
-      multipleSelection: []
+      multipleSelection: [],
     }
   },
   methods: {
@@ -184,8 +184,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 

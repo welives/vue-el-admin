@@ -40,15 +40,15 @@ export default {
     return {
       securityForm: {
         apiGuard: true,
-        apiKey: ''
-      }
+        apiKey: '',
+      },
     }
   },
   methods: {
     resetForm(formName) {
       this.$refs[formName].resetFields()
-    }
-  }
+    },
+  },
 }
 </script>
 

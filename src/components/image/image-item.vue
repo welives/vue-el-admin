@@ -67,8 +67,8 @@ export default {
   name: 'ImageItem',
   props: {
     image: Object,
-    index: Number
-  }
+    index: Number,
+  },
 }
 </script>
 

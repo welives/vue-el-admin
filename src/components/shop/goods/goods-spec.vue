@@ -138,7 +138,7 @@ export default {
   name: 'GoodsSpec',
   components: {
     specCard,
-    specTable
+    specTable,
   },
   data() {
     return {
@@ -148,25 +148,25 @@ export default {
         { name: '成本价', key: 'cPrice' },
         { name: '库存', key: 'stock' },
         { name: '体积', key: 'volume' },
-        { name: '重量', key: 'weight' }
-      ]
+        { name: '重量', key: 'weight' },
+      ],
     }
   },
   computed: {
-    ...mapGetters(['spec', 'singleSpecForm', 'multipleSpecCard'])
+    ...mapGetters(['spec', 'singleSpecForm', 'multipleSpecCard']),
   },
   methods: {
     ...mapMutations('goods', [
       'addSpecCard',
       'singleSpecFormModel',
-      'changeState'
+      'changeState',
     ]),
     batchSet(btn) {
       this.$prompt('', '批量设置' + btn.name, {
         inputPlaceholder: '请输入' + btn.name,
         inputType: 'number',
         inputPattern: /^\d+(\.\d{1,6})?$/,
-        inputErrorMessage: '只能输入正数,且小数点后不超过6位'
+        inputErrorMessage: '只能输入正数,且小数点后不超过6位',
       })
         .then(({ value }) => {
           this.$refs.specTable.tableData.forEach((v) => {
@@ -174,15 +174,15 @@ export default {
           })
           this.$message({
             message: '设置成功',
-            type: 'success'
+            type: 'success',
           })
         })
         .catch(() => {})
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
-    }
-  }
+    },
+  },
 }
 </script>
 

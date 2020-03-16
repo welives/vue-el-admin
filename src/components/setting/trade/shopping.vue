@@ -61,15 +61,15 @@ export default {
         unpaid: '',
         shipped: '',
         finished: '',
-        tactics: ''
-      }
+        tactics: '',
+      },
     }
   },
   methods: {
     resetForm(formName) {
       this.$refs[formName].resetFields()
-    }
-  }
+    },
+  },
 }
 </script>
 

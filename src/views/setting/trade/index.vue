@@ -20,7 +20,7 @@ export default {
   name: 'TradeSetting',
   components: {
     payment,
-    shopping
+    shopping,
   },
   mixins: [common],
   data() {
@@ -28,13 +28,13 @@ export default {
       tabIndex: 0,
       tabBars: [
         { name: '支付设置', component: payment },
-        { name: '购物设置', component: shopping }
-      ]
+        { name: '购物设置', component: shopping },
+      ],
     }
   },
   created() {
     this.__initTabBar(this.$options.name)
-  }
+  },
 }
 </script>
 

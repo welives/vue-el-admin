@@ -13,16 +13,16 @@ export default {
   name: 'App',
   provide() {
     return {
-      app: this
+      app: this,
     }
   },
   components: {
-    imageDialog
+    imageDialog,
     // specDialog
   },
   data() {
     return {
-      maxChooseImage: 9
+      maxChooseImage: 9,
     }
   },
   created() {
@@ -32,11 +32,11 @@ export default {
     chooseImage(callback, max = 9) {
       this.maxChooseImage = max
       this.$refs.imageDialog.showDialog(callback)
-    }
+    },
     // chooseSpec(callback) {
     //   this.$refs.specDialog.showDialog(callback)
     // }
-  }
+  },
 }
 </script>
 

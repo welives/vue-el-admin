@@ -34,7 +34,7 @@ export default {
     goodsAttr,
     goodsDetail,
     mediaSetting,
-    discountSetting
+    discountSetting,
   },
   mixins: [common],
   data() {
@@ -46,14 +46,14 @@ export default {
         { name: '商品属性', component: goodsAttr },
         { name: '商品详情', component: goodsDetail },
         { name: '媒体设置', component: mediaSetting },
-        { name: '折扣设置', component: discountSetting }
-      ]
+        { name: '折扣设置', component: discountSetting },
+      ],
     }
   },
   created() {
     this.__initTabBar(this.$options.name)
   },
-  methods: {}
+  methods: {},
 }
 </script>
 

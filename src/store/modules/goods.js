@@ -14,7 +14,7 @@ export default {
       display_stock: 0,
       status: 0,
       express: '',
-      cateVal: []
+      cateVal: [],
     },
     spec: 0,
     // 商品规格/单规格
@@ -25,7 +25,7 @@ export default {
       volume: '',
       weight: '',
       stock: '',
-      code: ''
+      code: '',
     },
     // 商品规格/多规格
     multipleSpecCard: [
@@ -37,9 +37,9 @@ export default {
             name: '红色',
             image: '',
             color: '',
-            isCheck: true
-          }
-        ]
+            isCheck: true,
+          },
+        ],
       },
       {
         name: '尺寸',
@@ -49,16 +49,16 @@ export default {
             name: 'S',
             image: '',
             color: '',
-            isCheck: true
+            isCheck: true,
           },
           {
             name: 'M',
             image: '',
             color: '',
-            isCheck: false
-          }
-        ]
-      }
+            isCheck: false,
+          },
+        ],
+      },
     ],
     // 媒体设置图片列表
     imageList: [],
@@ -66,7 +66,7 @@ export default {
     goodsType: '',
     // 商品属性
     goodsAttrs: {
-      phoneModel: ''
+      phoneModel: '',
     },
     discountRate: '',
     // 表头
@@ -79,8 +79,8 @@ export default {
       { name: '库存', rowspan: 2, width: 100 },
       { name: '体积', rowspan: 2, width: 100 },
       { name: '重量', rowspan: 2, width: 100 },
-      { name: '编码', rowspan: 2, width: 100 }
-    ]
+      { name: '编码', rowspan: 2, width: 100 },
+    ],
   },
   mutations: {
     basicFormModel(state, { key, value }) {
@@ -114,7 +114,7 @@ export default {
         name,
         image: '',
         color: '',
-        isCheck: true
+        isCheck: true,
       })
     },
     // 修改规格卡片的属性
@@ -131,7 +131,7 @@ export default {
     },
     updateGoodsAttrs(state, { key, value }) {
       state.goodsAttrs[key] = value
-    }
+    },
   },
-  actions: {}
+  actions: {},
 }

@@ -183,13 +183,13 @@ export default {
   name: 'Photo',
   components: {
     albumItem,
-    imageItem
+    imageItem,
   },
   data() {
     return {
       searchForm: {
         order: '',
-        keyword: ''
+        keyword: '',
       },
       albumList: [],
       albumIndex: 0,
@@ -198,22 +198,24 @@ export default {
       albumEditIndex: -1,
       albumForm: {
         name: '',
-        order: 0
+        order: 0,
       },
       albumRules: {
-        name: [{ required: true, message: '相册名称不能为空', trigger: 'blur' }]
+        name: [
+          { required: true, message: '相册名称不能为空', trigger: 'blur' },
+        ],
       },
       previewModel: false,
       previewUrl: '',
       imageList: [],
       chooseList: [],
-      currentPage: 1
+      currentPage: 1,
     }
   },
   computed: {
     albumModelTitle() {
       return this.albumEditIndex > -1 ? '修改相册' : '创建相册'
-    }
+    },
   },
   created() {
     this.__init()
@@ -225,7 +227,7 @@ export default {
         this.albumList.push({
           name: '相册' + i,
           num: Math.floor(Math.random() * 20),
-          order: 0
+          order: 0,
         })
       }
       for (let i = 0; i < 20; i++) {
@@ -233,7 +235,7 @@ export default {
           name: '图片' + i,
           url:
             'http://ww1.sinaimg.cn/large/00745YaMgy1gbayr1pl2kj30xc0m7ng0.jpg',
-          isCheck: false
+          isCheck: false,
         })
       }
     },
@@ -253,20 +255,20 @@ export default {
         this.albumList[this.albumEditIndex].order = this.albumForm.order
         this.$message({
           message: '修改成功',
-          type: 'success'
+          type: 'success',
         })
       }
     },
     // 删除相册
     delAlbum(index) {
       this.$confirm('是否删除该相册?', {
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           this.albumList.splice(index, 1)
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            message: '删除成功!',
           })
         })
         .catch(() => {})
@@ -284,7 +286,7 @@ export default {
       // 创建
       this.albumForm = {
         name: '',
-        order: 0
+        order: 0,
       }
       this.albumEditIndex = -1
       this.albumModel = true
@@ -299,7 +301,7 @@ export default {
         this.albumList.unshift({
           name: this.albumForm.name,
           num: 0,
-          order: this.albumForm.order
+          order: this.albumForm.order,
         })
         this.albumModel = false
       }
@@ -318,13 +320,13 @@ export default {
           if (value === '') {
             return '图片名称不能为空'
           }
-        }
+        },
       })
         .then(({ value }) => {
           image.name = value
           this.$message({
             message: '修改成功',
-            type: 'success'
+            type: 'success',
           })
         })
         .catch(() => {})
@@ -336,7 +338,7 @@ export default {
     // 批量删除图片
     delImages() {
       this.$confirm('是否删除选中的图片?', {
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           const list = this.imageList.filter((img, index) => {
@@ -370,8 +372,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 

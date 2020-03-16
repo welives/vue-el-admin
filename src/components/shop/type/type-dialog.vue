@@ -181,11 +181,13 @@ export default {
         order: 100,
         status: true,
         specList: [],
-        valueList: []
+        valueList: [],
       },
       rules: {
-        name: [{ required: true, message: '类型名称不能为空', trigger: 'blur' }]
-      }
+        name: [
+          { required: true, message: '类型名称不能为空', trigger: 'blur' },
+        ],
+      },
     }
   },
   computed: {
@@ -197,7 +199,7 @@ export default {
         return []
       }
       return this.$parent.tableData[this.editIndex].specList
-    }
+    },
   },
   methods: {
     showDialog(data) {
@@ -219,7 +221,7 @@ export default {
         order: 100,
         status: true,
         specList: [],
-        valueList: []
+        valueList: [],
       }
       this.typeFormDialog = false
     },
@@ -248,7 +250,7 @@ export default {
               type: 'error',
               duration: 3000,
               dangerouslyUseHTMLString: true,
-              message: message.join('<br />')
+              message: message.join('<br />'),
             })
           }
           // 新增
@@ -267,7 +269,7 @@ export default {
           }
           this.$message({
             message: msg + '成功',
-            type: 'success'
+            type: 'success',
           })
           this.hide()
         }
@@ -285,13 +287,13 @@ export default {
         type: 'input',
         value: '',
         isShow: true,
-        isEdit: true
+        isEdit: true,
       })
     },
     deleteItem(index) {
       this.typeForm.valueList.splice(index, 1)
-    }
-  }
+    },
+  },
 }
 </script>
 

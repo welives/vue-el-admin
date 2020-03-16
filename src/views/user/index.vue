@@ -147,12 +147,12 @@ export default {
   name: 'User',
   components: {
     buttonSearch,
-    userDialog
+    userDialog,
   },
   filters: {
     getLevelName(value) {
       return value === 0 ? '普通会员' : value === 1 ? 'VIP会员' : ''
-    }
+    },
   },
   data() {
     return {
@@ -168,15 +168,15 @@ export default {
           level: 0,
           createTime: '2020-03-05 11:43:31',
           lastTime: '2020-03-06 02:50:22',
-          status: true
-        }
+          status: true,
+        },
       ],
       currentPage: 1,
       search: {
         keyword: '',
         level: '',
-        createTime: ''
-      }
+        createTime: '',
+      },
     }
   },
   methods: {
@@ -200,8 +200,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 

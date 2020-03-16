@@ -94,7 +94,7 @@ export default {
   data() {
     return {
       navBar: {},
-      breadcrumb: []
+      breadcrumb: [],
     }
   },
   computed: {
@@ -106,12 +106,12 @@ export default {
       },
       set(index) {
         this.navBar.list[this.navBar.active].sideActive = index
-      }
+      },
     },
     // 获取当前导航下的侧栏菜单组
     sideMenus() {
       return this.navBar.list[this.navBar.active].sideMenu || []
-    }
+    },
   },
   watch: {
     $route() {
@@ -119,11 +119,11 @@ export default {
         'navActive',
         JSON.stringify({
           navBar: this.navBar.active,
-          sideMenu: this.sideMenuActive
-        })
+          sideMenu: this.sideMenuActive,
+        }),
       )
       this.getBreadcrumb()
-    }
+    },
   },
   created() {
     this.navBar = this.$conf.navBar
@@ -180,8 +180,8 @@ export default {
       this.$store.dispatch('user/logout').then(() => {
         this.$router.push({ name: 'login' })
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

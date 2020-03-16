@@ -22,26 +22,26 @@ import 'tinymce/plugins/wordcount' // 字数统计插件
 export default {
   name: 'Tinymce',
   components: {
-    Editor
+    Editor,
   },
   props: {
     value: {
       type: String,
-      default: ''
+      default: '',
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     plugins: {
       type: [String, Array],
-      default: 'lists image media table wordcount'
+      default: 'lists image media table wordcount',
     },
     toolbar: {
       type: [String, Array],
       default:
-        'undo redo | formatselect | fontselect fontsizeselect | bold italic underline strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent | lists image media table | removeformat'
-    }
+        'undo redo | formatselect | fontselect fontsizeselect | bold italic underline strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent | lists image media table | removeformat',
+    },
   },
   data() {
     return {
@@ -59,9 +59,9 @@ export default {
         images_upload_handler: (blobInfo, success, failure) => {
           const img = 'data:image/jpeg;base64,' + blobInfo.base64()
           success(img)
-        }
+        },
       },
-      myValue: this.value
+      myValue: this.value,
     }
   },
   watch: {
@@ -70,7 +70,7 @@ export default {
     },
     myValue(newValue) {
       this.$emit('input', newValue)
-    }
+    },
   },
   mounted() {
     tinymce.init({})
@@ -84,8 +84,8 @@ export default {
     // 可以添加一些自己的自定义事件，如清空内容
     clear() {
       this.myValue = ''
-    }
-  }
+    },
+  },
 }
 </script>
 

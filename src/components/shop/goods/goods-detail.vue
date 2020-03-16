@@ -10,11 +10,11 @@ import tinymce from '@/components/common/tinymce'
 export default {
   name: 'GoodsDetail',
   components: {
-    tinymce
+    tinymce,
   },
   data() {
     return {
-      msg: 'Welcome to Use Tinymce Editor'
+      msg: 'Welcome to Use Tinymce Editor',
     }
   },
   methods: {
@@ -27,8 +27,8 @@ export default {
     // 清空内容
     clear() {
       this.$refs.editor.clear()
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -106,7 +106,7 @@ import buttonSearch from '@/components/common/button-search'
 export default {
   name: 'AfterSale',
   components: {
-    buttonSearch
+    buttonSearch,
   },
   data() {
     return {
@@ -115,8 +115,8 @@ export default {
       multipleSelection: [],
       search: {
         time: '',
-        keyword: ''
-      }
+        keyword: '',
+      },
     }
   },
   methods: {
@@ -134,8 +134,8 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  }
+    },
+  },
 }
 </script>
 
