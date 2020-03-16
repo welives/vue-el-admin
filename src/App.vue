@@ -26,7 +26,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('user/initUser')
+    // this.$store.dispatch('user/initUser')
   },
   methods: {
     chooseImage(callback, max = 9) {

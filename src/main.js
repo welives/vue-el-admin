@@ -4,14 +4,31 @@ import './plugins/element.js'
 import router from './router'
 import store from './store'
 import VueDND from 'awe-dnd'
-import '../mock'
+import Cookies from 'js-cookie'
+import Mock from '../mock'
+import $conf from '@/common/config/config.js'
 
 Vue.use(VueDND)
 
-// 引入全局配置文件
-import $conf from '@/common/config/config.js'
-Vue.prototype.$conf = $conf
+Object.defineProperties(Vue.prototype, {
+  $cookies: {
+    get() {
+      return Cookies
+    },
+  },
+  $mock: {
+    get() {
+      return Mock
+    },
+  },
+  $conf: {
+    get() {
+      return $conf
+    },
+  },
+})
 
+// 引入全局配置文件
 Vue.config.productionTip = false
 
 new Vue({

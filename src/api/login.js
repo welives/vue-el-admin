@@ -1,7 +1,7 @@
 import request from '@/plugins/axios'
 
 // 封装请求
-export function login(data) {
+function login(data) {
   return request({
     url: '/user/login',
     method: 'post',
@@ -9,10 +9,12 @@ export function login(data) {
   })
 }
 
-export function logout() {
+function logout() {
   return request({
     url: '/user/logout',
     method: 'post',
     token: true,
   })
 }
+
+export { login, logout }

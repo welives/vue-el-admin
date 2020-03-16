@@ -64,20 +64,20 @@
           <el-table-column type="selection" width="40" align="center">
           </el-table-column>
           <el-table-column
-            #default="item"
+            #default="scope"
             label="商品"
             width="350"
             header-align="center"
           >
             <div class="media d-flex align-items-center justify-content-center">
-              <img class="mr-3" :src="item.row.cover" style="width: 60px;" />
+              <img class="mr-3" :src="scope.row.cover" style="width: 60px;" />
               <div class="media-body">
                 <p class="mb-0 font-weight-bold text-primary">
-                  {{ item.row.title }}
+                  {{ scope.row.title }}
                 </p>
-                <p class="mb-0">{{ item.row.cate }}</p>
+                <p class="mb-0">{{ scope.row.cate }}</p>
                 <small class="mb-0 text-muted">{{
-                  item.row.create_time
+                  scope.row.create_time
                 }}</small>
               </div>
             </div>
@@ -85,63 +85,59 @@
           <el-table-column
             prop="type"
             label="商品类型"
-            header-align="center"
+            align="center"
           ></el-table-column>
           <el-table-column
             prop="sale_count"
             label="实际销量"
-            header-align="center"
+            align="center"
           ></el-table-column>
           <el-table-column
             prop="order"
             label="商品排序"
-            header-align="center"
+            align="center"
           ></el-table-column>
           <el-table-column
-            #default="item"
-            label="商品状态"
-            header-align="center"
+            #default="scope"
+            label="是否上架"
+            align="center"
             width="80"
           >
-            <div class="d-flex align-items-center justify-content-center">
-              <el-button
-                :type="item.row.isPutaway ? 'success' : 'danger'"
-                size="mini"
-                plain
-                @click="putaway(item.row)"
-                >{{ item.row.isPutaway ? '上架' : '下架' }}</el-button
-              >
-            </div>
+            <el-switch
+              v-model="scope.row.isPutaway"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              @change="putaway"
+            >
+            </el-switch>
           </el-table-column>
           <el-table-column
             prop="stock"
             label="总库存"
-            header-align="center"
+            align="center"
           ></el-table-column>
           <el-table-column
             prop="price"
             label="价格"
-            header-align="center"
+            align="center"
           ></el-table-column>
           <el-table-column
-            #default="item"
+            #default="scope"
             label="操作"
-            header-align="center"
+            align="center"
             width="150"
           >
-            <div class="d-flex align-items-center justify-content-center">
-              <el-button type="warning" size="mini" plain class="mr-2"
-                >编辑</el-button
+            <el-button type="warning" size="mini" plain class="mr-2"
+              >编辑</el-button
+            >
+            <el-popconfirm
+              title="是否删除这个商品？"
+              @onConfirm="deleteItem(scope.$index)"
+            >
+              <el-button slot="reference" type="danger" size="mini" plain
+                >删除</el-button
               >
-              <el-popconfirm
-                title="是否删除这个商品？"
-                @onConfirm="deleteItem(item.$index)"
-              >
-                <el-button slot="reference" type="danger" size="mini" plain
-                  >删除</el-button
-                >
-              </el-popconfirm>
-            </div>
+            </el-popconfirm>
           </el-table-column>
         </el-table>
         <!-- 分页 -->
@@ -246,10 +242,9 @@ export default {
     deleteItem(index) {
       this.tableData[this.tabIndex].list.splice(index, 1)
     },
-    putaway(item) {
-      item.isPutaway = !item.isPutaway
+    putaway(e) {
       this.$message({
-        message: item.isPutaway ? '上架' : '下架',
+        message: e ? '上架' : '下架',
         type: 'success',
       })
     },

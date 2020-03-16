@@ -6,9 +6,14 @@
     >
       <!-- 顶部导航 -->
       <el-header class="d-flex align-items-center border-bottom">
-        <a class="h5 text-primary mb-0 mr-auto">{{ $conf.logo }}</a>
+        <router-link
+          class="h5 mb-0 mr-auto"
+          style="text-decoration: none;"
+          :to="{ name: 'index' }"
+          >{{ $conf.logo }}</router-link
+        >
         <el-menu
-          :default-active="navBar.active | numToString"
+          :default-active="navBar.active.toString()"
           mode="horizontal"
           text-color="#409eff"
           active-text-color="#409eff"
@@ -17,9 +22,9 @@
           <el-menu-item
             v-for="(nav, index) in navBar.list"
             :key="index"
-            :index="index | numToString"
+            :index="index.toString()"
             :style="{ opacity: navBar.active == index ? 1 : 0.5 }"
-            >{{ nav.name }}</el-menu-item
+            >{{ nav.title }}</el-menu-item
           >
           <el-submenu index="10">
             <template slot="title">
@@ -42,17 +47,17 @@
         <!-- 侧边栏 -->
         <el-aside width="200px">
           <el-menu
-            :default-active="sideMenuActive | numToString"
+            :default-active="sideMenuActive.toString()"
             class="h-100"
             @select="sideSelect"
           >
             <el-menu-item
               v-for="(item, index) in sideMenus"
               :key="index"
-              :index="index | numToString"
+              :index="index.toString()"
             >
               <i :class="item.icon"></i>
-              <span slot="title">{{ item.name }}</span>
+              <span slot="title">{{ item.title }}</span>
             </el-menu-item>
           </el-menu>
         </el-aside>
@@ -77,7 +82,7 @@
           <el-backtop
             style="z-index: 9999;"
             target=".el-main"
-            class="bg-light"
+            class="bg-light text-primary"
           ></el-backtop>
         </el-main>
       </el-container>
@@ -113,18 +118,6 @@ export default {
       return this.navBar.list[this.navBar.active].sideMenu || []
     },
   },
-  watch: {
-    $route() {
-      sessionStorage.setItem(
-        'navActive',
-        JSON.stringify({
-          navBar: this.navBar.active,
-          sideMenu: this.sideMenuActive,
-        }),
-      )
-      this.getBreadcrumb()
-    },
-  },
   created() {
     this.navBar = this.$conf.navBar
     this.getBreadcrumb()
@@ -133,12 +126,16 @@ export default {
   methods: {
     // 初始化导航栏
     __initNavbar() {
-      let r = sessionStorage.getItem('navActive')
-      if (r) {
-        r = JSON.parse(r)
-        this.navBar.active = r.navBar
-        this.sideMenuActive = r.sideMenu
-      }
+      this.navBar.list.some((nav, navI) => {
+        let res = nav.sideMenu.some((v, sideI) => {
+          if (v.path === this.$route.name) {
+            this.navBar.active = navI
+            this.sideMenuActive = sideI
+            return true
+          }
+        })
+        if (res) return true
+      })
     },
     // 选择导航项
     navbarSelect(index) {

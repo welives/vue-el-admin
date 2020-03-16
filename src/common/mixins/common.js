@@ -1,21 +1,19 @@
 export default {
-  filters: {
-    numToString(value) {
-      return value.toString()
-    },
-  },
   watch: {
+    $route() {
+      this.__initNavbar()
+      this.getBreadcrumb()
+      sessionStorage.setItem('tab', JSON.stringify({ tab: 0 }))
+    },
     tabIndex() {
-      const key = this.$options.name + '_tabActive'
-      sessionStorage.setItem(key, JSON.stringify({ tab: this.tabIndex }))
+      sessionStorage.setItem('tab', JSON.stringify({ tab: this.tabIndex }))
     },
   },
   methods: {
-    __initTabBar(page = '') {
-      let t = sessionStorage.getItem(page + '_tabActive')
-      if (t) {
-        t = JSON.parse(t)
-        this.tabIndex = t.tab
+    __initTabBar() {
+      const tab = JSON.parse(sessionStorage.getItem('tab'))
+      if (tab) {
+        this.tabIndex = tab.tab
       }
     },
   },

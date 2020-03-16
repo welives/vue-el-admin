@@ -11,18 +11,18 @@ import { Message, Loading } from 'element-ui'
 
 const config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
-  // timeout: 60 * 1000, // Timeout
+  timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
 }
 
 const service = axios.create(config)
-let loading = false
 
+let loading = false
 // 请求拦截
 service.interceptors.request.use(
   (config) => {
     if (config.token === true) {
-      config.headers['token'] = sessionStorage.getItem('token')
+      config.headers['token'] = Vue.prototype.$cookies.get('token')
     }
     loading = Loading.service({
       lock: true,
@@ -33,7 +33,7 @@ service.interceptors.request.use(
     return config
   },
   (error) => {
-    loading.close()
+    loading ? loading.close() : false
     Message.error(error.message)
     console.log('request error:', error) // for debug
     return Promise.reject(error)
@@ -43,7 +43,7 @@ service.interceptors.request.use(
 // 响应拦截
 service.interceptors.response.use(
   (response) => {
-    loading.close()
+    loading ? loading.close() : false
     const res = response.data
     if (res.code !== 20000) {
       Message.error(res.msg)
@@ -54,24 +54,22 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    loading.close()
-    if (error.response?.data?.errorCode) {
+    loading ? loading.close() : false
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorCode
+    ) {
       Message.error(error.response.data.msg)
     }
-    console.log('response error:', error)
+    console.log('response error:', error) // for debug
     return Promise.reject(error)
   },
 )
 
 Plugin.install = (Vue, options) => {
-  Vue.axios = service
   window.axios = service
   Object.defineProperties(Vue.prototype, {
-    axios: {
-      get() {
-        return service
-      },
-    },
     $axios: {
       get() {
         return service

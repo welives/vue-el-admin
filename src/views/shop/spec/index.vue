@@ -47,45 +47,31 @@
         label="类型"
         header-align="center"
       ></el-table-column>
-      <el-table-column
-        #default="scope"
-        label="状态"
-        header-align="center"
-        width="80"
-      >
-        <div class="d-flex align-items-center justify-content-center">
-          <el-switch
-            v-model="scope.row.status"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-          >
-          </el-switch>
-        </div>
+      <el-table-column #default="scope" label="状态" align="center" width="80">
+        <el-switch
+          v-model="scope.row.status"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+        >
+        </el-switch>
       </el-table-column>
-      <el-table-column
-        #default="scope"
-        label="操作"
-        header-align="center"
-        width="150"
-      >
-        <div class="d-flex align-items-center justify-content-center">
-          <el-button
-            type="warning"
-            size="mini"
-            plain
-            class="mr-2"
-            @click="showDialog(scope)"
-            >编辑</el-button
+      <el-table-column #default="scope" label="操作" align="center" width="150">
+        <el-button
+          type="warning"
+          size="mini"
+          plain
+          class="mr-2"
+          @click="showDialog(scope)"
+          >编辑</el-button
+        >
+        <el-popconfirm
+          title="是否删除该条数据？"
+          @onConfirm="deleteItem(scope.$index)"
+        >
+          <el-button slot="reference" type="danger" size="mini" plain
+            >删除</el-button
           >
-          <el-popconfirm
-            title="是否删除该条数据？"
-            @onConfirm="deleteItem(scope.$index)"
-          >
-            <el-button slot="reference" type="danger" size="mini" plain
-              >删除</el-button
-            >
-          </el-popconfirm>
-        </div>
+        </el-popconfirm>
       </el-table-column>
     </el-table>
     <!-- 分页 -->

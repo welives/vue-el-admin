@@ -162,15 +162,13 @@
       <el-table-column
         #default="scope"
         label="是否显示"
-        header-align="center"
+        align="center"
         width="150"
       >
-        <div class="d-flex align-items-center justify-content-center">
-          <el-switch
-            v-model="scope.row.isShow"
-            active-color="#13ce66"
-          ></el-switch>
-        </div>
+        <el-switch
+          v-model="scope.row.isShow"
+          active-color="#13ce66"
+        ></el-switch>
       </el-table-column>
     </el-table>
     <!-- 分页 -->

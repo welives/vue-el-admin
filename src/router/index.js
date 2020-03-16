@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import routes from './routes'
-import { getToken } from '@/utils/auth'
 
 Vue.use(VueRouter)
 
@@ -17,8 +16,7 @@ const router = new VueRouter({ mode: 'history', routes })
 
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
-  // const token = sessionStorage.getItem('token')
-  const token = getToken()
+  const token = Vue.prototype.$cookies.get('token')
   if (token) {
     // 已登录
     if (to.name === 'login') {
