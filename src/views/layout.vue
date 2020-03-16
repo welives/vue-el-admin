@@ -177,20 +177,9 @@ export default {
       this.breadcrumb = arr
     },
     logout() {
-      this.axios
-        .post('/admin/logout', {}, { headers: { token: this.user.token } })
-        .then((res) => {
-          this.$message('退出成功')
-          this.$store.commit('user/logout')
-          this.$router.push({ name: 'login' })
-        })
-        .catch((err) => {
-          if (err.response.data && err.response.data.errorCode) {
-            this.$message.error(err.response.data.msg)
-            this.$store.commit('user/logout')
-            this.$router.push({ name: 'login' })
-          }
-        })
+      this.$store.dispatch('user/logout').then(() => {
+        this.$router.push({ name: 'login' })
+      })
     }
   }
 }

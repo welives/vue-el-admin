@@ -35,8 +35,9 @@
                     size="medium"
                     class="w-100"
                     :disabled="isActive"
+                    :loading="loading"
                     @click="login"
-                    >立即登录</el-button
+                    >{{ loading ? '登录中...' : '登录' }}</el-button
                   >
                 </el-form-item>
               </el-form>
@@ -53,9 +54,10 @@ export default {
   name: 'Login',
   data() {
     return {
+      loading: false,
       form: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: 'admin'
       },
       rules: {
         username: [
@@ -75,18 +77,16 @@ export default {
     login() {
       this.$refs.loginForm.validate((valid) => {
         if (!valid) return
-        this.axios
-          .post('/admin/login', this.form)
-          .then((res) => {
-            console.log(res)
-            this.$store.commit('user/login', res.data.data)
-            this.$message('登录成功')
+        this.loading = true
+        this.$store
+          .dispatch('user/login', this.form)
+          .then(() => {
+            this.loading = false
             this.$router.push({ name: 'index' })
           })
-          .catch((err) => {
-            if (err.response.data && err.response.data.errorCode) {
-              this.$message.error(err.response.data.msg)
-            }
+          .catch((error) => {
+            this.loading = false
+            console.log(error)
           })
       })
     }
