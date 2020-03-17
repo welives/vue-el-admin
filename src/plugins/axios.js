@@ -22,7 +22,7 @@ let loading = false
 service.interceptors.request.use(
   (config) => {
     if (config.token === true) {
-      config.headers['token'] = Vue.prototype.$cookies.get('token')
+      config.headers['token'] = Vue.prototype.$cookie.get('token')
     }
     loading = Loading.service({
       lock: true,
@@ -44,12 +44,12 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response) => {
     loading ? loading.close() : false
-    const res = response.data
-    if (res.code !== 20000) {
-      Message.error(res.msg)
+    const data = response.data
+    if (data.code !== 20000) {
+      Message.error(data.msg)
       return Promise.reject('error')
     } else {
-      Message.success(res.msg)
+      data.msg ? Message.success(data.msg) : ''
       return response
     }
   },

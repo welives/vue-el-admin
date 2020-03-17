@@ -92,18 +92,20 @@
 
 <script>
 import common from '@/common/mixins/common.js'
-import { mapGetters } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'Layout',
   mixins: [common],
   data() {
     return {
-      navBar: {},
       breadcrumb: [],
     }
   },
   computed: {
-    ...mapGetters(['user']),
+    ...mapState({
+      user: (state) => state.user.user,
+      navBar: (state) => state.menu.navBar,
+    }),
     // 获取,设置当前激活的侧栏菜单
     sideMenuActive: {
       get() {
@@ -119,24 +121,11 @@ export default {
     },
   },
   created() {
-    this.navBar = this.$conf.navBar
     this.getBreadcrumb()
     this.__initNavbar()
   },
   methods: {
-    // 初始化导航栏
-    __initNavbar() {
-      this.navBar.list.some((nav, navI) => {
-        let res = nav.sideMenu.some((v, sideI) => {
-          if (v.path === this.$route.name) {
-            this.navBar.active = navI
-            this.sideMenuActive = sideI
-            return true
-          }
-        })
-        if (res) return true
-      })
-    },
+    ...mapMutations('menu', ['SET_NAVBAR', 'SET_SIDEACTIVE']),
     // 选择导航项
     navbarSelect(index) {
       if (index === '10-1') {
@@ -148,17 +137,19 @@ export default {
       }
       if (this.navBar.active === index) return
       this.navBar.active = index
+      this.SET_NAVBAR({ key: 'active', value: index })
       // 默认选中侧栏菜单的第一项
       this.sideMenuActive = 0
       if (this.sideMenus.length > 0) {
-        this.$router.push({ name: this.sideMenus[this.sideMenuActive].path })
+        this.$router.push({ name: this.sideMenus[this.sideMenuActive].name })
       }
     },
     // 选择侧栏菜单项
     sideSelect(index) {
       if (this.sideMenuActive === index) return
       this.sideMenuActive = index
-      this.$router.push({ name: this.sideMenus[index].path })
+      this.SET_SIDEACTIVE(index)
+      this.$router.push({ name: this.sideMenus[index].name })
     },
     // 获取面包屑导航
     getBreadcrumb() {

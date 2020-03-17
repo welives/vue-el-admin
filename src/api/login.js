@@ -17,4 +17,12 @@ function logout() {
   })
 }
 
-export { login, logout }
+function getRoles(data) {
+  return request({
+    url: '/user/getRoles',
+    method: 'get',
+    data,
+  })
+}
+
+export { login, logout, getRoles }

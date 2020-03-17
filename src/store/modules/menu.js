@@ -1,3 +1,4 @@
+import { getMenus } from '@/api/menu'
 export default {
   namespaced: true,
   state: {
@@ -7,23 +8,26 @@ export default {
     },
   },
   mutations: {
-    createNavbar(state, menus) {
-      const list = menus.map((item) => {
-        return {
-          name: item.name,
-          sideActive: 0,
-          sideMenu: item.child.map((v) => {
-            return {
-              icon: v.icon,
-              name: v.name,
-              path: v.desc,
-            }
-          }),
-        }
-      })
-      state.navBar.list = list
-      sessionStorage.setItem('navBar', JSON.stringify(state.navBar))
+    SET_NAVBAR(state, { key, value }) {
+      state.navBar[key] = value
+    },
+    SET_SIDEACTIVE(state, value) {
+      state.navBar.list[state.navBar.active].sideActive = value
     },
   },
-  actions: {},
+  actions: {
+    getMenus({ commit }, roles) {
+      return new Promise((resolve, reject) => {
+        getMenus({ roles })
+          .then((response) => {
+            const { data } = response
+            commit('SET_NAVBAR', { key: 'list', value: data.list })
+            resolve(data)
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
+    },
+  },
 }

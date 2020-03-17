@@ -1,15 +1,21 @@
-import Cookies from 'js-cookie'
+import Cookie from 'js-cookie'
 
-function getToken(key) {
-  return Cookies.get(key) || false
+const ss = window.sessionStorage
+
+function get(key, jc = true) {
+  return jc ? ss.getItem(key) || false : Cookie.get(key) || false
 }
 
-function setToken(key, token) {
-  return Cookies.set(key, token)
+function set(key, token, jc = true) {
+  return jc ? ss.setItem(key, token) : Cookie.set(key, token)
 }
 
-function removeToken(key) {
-  return Cookies.remove(key)
+function remove(key, jc = true) {
+  return jc ? ss.removeItem(key) : Cookie.remove(key)
 }
 
-export { getToken, setToken, removeToken }
+function clear() {
+  return ss.clear()
+}
+
+export { get, set, remove, clear }

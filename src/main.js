@@ -4,16 +4,17 @@ import './plugins/element.js'
 import router from './router'
 import store from './store'
 import VueDND from 'awe-dnd'
-import Cookies from 'js-cookie'
+import Cookie from 'js-cookie'
 import Mock from '../mock'
 import $conf from '@/common/config/config.js'
+import './permission'
 
 Vue.use(VueDND)
 
 Object.defineProperties(Vue.prototype, {
-  $cookies: {
+  $cookie: {
     get() {
-      return Cookies
+      return Cookie
     },
   },
   $mock: {

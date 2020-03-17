@@ -76,7 +76,7 @@ const routes = [
         component: 'setting/manager/index',
       },
       {
-        meta: { title: '支付设置' },
+        meta: { title: '交易设置' },
         component: 'setting/trade/index',
       },
       {
@@ -89,7 +89,13 @@ const routes = [
     meta: { title: '登录页' },
     component: 'login/index',
   },
-  { path: '*', redirect: { name: 'index' } },
+  {
+    path: '404',
+    name: '404',
+    meta: { title: '404错误' },
+    component: 'error/404',
+  },
+  { path: '*', redirect: { name: '404' } },
 ]
 
 // 获取路由
@@ -99,20 +105,16 @@ function getRoutes() {
   return routes
 }
 
-// 自动生成路由
+// 自动生成路由的name和path
 function createRoutes(arr) {
   for (let i = 0; i < arr.length; i++) {
     if (!arr[i].component) return
-    // 去除index
     let val = getShortComponent(arr[i].component)
-    // 生成path
-    if (val === 'layout') {
-      arr[i].path = arr[i].path || '/'
-    }
-    arr[i].path = arr[i].path || `/${val}`
-    // 生成name
+    // 如果没有配置path,那么就自动生成path
+    arr[i].path =
+      val === 'layout' ? arr[i].path || '/' : arr[i].path || `/${val}`
+    // 如果没有配置name,那么就自动生成name
     arr[i].name = arr[i].name || val.replace(/\//g, '_')
-
     // 自动生成component
     let componentFun = import(`@/views/${arr[i].component}`)
     arr[i].component = () => componentFun
@@ -122,6 +124,7 @@ function createRoutes(arr) {
   }
 }
 
+// 去除末尾index
 function getShortComponent(str) {
   let index = str.lastIndexOf('/')
   let val = str.substring(index + 1, str.length)

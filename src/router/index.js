@@ -14,24 +14,4 @@ VueRouter.prototype.push = function push(location) {
 
 const router = new VueRouter({ mode: 'history', routes })
 
-// 全局前置守卫
-router.beforeEach((to, from, next) => {
-  const token = Vue.prototype.$cookies.get('token')
-  if (token) {
-    // 已登录
-    if (to.name === 'login') {
-      Vue.prototype.$message.error('请不要重复登录')
-      return next(from.name ? from.name : 'index')
-    }
-    next()
-  } else {
-    // 未登录
-    if (to.name === 'login') {
-      return next()
-    }
-    Vue.prototype.$message.error('请先登录')
-    next('login')
-  }
-})
-
 export default router
