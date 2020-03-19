@@ -193,7 +193,7 @@ module.exports = {
       { overrides: { '?': 'before', ':': 'before' } },
     ], // 强制操作符使用一致的换行符风格
     'padded-blocks': ['error', 'never'], // 要求或禁止块内填充
-    'quote-props': ['error', 'consistent'], // 要求对象字面量属性名称使用引号
+    'quote-props': ['error', 'as-needed'], // 要求对象字面量属性名称使用引号
     quotes: [
       'error',
       'single',

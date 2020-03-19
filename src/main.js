@@ -5,7 +5,7 @@ import router from './router'
 import store from './store'
 import VueDND from 'awe-dnd'
 import Cookie from 'js-cookie'
-import Mock from '../mock'
+import Mock from './mock'
 import $conf from '@/common/config/config.js'
 import './permission'
 
@@ -26,6 +26,20 @@ Object.defineProperties(Vue.prototype, {
     get() {
       return $conf
     },
+  },
+})
+
+Vue.directive('auth', {
+  inserted(el) {
+    const user = JSON.parse(sessionStorage.getItem('user')) || {}
+    if (user.role !== 'admin') {
+      const btns = JSON.parse(sessionStorage.getItem('btns')) || []
+      const res = btns.find((v) => v === el.textContent)
+      // 在权限列表里没找到
+      if (!res) {
+        el.parentNode.removeChild(el)
+      }
+    }
   },
 })
 

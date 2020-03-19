@@ -165,9 +165,16 @@ export default {
       this.breadcrumb = arr
     },
     logout() {
-      this.$store.dispatch('user/logout').then(() => {
-        this.$router.push({ name: 'login' })
-      })
+      this.$store
+        .dispatch('user/logout')
+        .then(() => {
+          this.$router.push({ name: 'login' })
+        })
+        .catch((error) => {
+          this.$store.dispatch('user/removeToken').then(() => {
+            this.$router.push({ name: 'login' })
+          })
+        })
     },
   },
 }

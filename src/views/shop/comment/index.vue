@@ -3,7 +3,7 @@
     <button-search ref="buttonSearch" :showSearch="true">
       <template #left>
         <el-popconfirm title="是否删除选中的数据？" @onConfirm="deleteAll">
-          <el-button slot="reference" type="danger" size="mini"
+          <el-button slot="reference" type="danger" size="mini" v-auth
             >批量删除</el-button
           >
         </el-popconfirm>
@@ -84,7 +84,7 @@
                   scope.row.commentTime
                 }}</span></small
               >
-              <el-button type="danger" size="mini" class="ml-auto"
+              <el-button type="danger" size="mini" class="ml-auto" v-auth
                 >删除</el-button
               >
             </div>
@@ -109,7 +109,7 @@
                       scope.row.commentTime
                     }}</span></small
                   >
-                  <el-button type="danger" size="mini" class="ml-auto"
+                  <el-button type="danger" size="mini" class="ml-auto" v-auth
                     >删除</el-button
                   >
                 </div>

@@ -9,11 +9,11 @@ function login(data) {
   })
 }
 
-function logout() {
+function logout(data) {
   return request({
     url: '/user/logout',
-    method: 'post',
-    token: true,
+    method: 'get',
+    data,
   })
 }
 

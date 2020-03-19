@@ -17,7 +17,7 @@
               <el-button type="primary" size="mini">发布商品</el-button>
             </router-link>
             <el-button type="warning" size="mini">恢复商品</el-button>
-            <el-button type="danger" size="mini">批量删除</el-button>
+            <el-button type="danger" size="mini" v-auth>批量删除</el-button>
             <el-button size="mini">上架</el-button>
             <el-button size="mini">下架</el-button>
             <el-button size="mini">推荐</el-button>
@@ -134,7 +134,7 @@
               title="是否删除这个商品？"
               @onConfirm="deleteItem(scope.$index)"
             >
-              <el-button slot="reference" type="danger" size="mini" plain
+              <el-button slot="reference" type="danger" size="mini" plain v-auth
                 >删除</el-button
               >
             </el-popconfirm>

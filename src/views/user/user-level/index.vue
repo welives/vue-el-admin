@@ -47,7 +47,7 @@
           title="是否删除该条数据？"
           @onConfirm="deleteItem(scope.$index)"
         >
-          <el-button slot="reference" type="danger" size="mini" plain
+          <el-button slot="reference" type="danger" size="mini" plain v-auth
             >删除</el-button
           >
         </el-popconfirm>

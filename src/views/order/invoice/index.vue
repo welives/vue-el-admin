@@ -59,25 +59,18 @@
         label="开票时间"
         header-align="center"
       ></el-table-column>
-      <el-table-column
-        #default="scope"
-        label="操作"
-        header-align="center"
-        width="150"
-      >
-        <div class="d-flex align-items-center justify-content-center">
-          <el-button type="warning" size="mini" plain class="mr-2"
-            >编辑</el-button
+      <el-table-column #default="scope" label="操作" align="center" width="150">
+        <el-button type="warning" size="mini" plain class="mr-2"
+          >编辑</el-button
+        >
+        <el-popconfirm
+          title="是否删除该条数据？"
+          @onConfirm="deleteItem(scope.$index)"
+        >
+          <el-button slot="reference" type="danger" size="mini" plain v-auth
+            >删除</el-button
           >
-          <el-popconfirm
-            title="是否删除该条数据？"
-            @onConfirm="deleteItem(scope.$index)"
-          >
-            <el-button slot="reference" type="danger" size="mini" plain
-              >删除</el-button
-            >
-          </el-popconfirm>
-        </div>
+        </el-popconfirm>
       </el-table-column>
     </el-table>
     <!-- 分页 -->

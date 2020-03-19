@@ -36,9 +36,9 @@ export default {
           })
       })
     },
-    logout({ commit }) {
+    logout({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout()
+        logout({ token: state.token })
           .then(() => {
             commit('SET_USER', {})
             commit('SET_TOKEN', false)
@@ -52,10 +52,20 @@ export default {
           })
       })
     },
+    removeToken({ commit }) {
+      return new Promise((resolve) => {
+        commit('SET_USER', {})
+        commit('SET_TOKEN', false)
+        commit('SET_ROLES', [])
+        remove('token', false)
+        clear()
+        resolve()
+      })
+    },
     getRoles({ commit, state }) {
       return new Promise((resolve, reject) => {
         const { username } = state.user
-        getRoles({ username })
+        getRoles({ username, token: state.token })
           .then((response) => {
             const { data } = response
             commit('SET_ROLES', data.roles)

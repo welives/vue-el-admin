@@ -58,6 +58,7 @@
               type="danger"
               plain
               @click.stop="$emit('onConfirm')"
+              v-auth
               >删除</el-button
             >
           </el-popconfirm>

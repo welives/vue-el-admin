@@ -18,7 +18,7 @@
             :src="image.url"
             class="w-100"
             style="height: 100px;cursor: pointer;"
-            @click="$emit('choose', { image, index })"
+            @click="chooseImage(image)"
           />
           <div
             style="background-color: rgba(0,0,0,.5);margin-top: -25px;"
@@ -33,18 +33,18 @@
                 size="mini"
                 icon="el-icon-view"
                 type="success"
-                @click="$emit('view', image)"
+                @click="$image.$emit('view', image)"
               ></el-button>
               <el-button
                 class="p-2"
                 size="mini"
                 type="primary"
                 icon="el-icon-edit"
-                @click="$emit('update', image)"
+                @click="updateImage(image)"
               ></el-button>
               <el-popconfirm
                 title="是否删除该图片？"
-                @onConfirm="$emit('del', index)"
+                @onConfirm="delImage(index)"
               >
                 <el-button
                   slot="reference"
@@ -65,9 +65,56 @@
 <script>
 export default {
   name: 'ImageItem',
+  inject: ['$image'],
   props: {
     image: Object,
     index: Number,
+  },
+  methods: {
+    // 图片编辑
+    updateImage(image) {
+      this.$prompt('', '请输入图片名称', {
+        inputPlaceholder: '请输入图片名称',
+        inputValue: image.name,
+        inputValidator(value) {
+          if (value === '') {
+            return '图片名称不能为空'
+          }
+        },
+      })
+        .then(({ value }) => {
+          image.name = value
+          this.$message({
+            message: '修改成功',
+            type: 'success',
+          })
+        })
+        .catch(() => {})
+    },
+    // 选择图片
+    chooseImage(image) {
+      if (!image.isCheck) {
+        this.$image.chooseList.push({ ...image })
+        image.isCheck = true
+        return
+      }
+      const i = this.$image.chooseList.findIndex((v) => v.id === image.id)
+      if (i === -1) return
+      image.isCheck = false
+      this.$image.chooseList.splice(i, 1)
+    },
+    // 删除单张图片
+    delImage(index) {
+      this.$image.imageList.splice(index, 1)
+      this.$image.albumList[
+        this.$image.albumIndex
+      ].imageList = this.$image.imageList
+      this.$image.albumList[
+        this.$image.albumIndex
+      ].imagesCount = this.$image.imageList.length
+      this.$image.total = this.$image.imageList.length
+      this.$store.commit('image/SET_ALBUM', this.$image.albumList)
+    },
   },
 }
 </script>

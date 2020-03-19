@@ -2,7 +2,7 @@
 
 import Vue from 'vue'
 import axios from 'axios'
-import { Message, Loading } from 'element-ui'
+import { Message } from 'element-ui'
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
@@ -17,23 +17,16 @@ const config = {
 
 const service = axios.create(config)
 
-let loading = false
 // 请求拦截
 service.interceptors.request.use(
   (config) => {
-    if (config.token === true) {
-      config.headers['token'] = Vue.prototype.$cookie.get('token')
-    }
-    loading = Loading.service({
-      lock: true,
-      text: 'Loading',
-      spinner: 'el-icon-loading',
-      background: 'rgba(255, 255, 255, 0.5)',
-    })
+    // 以后改用请求后端时打开这里的注释在请求头加上token
+    // if (config.token === true) {
+    //   config.headers['token'] = Vue.prototype.$cookie.get('token')
+    // }
     return config
   },
   (error) => {
-    loading ? loading.close() : false
     Message.error(error.message)
     console.log('request error:', error) // for debug
     return Promise.reject(error)
@@ -43,7 +36,6 @@ service.interceptors.request.use(
 // 响应拦截
 service.interceptors.response.use(
   (response) => {
-    loading ? loading.close() : false
     const data = response.data
     if (data.code !== 20000) {
       Message.error(data.msg)
@@ -54,7 +46,6 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    loading ? loading.close() : false
     if (
       error.response &&
       error.response.data &&

@@ -14,7 +14,7 @@
         >
           <template #left>
             <el-button type="primary" size="mini">导出数据</el-button>
-            <el-button type="danger" size="mini">批量删除</el-button>
+            <el-button type="danger" size="mini" v-auth>批量删除</el-button>
           </template>
           <template #form>
             <el-form

@@ -1,4 +1,6 @@
 import { Random } from 'mockjs'
+import { get } from '@/utils/auth'
+
 const menus = [
   {
     id: 1,
@@ -239,8 +241,14 @@ const menus = [
   },
 ]
 
+const buttons = {
+  editor: ['添加规格'],
+}
 function getMenus(request) {
-  const { roles } = JSON.parse(request.body)
+  const { roles, token } = JSON.parse(request.body)
+  if (token && get('token', false) !== token) {
+    return { code: 20002, msg: '非法操作' }
+  }
   const list = menus.map((item) => {
     const sideMenu = []
     item.child.some((v) => {
@@ -259,7 +267,8 @@ function getMenus(request) {
       sideMenu: sideMenu,
     }
   })
-  return { code: 20000, list }
+  const accessBtns = buttons[roles[0]]
+  return { code: 20000, list, accessBtns }
 }
 
 export { getMenus }
