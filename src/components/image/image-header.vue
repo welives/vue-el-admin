@@ -48,8 +48,10 @@
       <div class="text-center">
         <el-upload
           drag
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action="/api/uploadImage"
           multiple
+          :before-upload="beforeUpload"
+          :on-success="onSuccess"
         >
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -150,6 +152,25 @@ export default {
     imageSort(sort) {
       this.$store.commit('image/SET_sort', sort)
       this.$store.commit('image/SORT_imageList')
+    },
+    // 文件上传成功时的钩子, 接收mockjs返回的结果
+    onSuccess(res, file) {
+      if (res.code !== 20000) {
+        return this.$message.error('上传失败!')
+      }
+      return this.$message.success('模拟上传成功!')
+    },
+    // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者返回 Promise 且被 reject，则停止上传
+    beforeUpload(file) {
+      const isImage = file.type.includes('image')
+      if (!isImage) {
+        return this.$message.error('上传文件类型必须是图片!')
+      }
+      const sizeLimit = file.size / 1024 / 1024 < 0.5
+      if (!sizeLimit) {
+        return this.$message.error('上传图片大小不能超过 500kb!')
+      }
+      return isImage && sizeLimit
     },
   },
 }

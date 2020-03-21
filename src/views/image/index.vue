@@ -53,13 +53,13 @@
             <el-button
               size="mini"
               icon="el-icon-arrow-left"
-              :disabled="albumPage === 1 || albumList.length === 0"
-              @click="prevAlbum"
+              :disabled="albumPage === 1"
+              @click="changeAlbum('prev')"
               >上一页</el-button
             >
             <el-button
               size="mini"
-              @click="nextAlbum"
+              @click="changeAlbum('next')"
               :disabled="albumPage === Math.ceil(albumList.length / albumSize)"
               >下一页<i class="el-icon-arrow-right el-icon--right"></i
             ></el-button>
@@ -121,6 +121,7 @@ import imageHeader from '@/components/image/image-header'
 import { mapState } from 'vuex'
 export default {
   name: 'ImageManager',
+  inject: ['$layout'],
   provide() {
     return {
       $image: this,
@@ -178,6 +179,7 @@ export default {
     getCurPageImage: {
       get() {
         const curAlbumImage = []
+        // 如果有搜索结果或输入框有值,则取searchList的值,否则取imageList的值
         let imageList =
           this.searchList.length || this.keyword
             ? this.searchList
@@ -193,18 +195,19 @@ export default {
         return imageShow
       },
       set(value) {
-        let imageList = this.imageList
+        let searchList = this.imageList
         let str = value.trim().toLowerCase()
         if (str) {
-          imageList = imageList.filter((v) => {
+          searchList = searchList.filter((v) => {
             if (v.name.toLowerCase().indexOf(str) !== -1) {
               return v
             }
           })
         }
+        // 如果搜索结果有值,则取searchList的值,否则为空数组
+        this.searchList = searchList.length ? searchList : []
         this.currentPage = 1
-        this.searchList = imageList.length ? imageList : []
-        this.total = imageList.length
+        this.total = searchList.length
       },
     },
     // 相册分页处理
@@ -295,7 +298,7 @@ export default {
           })
         this.albumIndex++
         if (this.albumIndex === this.getCurPageAlbum.length) {
-          this.nextAlbum()
+          this.changeAlbum('next')
         }
       }
       this.closeAlbumModel()
@@ -313,6 +316,7 @@ export default {
     },
     // 获取图片列表
     getImageList() {
+      this.$layout.loading = true
       // 如果当前相册的图片列表为空,则发起请求
       if (this.getCurPageAlbum[this.albumIndex].imageList.length === 0) {
         this.$store
@@ -327,6 +331,10 @@ export default {
         this.imageList = this.getCurPageAlbum[this.albumIndex].imageList
         this.total = this.imageList.length
       }
+      // 模拟加载数据
+      setTimeout(() => {
+        this.$layout.loading = false
+      }, 300)
     },
     handleSizeChange(val) {
       this.pageSize = val
@@ -334,15 +342,12 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
     },
-    prevAlbum() {
-      this.albumPage--
-      this.albumIndex = 0
-      this.currentPage = 1
-      this.getImageList()
-      this.$refs.imageHeader.unChoose()
-    },
-    nextAlbum() {
-      this.albumPage++
+    changeAlbum(type) {
+      if (type === 'prev') {
+        this.albumPage--
+      } else {
+        this.albumPage++
+      }
       this.albumIndex = 0
       this.currentPage = 1
       this.getImageList()

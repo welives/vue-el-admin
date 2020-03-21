@@ -56,4 +56,12 @@ function getImages(request) {
   return { code: 20000, imageList }
 }
 
-export { getAlbums, getImages }
+function uploadImage(request) {
+  // const { token } = JSON.parse(request.body)
+  // if (token && get('token', false) !== token) {
+  //   return { code: 20002, msg: '非法操作' }
+  // }
+  return { code: 20000 }
+}
+
+export { getAlbums, getImages, uploadImage }

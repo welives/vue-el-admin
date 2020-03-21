@@ -9,7 +9,10 @@ Mock.mock(/\/user\/logout/, 'get', userAPI.logout)
 Mock.mock(/\/user\/getRoles/, 'get', userAPI.getRoles)
 
 Mock.mock(/\/api\/getMenus/, 'get', menuAPI.getMenus)
+
+// 图片相关
 Mock.mock(/\/api\/getAlbums/, 'get', imageAPI.getAlbums)
 Mock.mock(/\/api\/getImages/, 'post', imageAPI.getImages)
+Mock.mock(/\/api\/uploadImage/, 'post', imageAPI.uploadImage)
 
 export default Mock

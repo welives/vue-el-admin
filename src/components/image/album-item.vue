@@ -6,15 +6,16 @@
       style="cursor: pointer"
       @click.stop="chooseAlbum(index)"
     >
-      {{ album.name }}
+      <el-badge :value="album.imagesCount" class="p-1" type="primary">
+        <span>{{ album.name }}</span>
+      </el-badge>
       <span v-if="!showOptions" class="btn btn-light btn-sm ml-auto">
         {{ album.imagesCount }}
       </span>
-      <el-dropdown v-else class="ml-auto" trigger="click">
-        <span class="btn btn-light btn-sm">
-          {{ album.imagesCount
-          }}<i class="el-icon-arrow-down el-icon--right"></i>
-        </span>
+      <el-dropdown v-else class="ml-auto" trigger="click" placement="bottom">
+        <button class="btn btn-link text-body">
+          <i class="el-icon-arrow-down"></i>
+        </button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item
             @click.stop.native="$emit('update', { album, index })"
@@ -82,7 +83,7 @@ export default {
           })
           image.currentPage = 1
           if (!image.getCurPageAlbum && image.albumPage > 1) {
-            image.prevAlbum()
+            image.changeAlbum('prev')
           }
         })
         .catch(() => {})

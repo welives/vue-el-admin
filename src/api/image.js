@@ -16,4 +16,13 @@ function getImages(data) {
   })
 }
 
-export { getAlbums, getImages }
+function uploadImage(data) {
+  return request({
+    url: '/api/uploadImage',
+    method: 'post',
+    headers: { 'Content-Type': 'multipart/form-data' },
+    data,
+  })
+}
+
+export { getAlbums, getImages, uploadImage }

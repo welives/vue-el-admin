@@ -15,6 +15,7 @@
         <el-menu
           :default-active="navBar.active.toString()"
           mode="horizontal"
+          menu-trigger="click"
           text-color="#409eff"
           active-text-color="#409eff"
           @select="navbarSelect"
@@ -62,7 +63,7 @@
           </el-menu>
         </el-aside>
         <!-- 主内容区 -->
-        <el-main style="position: relative">
+        <el-main style="position: relative" v-loading="loading">
           <!-- 面包屑导航 -->
           <div
             v-if="breadcrumb.length"
@@ -95,10 +96,16 @@ import common from '@/common/mixins/common.js'
 import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'Layout',
+  provide() {
+    return {
+      $layout: this,
+    }
+  },
   mixins: [common],
   data() {
     return {
       breadcrumb: [],
+      loading: false,
     }
   },
   computed: {
