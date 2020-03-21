@@ -18,7 +18,7 @@
           <!-- 相册列表 -->
           <ul class="list-group list-group-flush">
             <album-item
-              v-for="(album, index) in albumList"
+              v-for="(album, index) in getCurPageAlbum"
               :key="index"
               :album="album"
               :index="index"
@@ -53,10 +53,14 @@
             <el-button
               size="mini"
               icon="el-icon-arrow-left"
-              :disabled="albumPage === 1"
+              :disabled="albumPage === 1 || albumList.length === 0"
+              @click="prevAlbum"
               >上一页</el-button
             >
-            <el-button size="mini"
+            <el-button
+              size="mini"
+              @click="nextAlbum"
+              :disabled="albumPage === Math.ceil(albumList.length / albumSize)"
               >下一页<i class="el-icon-arrow-right el-icon--right"></i
             ></el-button>
           </el-button-group>
@@ -116,7 +120,7 @@ import imageItem from '@/components/image/image-item'
 import imageHeader from '@/components/image/image-header'
 import { mapState } from 'vuex'
 export default {
-  name: 'Photo',
+  name: 'ImageManager',
   provide() {
     return {
       $image: this,
@@ -129,6 +133,11 @@ export default {
   },
   data() {
     return {
+      imageList: [],
+      chooseList: [],
+      searchList: [],
+      // 相册表单数据
+      albumModel: false,
       albumForm: {
         id: 0,
         name: '',
@@ -141,17 +150,22 @@ export default {
           { required: true, message: '相册名称不能为空', trigger: 'blur' },
         ],
       },
-      albumPage: 1,
       albumIndex: 0,
-      albumModel: false,
       albumEditIndex: -1,
-      chooseList: [],
+      albumPage: 1,
+      albumSize: 5,
+      // 图片分页相关数据
       currentPage: 1,
       pageSize: 10,
       pageSizes: [10, 20, 50],
       total: 0,
-      imageList: [],
+      keyword: '',
     }
+  },
+  watch: {
+    keyword(value) {
+      this.getCurPageImage = value
+    },
   },
   computed: {
     ...mapState({
@@ -160,17 +174,51 @@ export default {
     albumModelTitle() {
       return this.albumEditIndex > -1 ? '修改相册' : '创建相册'
     },
-    getCurPageImage() {
-      let curAlbumImage = []
-      let totalPage = Math.ceil(this.imageList.length / this.pageSize)
+    // 图片分页处理和搜索结果
+    getCurPageImage: {
+      get() {
+        const curAlbumImage = []
+        let imageList =
+          this.searchList.length || this.keyword
+            ? this.searchList
+            : this.imageList
+        const totalPage = Math.ceil(imageList.length / this.pageSize)
+        for (let index = 0; index < totalPage; index++) {
+          curAlbumImage[index] = imageList.slice(
+            this.pageSize * index,
+            this.pageSize * (index + 1),
+          )
+        }
+        const imageShow = curAlbumImage[this.currentPage - 1]
+        return imageShow
+      },
+      set(value) {
+        let imageList = this.imageList
+        let str = value.trim().toLowerCase()
+        if (str) {
+          imageList = imageList.filter((v) => {
+            if (v.name.toLowerCase().indexOf(str) !== -1) {
+              return v
+            }
+          })
+        }
+        this.currentPage = 1
+        this.searchList = imageList.length ? imageList : []
+        this.total = imageList.length
+      },
+    },
+    // 相册分页处理
+    getCurPageAlbum() {
+      const curAlbum = []
+      const totalPage = Math.ceil(this.albumList.length / this.albumSize)
       for (let index = 0; index < totalPage; index++) {
-        curAlbumImage[index] = this.imageList.slice(
-          this.pageSize * index,
-          this.pageSize * (index + 1),
+        curAlbum[index] = this.albumList.slice(
+          this.albumSize * index,
+          this.albumSize * (index + 1),
         )
       }
-      let imageShow = curAlbumImage[this.currentPage - 1]
-      return imageShow
+      const albumShow = curAlbum[this.albumPage - 1]
+      return albumShow
     },
   },
   created() {
@@ -180,22 +228,27 @@ export default {
     // 页面数据初始化
     __init() {
       this.$store.dispatch('image/getAlbums').then(async (res) => {
-        let { albumList } = res
-        this.total = albumList[0].imagesCount
-        let { imageList } = await this.$store.dispatch(
+        const { imageList } = await this.$store.dispatch(
           'image/getImages',
-          albumList[0].id,
+          this.albumList[0].id,
         )
+        this.total = this.albumList[0].imagesCount
         this.imageList = imageList
       })
     },
     // 编辑相册
     updateAlbum() {
       const bol =
-        this.albumList[this.albumEditIndex].name === this.albumForm.name &&
-        this.albumList[this.albumEditIndex].order === this.albumForm.order
-      if (!bol) {
-        this.albumList[this.albumEditIndex] = { ...this.albumForm }
+        this.getCurPageAlbum[this.albumEditIndex].name !==
+          this.albumForm.name ||
+        this.getCurPageAlbum[this.albumEditIndex].order !== this.albumForm.order
+      // 相册名或排序有更改的情况下才执行
+      if (bol) {
+        let id = this.albumForm.id
+        this.$store.commit('image/UPDATE_albumList', {
+          id,
+          value: this.albumForm,
+        })
         this.$message({
           message: '修改成功',
           type: 'success',
@@ -205,33 +258,49 @@ export default {
     },
     // 打开模态框
     openAlbumModel(obj) {
-      // 修改
+      // 修改相册
       if (obj) {
         const { album, index } = obj
         this.albumForm = { ...album }
         this.albumEditIndex = index
         return (this.albumModel = true)
       }
-      // 创建
+      // 创建相册
       this.albumForm = {
         id: this.albumList.length + 1,
         name: '',
         order: 50,
         imagesCount: 0,
+        imageList: [],
       }
       this.albumEditIndex = -1
       this.albumModel = true
     },
+    // 确认模态框数据
     confirmAlbumModel() {
       if (this.albumForm.name !== '') {
         // 判断是否为修改
         if (this.albumEditIndex > -1) {
           return this.updateAlbum()
         }
+        // 创建相册
         this.albumList.unshift({ ...this.albumForm })
-        this.closeAlbumModel()
+        this.$store
+          .dispatch('image/getImages', this.albumForm.id)
+          .then(async (response) => {
+            const { imageList } = response
+            this.albumList[0].imageList = imageList
+            this.albumList[0].imagesCount = imageList.length
+            await this.$store.commit('image/SET_albumList', this.albumList)
+          })
+        this.albumIndex++
+        if (this.albumIndex === this.getCurPageAlbum.length) {
+          this.nextAlbum()
+        }
       }
+      this.closeAlbumModel()
     },
+    // 关闭模态框
     closeAlbumModel() {
       this.albumForm = {
         id: 0,
@@ -242,11 +311,42 @@ export default {
       }
       this.albumModel = false
     },
+    // 获取图片列表
+    getImageList() {
+      // 如果当前相册的图片列表为空,则发起请求
+      if (this.getCurPageAlbum[this.albumIndex].imageList.length === 0) {
+        this.$store
+          .dispatch('image/getImages', this.getCurPageAlbum[this.albumIndex].id)
+          .then((response) => {
+            const { imageList } = response
+            this.imageList = imageList
+            this.total = imageList.length
+          })
+      } else {
+        // 否则从vuex获取数据
+        this.imageList = this.getCurPageAlbum[this.albumIndex].imageList
+        this.total = this.imageList.length
+      }
+    },
     handleSizeChange(val) {
       this.pageSize = val
     },
     handleCurrentChange(val) {
       this.currentPage = val
+    },
+    prevAlbum() {
+      this.albumPage--
+      this.albumIndex = 0
+      this.currentPage = 1
+      this.getImageList()
+      this.$refs.imageHeader.unChoose()
+    },
+    nextAlbum() {
+      this.albumPage++
+      this.albumIndex = 0
+      this.currentPage = 1
+      this.getImageList()
+      this.$refs.imageHeader.unChoose()
     },
   },
 }

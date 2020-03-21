@@ -1,7 +1,7 @@
 import Mock from 'mockjs'
 import { get } from '@/utils/auth'
 
-const albumList = Mock.mock({
+const { albumList } = Mock.mock({
   'albumList|5-10': [
     {
       'id|+1': 1,
@@ -18,7 +18,7 @@ function getAlbums(request) {
   if (token && get('token', false) !== token) {
     return { code: 20002, msg: '非法操作' }
   }
-  return { code: 20000, ...albumList }
+  return { code: 20000, albumList }
 }
 
 function getImages(request) {
@@ -26,13 +26,14 @@ function getImages(request) {
   if (token && get('token', false) !== token) {
     return { code: 20002, msg: '非法操作' }
   }
-  let imagesCount
-  albumList.albumList.some((v) => {
+  let imagesCount = 0
+  albumList.some((v) => {
     if (v.id === id) {
       imagesCount = v.imagesCount
     }
   })
-  const imageList = Mock.mock({
+  imagesCount = imagesCount || Mock.mock('@integer(20,50)')
+  const { imageList } = Mock.mock({
     imageList: function() {
       const arr = []
       for (let i = 0; i < imagesCount; i++) {
@@ -52,7 +53,7 @@ function getImages(request) {
       return arr
     },
   })
-  return { code: 20000, ...imageList }
+  return { code: 20000, imageList }
 }
 
 export { getAlbums, getImages }

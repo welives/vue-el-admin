@@ -1,22 +1,22 @@
 <template>
   <div>
     <el-header class="d-flex align-items-center border-bottom">
-      <div class="d-flex mr-auto">
+      <div class="d-flex mr-auto flex-fill">
         <el-select
-          v-model="searchForm.order"
+          v-model="sort"
           placeholder="请选择图片排序方式"
           size="small"
+          @change="imageSort"
         >
           <el-option label="升序" value="asc"></el-option>
           <el-option label="降序" value="desc"></el-option>
         </el-select>
         <el-input
-          v-model="searchForm.keyword"
-          placeholder="请输入图片名称"
+          v-model="$image.keyword"
+          placeholder="请输入要搜索的图片名(不区分大小写)"
           size="small"
-          class="mx-2"
+          class="mx-2 w-50"
         ></el-input>
-        <el-button type="primary" size="small">搜索</el-button>
       </div>
       <el-button type="success" size="small" @click="$emit('create', false)"
         >创建相册</el-button
@@ -84,10 +84,7 @@ export default {
   },
   data() {
     return {
-      searchForm: {
-        order: 'asc',
-        keyword: '',
-      },
+      sort: 'asc',
       uploadModel: false,
       previewModel: false,
       previewUrl: '',
@@ -103,20 +100,42 @@ export default {
   methods: {
     // 批量删除图片
     delImages() {
+      let image = this.$image
       this.$confirm('是否删除选中的图片?', {
         type: 'warning',
       })
         .then(() => {
-          const list = this.$image.imageList.filter((img) => {
-            return !this.$image.chooseList.some((c) => c.id === img.id)
+          const list = image.imageList.filter((img) => {
+            return !image.chooseList.some((c) => c.id === img.id)
           })
-          this.$image.imageList = list
-          this.$image.albumList[this.$image.albumIndex].imageList = list
-          this.$image.albumList[this.$image.albumIndex].imagesCount =
-            list.length
-          this.$image.total = list.length
-          this.$store.commit('image/SET_ALBUM', this.$image.albumList)
-          this.$image.chooseList = []
+          this.$store.commit('image/DELETE_images', {
+            albumIdx: image.albumIndex,
+            list,
+          })
+
+          if (image.searchList.length > 0) {
+            const remain = image.searchList.filter((s) => {
+              return !image.chooseList.some((c) => s.id === c.id)
+            })
+            image.searchList = remain
+            if (image.searchList.length !== 0) {
+              image.total = image.searchList.length
+            } else {
+              image.total = list.length
+              image.keyword = ''
+            }
+          } else {
+            image.total = list.length
+          }
+
+          image.imageList = list
+          image.chooseList = []
+          if (!image.getCurPageImage) {
+            const totalPage = Math.ceil(image.imageList.length / image.pageSize)
+            if (totalPage < image.currentPage) {
+              image.currentPage--
+            }
+          }
         })
         .catch(() => {})
     },
@@ -127,6 +146,10 @@ export default {
     closePreviewModel() {
       this.previewUrl = ''
       this.previewModel = false
+    },
+    imageSort(sort) {
+      this.$store.commit('image/SET_sort', sort)
+      this.$store.commit('image/SORT_imageList')
     },
   },
 }

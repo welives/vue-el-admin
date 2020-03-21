@@ -24,7 +24,9 @@
             style="background-color: rgba(0,0,0,.5);margin-top: -25px;"
             class="w-100 text-white position-absolute px-1"
           >
-            <span class="small">{{ image.name }}</span>
+            <span class="small">{{
+              image.name.slice(0, image.name.indexOf('.'))
+            }}</span>
           </div>
           <div class="p-1 text-center">
             <el-button-group>
@@ -44,7 +46,7 @@
               ></el-button>
               <el-popconfirm
                 title="是否删除该图片？"
-                @onConfirm="delImage(index)"
+                @onConfirm="delImage(image)"
               >
                 <el-button
                   slot="reference"
@@ -71,11 +73,11 @@ export default {
     index: Number,
   },
   methods: {
-    // 图片编辑
+    // 修改图片名称
     updateImage(image) {
       this.$prompt('', '请输入图片名称', {
         inputPlaceholder: '请输入图片名称',
-        inputValue: image.name,
+        inputValue: image.name.slice(0, image.name.indexOf('.')),
         inputValidator(value) {
           if (value === '') {
             return '图片名称不能为空'
@@ -83,7 +85,11 @@ export default {
         },
       })
         .then(({ value }) => {
-          image.name = value
+          this.$store.commit('image/UPDATE_imageName', {
+            albumIdx: this.$image.albumIndex,
+            imgId: image.id,
+            value,
+          })
           this.$message({
             message: '修改成功',
             type: 'success',
@@ -92,28 +98,49 @@ export default {
         .catch(() => {})
     },
     // 选择图片
-    chooseImage(image) {
-      if (!image.isCheck) {
-        this.$image.chooseList.push({ ...image })
-        image.isCheck = true
+    chooseImage(img) {
+      const image = this.$image
+      // 之前没选中
+      if (!img.isCheck) {
+        image.chooseList.push({ ...img })
+        img.isCheck = true
         return
       }
-      const i = this.$image.chooseList.findIndex((v) => v.id === image.id)
-      if (i === -1) return
-      image.isCheck = false
-      this.$image.chooseList.splice(i, 1)
+      // 之前是选中状态
+      const index = image.chooseList.findIndex((v) => v.id === img.id)
+      if (index !== -1) {
+        img.isCheck = false
+        image.chooseList.splice(index, 1)
+      }
     },
     // 删除单张图片
-    delImage(index) {
-      this.$image.imageList.splice(index, 1)
-      this.$image.albumList[
-        this.$image.albumIndex
-      ].imageList = this.$image.imageList
-      this.$image.albumList[
-        this.$image.albumIndex
-      ].imagesCount = this.$image.imageList.length
-      this.$image.total = this.$image.imageList.length
-      this.$store.commit('image/SET_ALBUM', this.$image.albumList)
+    delImage(img) {
+      const image = this.$image
+      const index = image.imageList.findIndex((v) => v.id === img.id)
+      if (index !== -1) {
+        this.$store.commit('image/DELETE_image', {
+          albumIdx: image.albumIndex,
+          index,
+        })
+        if (image.searchList.length > 0) {
+          const i = image.searchList.findIndex((v) => v.id === img.id)
+          image.searchList.splice(i, 1)
+          if (image.searchList.length !== 0) {
+            image.total = image.searchList.length
+          } else {
+            image.total = image.imageList.length
+            image.keyword = ''
+          }
+        } else {
+          image.total = image.imageList.length
+        }
+        if (!image.getCurPageImage) {
+          const totalPage = Math.ceil(image.imageList.length / image.pageSize)
+          if (totalPage < image.currentPage) {
+            image.currentPage--
+          }
+        }
+      }
     },
   },
 }

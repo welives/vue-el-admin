@@ -4,7 +4,7 @@
       class="list-group-item list-group-item-action d-flex align-items-center"
       :class="{ 'album-active': active }"
       style="cursor: pointer"
-      @click.stop="chooseAlbum({ album, index })"
+      @click.stop="chooseAlbum(index)"
     >
       {{ album.name }}
       <span v-if="!showOptions" class="btn btn-light btn-sm ml-auto">
@@ -41,69 +41,51 @@ export default {
   },
   methods: {
     // 选择相册
-    chooseAlbum(obj) {
-      const { album, index } = obj
-      let albumList = this.$image.albumList
-      if (this.albumIndex === index) return
-      this.$image.albumIndex = index
-      this.$image.currentPage = 1
-      this.$image.total = albumList[index].imagesCount
-      // 如果所选相册的图片列表为空,则发起请求
-      if (albumList[index].imageList.length === 0) {
-        this.$store.dispatch('image/getImages', album.id).then((res) => {
-          let { imageList } = res
-          this.$image.imageList = imageList
-        })
-      } else {
-        // 否则从vuex获取数据
-        this.$image.imageList = albumList[index].imageList
-      }
-      this.$image.$refs.imageHeader.unChoose()
+    chooseAlbum(index) {
+      const image = this.$image
+      if (image.albumIndex === index) return
+      image.albumIndex = index
+      image.currentPage = 1
+      image.getImageList()
+      image.$refs.imageHeader.unChoose()
     },
     // 删除相册
     delAlbum(index) {
+      const image = this.$image
       this.$confirm('是否删除该相册?', {
         type: 'warning',
       })
         .then(() => {
-          let albumList = this.$image.albumList
-          // index不等于0且等于长度减1 或 index不等于0且不等于长度减1
-          if (index === albumList.length - 1 || index !== 0) {
-            this.$image.albumIndex -= 1
-            albumList.splice(index, 1)
-            this.getImageList()
+          const id = image.getCurPageAlbum[index].id
+          const delIndex = image.albumList.findIndex((v) => v.id === id)
+          if (delIndex === -1) return
+          // index不等于0
+          if (index !== 0) {
+            image.albumIndex -= 1
+            this.$store.commit('image/DELETE_albumList', delIndex)
+            image.getImageList()
           } else {
-            albumList.splice(index, 1)
-            // index等于0且数组长度大于0
-            if (albumList.length > 0) {
-              this.getImageList()
-            } else {
-              // index等于0且数组长度等于0
-              this.$image.total = 0
-              this.$image.imageList = []
+            // index等于0且数组长度大于1
+            if (image.getCurPageAlbum.length > 1) {
+              this.$store.commit('image/DELETE_albumList', delIndex)
+              image.getImageList()
+            } else if (image.getCurPageAlbum.length === 1) {
+              // index等于0且数组长度等于1
+              this.$store.commit('image/DELETE_albumList', delIndex)
+              image.total = 0
+              image.imageList = []
             }
           }
-          this.$store.commit('image/SET_ALBUM', albumList)
           this.$message({
             type: 'success',
             message: '删除成功!',
           })
+          image.currentPage = 1
+          if (!image.getCurPageAlbum && image.albumPage > 1) {
+            image.prevAlbum()
+          }
         })
         .catch(() => {})
-    },
-    getImageList() {
-      let albumList = this.$image.albumList
-      this.$image.total = albumList[this.$image.albumIndex].imagesCount
-      if (albumList[this.$image.albumIndex].imageList.length === 0) {
-        this.$store
-          .dispatch('image/getImages', albumList[this.$image.albumIndex].id)
-          .then((res) => {
-            let { imageList } = res
-            this.$image.imageList = imageList
-          })
-      } else {
-        this.$image.imageList = albumList[this.$image.albumIndex].imageList
-      }
     },
   },
 }
