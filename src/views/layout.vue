@@ -183,6 +183,14 @@ export default {
           })
         })
     },
+    showLoading() {
+      this.loading = true
+    },
+    hideLoading() {
+      setTimeout(() => {
+        this.loading = false
+      }, 300)
+    },
   },
 }
 </script>

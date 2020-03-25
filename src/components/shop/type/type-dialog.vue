@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      :title="typeFormDialogTitle"
+      :title="editIndex > -1 ? '修改类型' : '添加类型'"
       :visible.sync="typeFormDialog"
       width="80vw"
       @close="hide"
@@ -31,7 +31,7 @@
         <el-form-item label="关联规格">
           <div class="d-flex">
             <span
-              v-for="(spec, index) in getEditSpecList"
+              v-for="(spec, index) in typeForm.specList"
               :key="index"
               class="border rounded px-3 mr-2 spec-list-item"
               style="cursor: pointer;"
@@ -43,6 +43,7 @@
               size="mini"
               icon="el-icon-plus"
               class="text-primary"
+              @click="addSpecList"
             ></el-button>
           </div>
         </el-form-item>
@@ -174,9 +175,8 @@ export default {
     return {
       typeFormDialog: false,
       editIndex: -1,
-      nextId: 10,
       typeForm: {
-        id: '',
+        id: 0,
         name: '',
         order: 100,
         status: true,
@@ -190,17 +190,6 @@ export default {
       },
     }
   },
-  computed: {
-    typeFormDialogTitle() {
-      return this.editIndex === -1 ? '添加类型' : '修改类型'
-    },
-    getEditSpecList() {
-      if (this.editIndex === -1) {
-        return []
-      }
-      return this.$parent.tableData[this.editIndex].specList
-    },
-  },
   methods: {
     showDialog(data) {
       // 新增
@@ -208,15 +197,22 @@ export default {
         this.editIndex = -1
       } else {
         // 修改
-        // Object.assign(this.typeForm, data.row)
         this.typeForm = { ...data.row }
-        this.editIndex = data.$index
+        if (this.typeForm.valueList.length) {
+          this.typeForm.valueList.forEach((v) => {
+            v.value = v.value.join(',')
+          })
+        }
+        this.editIndex = this.$parent.tableData.findIndex(
+          (v) => v.id === data.row.id,
+        )
       }
       this.typeFormDialog = true
     },
     hide() {
+      this.formatValue()
       this.typeForm = {
-        id: this.nextId,
+        id: 0,
         name: '',
         order: 100,
         status: true,
@@ -253,32 +249,46 @@ export default {
               message: message.join('<br />'),
             })
           }
-          // 新增
-          let msg = '添加'
-          if (this.typeForm.valueList.length > 0) {
+          const msg = this.editIndex > -1 ? '修改成功' : '添加成功'
+          if (this.typeForm.valueList.length) {
             this.typeForm.valueList.forEach((v) => (v.isEdit = false))
           }
+          // 新增
           if (this.editIndex === -1) {
-            this.typeForm.id = this.nextId
-            this.$parent.tableData.push(this.typeForm)
-            this.nextId++
+            this.typeForm.id =
+              this.$parent.tableData[this.$parent.tableData.length - 1].id + 1
+            this.formatValue()
+            this.$store.commit('type/ADD_type', this.typeForm)
+            this.$parent.page.total = this.$parent.tableData.length
           } else {
             // 修改
-            msg = '修改'
-            Object.assign(this.$parent.tableData[this.editIndex], this.typeForm)
+            this.formatValue()
+            this.$store.commit('type/UPDATE_type', this.typeForm)
           }
           this.$message({
-            message: msg + '成功',
+            message: msg,
             type: 'success',
           })
           this.hide()
         }
       })
     },
+    formatValue() {
+      if (this.typeForm.valueList.length) {
+        this.typeForm.valueList.forEach((v) => {
+          if (typeof v.value === 'string') {
+            v.value = v.value.split(',')
+          }
+        })
+      }
+    },
     changeType(data, e) {
       if (e !== 'input') {
         data.row.isEdit = true
       }
+    },
+    addSpecList() {
+      this.typeForm.specList.push({ name: '' })
     },
     addValueList() {
       this.typeForm.valueList.push({

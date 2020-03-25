@@ -1,5 +1,5 @@
 import options from './options'
-import $utils from '@/utils'
+import * as $utils from '@/utils'
 export default {
   namespaced: true,
   state: {

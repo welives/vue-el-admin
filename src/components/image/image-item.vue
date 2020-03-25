@@ -116,28 +116,32 @@ export default {
     // 删除单张图片
     delImage(img) {
       const image = this.$image
+      const curAlbum = image.getCurPageAlbum[image.albumIndex]
+      const albumIdx = image.albumList.findIndex((v) => v.id === curAlbum.id)
       const index = image.imageList.findIndex((v) => v.id === img.id)
+      console.log(albumIdx)
       if (index !== -1) {
         this.$store.commit('image/DELETE_image', {
-          albumIdx: image.albumIndex,
+          albumIdx,
           index,
         })
-        if (image.searchList.length > 0) {
+        // 如果搜索列表有值,则删掉搜索列表里对应的值
+        if (image.searchList.length !== 0) {
           const i = image.searchList.findIndex((v) => v.id === img.id)
           image.searchList.splice(i, 1)
           if (image.searchList.length !== 0) {
-            image.total = image.searchList.length
+            image.page.total = image.searchList.length
           } else {
-            image.total = image.imageList.length
+            image.page.total = image.imageList.length
             image.keyword = ''
           }
         } else {
-          image.total = image.imageList.length
+          image.page.total = image.imageList.length
         }
         if (!image.getCurPageImage) {
-          const totalPage = Math.ceil(image.imageList.length / image.pageSize)
-          if (totalPage < image.currentPage) {
-            image.currentPage--
+          const totalPage = Math.ceil(image.imageList.length / image.page.size)
+          if (totalPage < image.page.current) {
+            image.page.current--
           }
         }
       }

@@ -67,13 +67,13 @@
         </div>
         <div class="text-center flex-fill">
           <el-pagination
-            :current-page="currentPage"
-            :page-sizes="pageSizes"
-            :page-size="pageSize"
+            :current-page="page.current"
+            :page-sizes="page.sizes"
+            :page-size="page.size"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="total"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
+            :total="page.total"
+            @size-change="pageSizeChange"
+            @current-change="curPageChange"
           ></el-pagination>
         </div>
       </el-footer>
@@ -134,6 +134,7 @@ export default {
   },
   data() {
     return {
+      keyword: '',
       imageList: [],
       chooseList: [],
       searchList: [],
@@ -156,11 +157,12 @@ export default {
       albumPage: 1,
       albumSize: 5,
       // 图片分页相关数据
-      currentPage: 1,
-      pageSize: 10,
-      pageSizes: [10, 20, 50],
-      total: 0,
-      keyword: '',
+      page: {
+        current: 1,
+        sizes: [10, 20, 50],
+        size: 10,
+        total: 0,
+      },
     }
   },
   watch: {
@@ -180,23 +182,23 @@ export default {
       get() {
         const curAlbumImage = []
         // 如果有搜索结果或输入框有值,则取searchList的值,否则取imageList的值
-        let imageList =
+        const imageList =
           this.searchList.length || this.keyword
             ? this.searchList
             : this.imageList
-        const totalPage = Math.ceil(imageList.length / this.pageSize)
+        const totalPage = Math.ceil(imageList.length / this.page.size)
         for (let index = 0; index < totalPage; index++) {
           curAlbumImage[index] = imageList.slice(
-            this.pageSize * index,
-            this.pageSize * (index + 1),
+            this.page.size * index,
+            this.page.size * (index + 1),
           )
         }
-        const imageShow = curAlbumImage[this.currentPage - 1]
+        const imageShow = curAlbumImage[this.page.current - 1]
         return imageShow
       },
       set(value) {
         let searchList = this.imageList
-        let str = value.trim().toLowerCase()
+        const str = value.trim().toLowerCase()
         if (str) {
           searchList = searchList.filter((v) => {
             if (v.name.toLowerCase().indexOf(str) !== -1) {
@@ -206,8 +208,9 @@ export default {
         }
         // 如果搜索结果有值,则取searchList的值,否则为空数组
         this.searchList = searchList.length ? searchList : []
-        this.currentPage = 1
-        this.total = searchList.length
+        this.page.current = 1
+        this.page.total = searchList.length
+        this.$refs.imageHeader.unChoose()
       },
     },
     // 相册分页处理
@@ -235,21 +238,20 @@ export default {
           'image/getImages',
           this.albumList[0].id,
         )
-        this.total = this.albumList[0].imagesCount
+        this.page.total = this.albumList[0].imagesCount
         this.imageList = imageList
       })
     },
     // 编辑相册
     updateAlbum() {
+      const curAlbum = this.getCurPageAlbum[this.albumEditIndex]
       const bol =
-        this.getCurPageAlbum[this.albumEditIndex].name !==
-          this.albumForm.name ||
-        this.getCurPageAlbum[this.albumEditIndex].order !== this.albumForm.order
+        curAlbum.name !== this.albumForm.name ||
+        curAlbum.order !== this.albumForm.order
       // 相册名或排序有更改的情况下才执行
       if (bol) {
-        let id = this.albumForm.id
         this.$store.commit('image/UPDATE_albumList', {
-          id,
+          id: this.albumForm.id,
           value: this.albumForm,
         })
         this.$message({
@@ -316,31 +318,29 @@ export default {
     },
     // 获取图片列表
     getImageList() {
-      this.$layout.loading = true
+      this.$layout.showLoading()
+      const curAlbum = this.getCurPageAlbum[this.albumIndex]
       // 如果当前相册的图片列表为空,则发起请求
-      if (this.getCurPageAlbum[this.albumIndex].imageList.length === 0) {
+      if (curAlbum.imageList.length === 0) {
         this.$store
-          .dispatch('image/getImages', this.getCurPageAlbum[this.albumIndex].id)
+          .dispatch('image/getImages', curAlbum.id)
           .then((response) => {
             const { imageList } = response
             this.imageList = imageList
-            this.total = imageList.length
+            this.page.total = imageList.length
           })
       } else {
         // 否则从vuex获取数据
-        this.imageList = this.getCurPageAlbum[this.albumIndex].imageList
-        this.total = this.imageList.length
+        this.imageList = curAlbum.imageList
+        this.page.total = this.imageList.length
       }
-      // 模拟加载数据
-      setTimeout(() => {
-        this.$layout.loading = false
-      }, 300)
+      this.$layout.hideLoading()
     },
-    handleSizeChange(val) {
-      this.pageSize = val
+    pageSizeChange(val) {
+      this.page.size = val
     },
-    handleCurrentChange(val) {
-      this.currentPage = val
+    curPageChange(val) {
+      this.page.current = val
     },
     changeAlbum(type) {
       if (type === 'prev') {
@@ -349,7 +349,7 @@ export default {
         this.albumPage++
       }
       this.albumIndex = 0
-      this.currentPage = 1
+      this.page.current = 1
       this.getImageList()
       this.$refs.imageHeader.unChoose()
     },

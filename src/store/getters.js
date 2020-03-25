@@ -1,4 +1,4 @@
-import $utils from '@/utils'
+import * as $utils from '@/utils'
 const getters = {
   options: (state) => state.goods.options,
   basicForm: (state) => state.goods.basicForm,

@@ -3,7 +3,7 @@ import request from '@/plugins/axios'
 function getAlbums(data) {
   return request({
     url: '/api/getAlbums',
-    method: 'get',
+    method: 'post',
     data,
   })
 }

@@ -9,7 +9,10 @@
           @click="showDialog(false)"
           >添加规格</el-button
         >
-        <el-popconfirm title="是否删除选中的数据？" @onConfirm="deleteAll">
+        <el-popconfirm
+          title="是否删除选中的数据？"
+          @onConfirm="deleteAll('spec/DELETE_batch')"
+        >
           <el-button slot="reference" type="danger" size="mini" v-auth
             >批量删除</el-button
           >
@@ -18,40 +21,37 @@
     </button-search>
     <!-- 表格数据 -->
     <el-table
-      :data="tableData"
+      :data="getCurPageData"
       border
       class="mt-2"
-      @selection-change="handleSelectionChange"
+      @selection-change="chooseData"
     >
       <el-table-column type="selection" width="40" align="center">
       </el-table-column>
-      <el-table-column
-        prop="name"
-        label="规格名称"
-        width="350"
-        header-align="center"
-      >
+      <el-table-column prop="name" label="规格名称" width="200" align="center">
       </el-table-column>
-      <el-table-column
-        prop="value"
-        label="规格值"
-        header-align="center"
-      ></el-table-column>
+      <el-table-column #default="scope" label="规格值" header-align="center">{{
+        scope.row.value.join(',')
+      }}</el-table-column>
       <el-table-column
         prop="order"
         label="排序"
-        header-align="center"
+        width="150"
+        align="center"
       ></el-table-column>
       <el-table-column
-        prop="type"
+        #default="scope"
         label="类型"
-        header-align="center"
-      ></el-table-column>
-      <el-table-column #default="scope" label="状态" align="center" width="80">
+        width="150"
+        align="center"
+        >{{ typeName[scope.row.type] }}</el-table-column
+      >
+      <el-table-column #default="scope" label="状态" align="center" width="150">
         <el-switch
           v-model="scope.row.status"
           active-color="#13ce66"
           inactive-color="#ff4949"
+          @change="statusChange('spec/UPDATE_status', scope)"
         >
         </el-switch>
       </el-table-column>
@@ -66,7 +66,7 @@
         >
         <el-popconfirm
           title="是否删除该条数据？"
-          @onConfirm="deleteItem(scope.$index)"
+          @onConfirm="deleteItem('spec/DELETE_single', scope)"
         >
           <el-button slot="reference" type="danger" size="mini" plain v-auth
             >删除</el-button
@@ -82,13 +82,13 @@
     >
       <div class="text-center flex-fill">
         <el-pagination
-          :current-page="currentPage"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :current-page="page.current"
+          :page-sizes="page.sizes"
+          :page-size="page.size"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+          :total="page.total"
+          @size-change="pageSizeChange"
+          @current-change="curPageChange"
         ></el-pagination>
       </div>
     </el-footer>
@@ -100,76 +100,40 @@
 <script>
 import buttonSearch from '@/components/common/button-search'
 import specDialog from '@/components/shop/spec/spec-dialog'
+import common from '@/common/mixins/common.js'
+import { mapState } from 'vuex'
 export default {
   name: 'Spec',
+  inject: ['$layout'],
   components: {
     buttonSearch,
     specDialog,
   },
+  mixins: [common],
   data() {
     return {
-      tableData: [
-        {
-          id: 1,
-          name: '颜色1',
-          value: '红色,绿色,蓝色',
-          order: 100,
-          status: true,
-          type: 0,
-        },
-        {
-          id: 2,
-          name: '颜色2',
-          value: '红色,绿色,蓝色',
-          order: 100,
-          status: true,
-          type: 0,
-        },
-        {
-          id: 3,
-          name: '颜色3',
-          value: '红色,绿色,蓝色',
-          order: 100,
-          status: true,
-          type: 0,
-        },
-        {
-          id: 4,
-          name: '颜色4',
-          value: '红色,绿色,蓝色',
-          order: 100,
-          status: true,
-          type: 0,
-        },
-      ],
-      currentPage: 1,
-      multipleSelection: [],
+      typeName: ['文字', '颜色', '图片'],
     }
   },
+  computed: {
+    ...mapState({
+      tableData: (state) => state.spec.spec,
+    }),
+  },
+  created() {
+    this.__init()
+  },
   methods: {
+    // 初始化数据
+    __init() {
+      this.$layout.showLoading()
+      this.$store.dispatch('spec/getSpec').then((res) => {
+        this.page.total = res.spec.length
+      })
+      this.$layout.hideLoading()
+    },
     showDialog(data) {
       this.$refs.specDialog.showDialog(data)
-    },
-    deleteItem(index) {
-      this.tableData.splice(index, 1)
-    },
-    deleteAll() {
-      this.multipleSelection.forEach((data) => {
-        const index = this.tableData.findIndex((v) => v.id === data.id)
-        if (index !== -1) {
-          this.tableData.splice(index, 1)
-        }
-      })
-      this.multipleSelection = []
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
     },
   },
 }

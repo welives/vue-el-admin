@@ -25,14 +25,14 @@
         >上传图片 <i class="el-icon-upload"></i
       ></el-button>
       <el-button
-        v-if="chooseList.length"
+        v-if="$image.chooseList.length"
         type="warning"
         size="small"
         @click="unChoose"
         >取消选中</el-button
       >
       <el-button
-        v-if="chooseList.length"
+        v-if="$image.chooseList.length"
         type="danger"
         size="small"
         @click="delImages"
@@ -51,7 +51,7 @@
           action="/api/uploadImage"
           multiple
           :before-upload="beforeUpload"
-          :on-success="onSuccess"
+          :on-success="uploadSuccess"
         >
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -81,9 +81,6 @@
 export default {
   name: 'ImageHeader',
   inject: ['$image'],
-  props: {
-    chooseList: Array,
-  },
   data() {
     return {
       sort: 'asc',
@@ -102,40 +99,45 @@ export default {
   methods: {
     // 批量删除图片
     delImages() {
-      let image = this.$image
+      const image = this.$image
+      const curAlbum = image.getCurPageAlbum[image.albumIndex]
       this.$confirm('是否删除选中的图片?', {
         type: 'warning',
       })
         .then(() => {
+          const albumIdx = image.albumList.findIndex(
+            (v) => v.id === curAlbum.id,
+          )
           const list = image.imageList.filter((img) => {
             return !image.chooseList.some((c) => c.id === img.id)
           })
           this.$store.commit('image/DELETE_images', {
-            albumIdx: image.albumIndex,
+            albumIdx,
             list,
           })
-
-          if (image.searchList.length > 0) {
+          // 如果搜索列表有值,则删掉搜索列表里对应的值
+          if (image.searchList.length !== 0) {
             const remain = image.searchList.filter((s) => {
               return !image.chooseList.some((c) => s.id === c.id)
             })
             image.searchList = remain
             if (image.searchList.length !== 0) {
-              image.total = image.searchList.length
+              image.page.total = image.searchList.length
             } else {
-              image.total = list.length
+              image.page.total = list.length
               image.keyword = ''
             }
           } else {
-            image.total = list.length
+            image.page.total = list.length
           }
-
           image.imageList = list
           image.chooseList = []
           if (!image.getCurPageImage) {
-            const totalPage = Math.ceil(image.imageList.length / image.pageSize)
-            if (totalPage < image.currentPage) {
-              image.currentPage--
+            const totalPage = Math.ceil(
+              image.imageList.length / image.page.size,
+            )
+            if (totalPage < image.page.current) {
+              image.page.current--
             }
           }
         })
@@ -154,8 +156,8 @@ export default {
       this.$store.commit('image/SORT_imageList')
     },
     // 文件上传成功时的钩子, 接收mockjs返回的结果
-    onSuccess(res, file) {
-      if (res.code !== 20000) {
+    uploadSuccess(response, file, fileList) {
+      if (response.code !== 20000) {
         return this.$message.error('上传失败!')
       }
       return this.$message.success('模拟上传成功!')

@@ -3,7 +3,7 @@ import request from '@/plugins/axios'
 // 封装请求
 function login(data) {
   return request({
-    url: '/user/login',
+    url: '/api/login',
     method: 'post',
     data,
   })
@@ -11,7 +11,7 @@ function login(data) {
 
 function logout(data) {
   return request({
-    url: '/user/logout',
+    url: '/api/logout',
     method: 'get',
     data,
   })
@@ -19,7 +19,7 @@ function logout(data) {
 
 function getRoles(data) {
   return request({
-    url: '/user/getRoles',
+    url: '/api/getRoles',
     method: 'get',
     data,
   })

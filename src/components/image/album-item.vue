@@ -46,7 +46,7 @@ export default {
       const image = this.$image
       if (image.albumIndex === index) return
       image.albumIndex = index
-      image.currentPage = 1
+      image.page.current = 1
       image.getImageList()
       image.$refs.imageHeader.unChoose()
     },
@@ -62,7 +62,7 @@ export default {
           if (delIndex === -1) return
           // index不等于0
           if (index !== 0) {
-            image.albumIndex -= 1
+            image.albumIndex--
             this.$store.commit('image/DELETE_albumList', delIndex)
             image.getImageList()
           } else {
@@ -73,7 +73,7 @@ export default {
             } else if (image.getCurPageAlbum.length === 1) {
               // index等于0且数组长度等于1
               this.$store.commit('image/DELETE_albumList', delIndex)
-              image.total = 0
+              image.page.total = 0
               image.imageList = []
             }
           }
@@ -81,7 +81,7 @@ export default {
             type: 'success',
             message: '删除成功!',
           })
-          image.currentPage = 1
+          image.page.current = 1
           if (!image.getCurPageAlbum && image.albumPage > 1) {
             image.changeAlbum('prev')
           }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      :title="specFormDialogTitle"
+      :title="editIndex > -1 ? '修改规格' : '添加规格'"
       :visible.sync="specFormDialog"
       width="50vw"
       @close="hide"
@@ -61,9 +61,8 @@ export default {
     return {
       specFormDialog: false,
       editIndex: -1,
-      nextId: 10,
       specForm: {
-        id: '',
+        id: 0,
         name: '',
         value: '',
         order: 100,
@@ -78,11 +77,6 @@ export default {
       },
     }
   },
-  computed: {
-    specFormDialogTitle() {
-      return this.editIndex === -1 ? '添加规格' : '修改规格'
-    },
-  },
   methods: {
     showDialog(data) {
       // 新增
@@ -91,14 +85,16 @@ export default {
       } else {
         // 修改
         this.specForm = { ...data.row }
-        // this.specForm.value = data.row.value.replace(/,/g, '\n')
-        this.editIndex = data.$index
+        this.specForm.value = data.row.value.join(',')
+        this.editIndex = this.$parent.tableData.findIndex(
+          (v) => v.id === data.row.id,
+        )
       }
       this.specFormDialog = true
     },
     hide() {
       this.specForm = {
-        id: this.nextId,
+        id: 0,
         name: '',
         value: '',
         order: 100,
@@ -111,20 +107,20 @@ export default {
       this.$refs.addSpecForm.validate((valid) => {
         if (valid) {
           // 新增
-          let msg = '添加'
+          const msg = this.editIndex > -1 ? '修改成功' : '添加成功'
           if (this.editIndex === -1) {
-            this.specForm.id = this.nextId
-            // this.specForm.value = this.specForm.value.replace(/\n/g, ',')
-            this.$parent.tableData.push(this.specForm)
-            this.nextId++
+            this.specForm.id =
+              this.$parent.tableData[this.$parent.tableData.length - 1].id + 1
+            this.specForm.value = this.specForm.value.split(',')
+            this.$store.commit('spec/ADD_spec', this.specForm)
+            this.$parent.page.total = this.$parent.tableData.length
           } else {
             // 修改
-            // this.specForm.value = this.specForm.value.replace(/\n/g, ',')
-            msg = '修改'
-            Object.assign(this.$parent.tableData[this.editIndex], this.specForm)
+            this.specForm.value = this.specForm.value.split(',')
+            this.$store.commit('spec/UPDATE_spec', this.specForm)
           }
           this.$message({
-            message: msg + '成功',
+            message: msg,
             type: 'success',
           })
           this.hide()

@@ -1,33 +1,29 @@
 <template>
   <div class="bg-white mt-2">
     <div class="border-bottom py-2">
-      <el-button type="primary" size="mini" @click="append(false)"
-        >新增分类</el-button
+      <el-button type="primary" size="mini" @click="appendCate(false)"
+        >新增顶级分类</el-button
       >
     </div>
     <el-tree
-      :data="treeData"
+      :data="category"
+      :props="defaultProps"
       default-expand-all
       :expand-on-click-node="false"
       draggable
       @node-click="handleNodeClick"
+      @node-drop="nodeDrop"
     >
       <span slot-scope="{ node, data }" class="custom-tree-node">
         <div>
-          <el-input
-            v-if="data.editStatus"
-            v-model="data.label"
-            placeholder=""
-            size="mini"
-          ></el-input>
-          <span v-else>{{ node.label }}</span>
+          <span>{{ node.label }}</span>
         </div>
         <span>
           <el-button
-            :type="data.status ? 'primary' : 'danger'"
+            :type="data.status ? 'primary' : 'info'"
             size="mini"
             plain
-            @click.stop="data.status = !data.status"
+            @click.stop="updateStatus(data)"
           >
             {{ data.status ? '显示' : '隐藏' }}
           </el-button>
@@ -35,22 +31,22 @@
             type="success"
             size="mini"
             plain
-            @click.stop="append(data)"
+            @click.stop="appendCate(data)"
           >
             增加
           </el-button>
           <el-button
-            :type="data.editStatus ? 'default' : 'warning'"
+            type="warning"
             size="mini"
             plain
-            @click.stop="data.editStatus = !data.editStatus"
+            @click.stop="updateName(data)"
           >
-            {{ data.editStatus ? '完成' : '修改' }}
+            修改
           </el-button>
           <el-popconfirm
             style="margin-left: 10px;"
             title="是否删除该分类和其子分类？"
-            @onConfirm="remove(node, data)"
+            @onConfirm="removeCate(data)"
           >
             <el-button
               slot="reference"
@@ -69,119 +65,49 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'Category',
+  inject: ['$layout'],
   data() {
     return {
-      treeData: [
-        {
-          id: 1,
-          label: '一级 1',
-          status: true,
-          editStatus: false,
-          children: [
-            {
-              id: 2,
-              label: '二级 1-1',
-              status: true,
-              editStatus: false,
-              children: [
-                {
-                  id: 3,
-                  label: '三级 1-1-1',
-                  status: true,
-                  editStatus: false,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: 4,
-          label: '一级 2',
-          status: true,
-          editStatus: false,
-          children: [
-            {
-              id: 5,
-              label: '二级 2-1',
-              status: true,
-              editStatus: false,
-              children: [
-                {
-                  id: 6,
-                  label: '三级 2-1-1',
-                  status: true,
-                  editStatus: false,
-                },
-              ],
-            },
-            {
-              id: 7,
-              label: '二级 2-2',
-              status: true,
-              editStatus: false,
-              children: [
-                {
-                  id: 8,
-                  label: '三级 2-2-1',
-                  status: true,
-                  editStatus: false,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: 9,
-          label: '一级 3',
-          status: true,
-          editStatus: false,
-          children: [
-            {
-              id: 10,
-              label: '二级 3-1',
-              status: true,
-              editStatus: false,
-              children: [
-                {
-                  id: 11,
-                  label: '三级 3-1-1',
-                  status: true,
-                  editStatus: false,
-                },
-              ],
-            },
-            {
-              id: 12,
-              label: '二级 3-2',
-              status: true,
-              editStatus: false,
-              children: [
-                {
-                  id: 13,
-                  label: '三级 3-2-1',
-                  status: true,
-                  editStatus: false,
-                },
-              ],
-            },
-          ],
-        },
-      ],
       defaultProps: {
-        children: 'children',
-        label: 'label',
+        children: 'child',
+        label: 'name',
       },
       count: 100,
     }
   },
+  created() {
+    this.__init()
+  },
+  computed: {
+    ...mapState({
+      category: (state) => state.category.category,
+    }),
+  },
   methods: {
+    // 初始化数据
+    __init() {
+      this.$layout.showLoading()
+      this.$store.dispatch('category/getCategory')
+      this.$layout.hideLoading()
+    },
     handleNodeClick(data) {
       console.log(data)
     },
-    append(data) {
-      this.$prompt('请输入分类名称', '新增分类', {
+    // 显示或隐藏
+    updateStatus(data) {
+      this.$store.commit('category/UPDATE_status', {
+        id: data.id,
+        key: 'status',
+        value: !data.status,
+      })
+    },
+    // 添加节点
+    appendCate(data) {
+      const title = data ? '新增子分类' : '新增顶级分类'
+      this.$prompt('请输入分类名称', title, {
         inputValue: '',
         inputValidator(value) {
           if (value === '') {
@@ -192,35 +118,66 @@ export default {
         .then(({ value }) => {
           const newCate = {
             id: this.count++,
-            label: value,
+            name: value.trim(),
             status: true,
-            editStatus: false,
-            children: [],
+            category_id: data ? data.id : 0,
+            child: [],
           }
-          // 新增顶级分类
+          // 新增顶级分类,传过来的data=false
           if (!data) {
-            this.treeData.push(newCate)
+            this.$store.commit('category/APPEND_top', newCate)
           } else {
-            // 新增子分类
-            if (!data.children) {
-              this.$set(data, 'children', [])
-            }
-            data.children.push(newCate)
+            this.$store.commit('category/APPEND_child', {
+              id: data.id,
+              key: 'child',
+              value: newCate,
+            })
           }
         })
         .catch(() => {})
     },
-    remove(node, data) {
-      const parent = node.parent
-      const children = parent.data.children || parent.data
-      const index = children.findIndex((v) => v.id === data.id)
-      children.splice(index, 1)
+    updateName(data) {
+      this.$prompt('请输入分类名称', '修改分类', {
+        inputValue: data.name,
+        inputValidator(value) {
+          if (value === '') {
+            return '分类名称不能为空'
+          }
+        },
+      })
+        .then(({ value }) => {
+          this.$store.commit('category/UPDATE_name', {
+            id: data.id,
+            key: 'name',
+            value: value.trim(),
+          })
+        })
+        .catch(() => {})
+    },
+    // 删除节点
+    removeCate(data) {
+      this.$store.commit('category/DELETE_category', data)
+    },
+    // 拖拽成功完成时
+    nodeDrop(...options) {
+      // 被拖拽的节点
+      let target = options[0].data
+      // 结束拖拽时最后进入的节点
+      let located = options[1].data
+      if (located) {
+        if (options[2] === 'before' || options[2] === 'after') {
+          target.category_id = located.category_id
+        } else {
+          target.category_id = located.id
+        }
+      }
+      this.$store.commit('category/SET_category', this.category)
     },
   },
 }
 </script>
 
-<style>
+<style scoped>
 .custom-tree-node {
   flex: 1;
   display: flex;
@@ -229,7 +186,7 @@ export default {
   font-size: 14px;
   padding-right: 8px;
 }
-.el-tree-node__content {
+/* .el-tree-node__content {
   margin: 5px 0;
-}
+} */
 </style>

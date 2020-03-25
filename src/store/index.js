@@ -5,6 +5,9 @@ import goods from './modules/goods'
 import user from './modules/user'
 import menu from './modules/menu'
 import image from './modules/image'
+import category from './modules/shop/category'
+import spec from './modules/shop/spec'
+import type from './modules/shop/type'
 
 Vue.use(Vuex)
 
@@ -15,5 +18,8 @@ export default new Vuex.Store({
     menu,
     goods,
     image,
+    category,
+    spec,
+    type,
   },
 })
