@@ -1,6 +1,6 @@
 import request from '@/plugins/axios'
 
-function getType(data) {
+function getTypeList(data) {
   return request({
     url: '/api/shop/type',
     method: 'get',
@@ -8,4 +8,4 @@ function getType(data) {
   })
 }
 
-export { getType }
+export { getTypeList }

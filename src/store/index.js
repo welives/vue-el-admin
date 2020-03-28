@@ -8,6 +8,7 @@ import image from './modules/image'
 import category from './modules/shop/category'
 import spec from './modules/shop/spec'
 import type from './modules/shop/type'
+import comment from './modules/shop/comment'
 
 Vue.use(Vuex)
 
@@ -21,5 +22,6 @@ export default new Vuex.Store({
     category,
     spec,
     type,
+    comment,
   },
 })

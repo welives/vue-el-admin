@@ -1,30 +1,30 @@
 <template>
   <div class="bg-white px-3 mt-2" style="margin: 0 -20px 40px;">
     <button-search ref="buttonSearch" :showSearch="true">
-      <template #left>
-        <el-popconfirm title="是否删除选中的数据？" @onConfirm="deleteAll">
-          <el-button slot="reference" type="danger" size="mini" v-auth
-            >批量删除</el-button
-          >
-        </el-popconfirm>
-      </template>
       <template #right>
+        <el-input
+          v-model="form.username"
+          size="mini"
+          class="w-25"
+          placeholder="请输入要搜索的用户名"
+        ></el-input>
         <el-date-picker
           v-model="form.time"
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          class="mr-2"
+          class="mx-2"
           size="mini"
+          value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
-        <el-button type="info" size="mini" @click="searchEvent">搜索</el-button>
+        <!-- <el-button type="info" size="mini" @click="searchEvent">搜索</el-button>
         <el-button size="mini" @click="advancedSearch"
           >高级搜索<i class="el-icon-arrow-down el-icon--right"></i
-        ></el-button>
+        ></el-button> -->
       </template>
-      <template #form>
+      <!-- <template #form>
         <el-form
           ref="searchForm"
           inline
@@ -35,12 +35,6 @@
           <div class="d-flex align-items-center">
             <el-form-item label="评价用户" prop="username">
               <el-input v-model="form.username"></el-input>
-            </el-form-item>
-            <el-form-item label="评价类型" prop="type">
-              <el-select v-model="form.type" placeholder="">
-                <el-option label="选项一" value="1"></el-option>
-                <el-option label="选项二" value="2"></el-option>
-              </el-select>
             </el-form-item>
             <el-form-item label="发布时间" prop="time">
               <el-date-picker
@@ -58,23 +52,16 @@
             <el-button @click="resetForm('searchForm')">清空筛选条件</el-button>
           </el-form-item>
         </el-form>
-      </template>
+      </template> -->
     </button-search>
     <!-- 表格数据 -->
-    <el-table
-      :data="tableData"
-      border
-      class="mt-2"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column type="selection" width="40" align="center">
-      </el-table-column>
+    <el-table :data="getCurPageData" border class="mt-2">
       <el-table-column type="expand" #default="scope">
         <div class="media">
           <img
             style="height: 48px; width: 48px;"
             class="mr-3 rounded-circle"
-            src="http://imgs.aixifan.com/cms/2017-12-05/1512447096114.jpg"
+            :src="scope.row.avatar"
           />
           <div class="media-body">
             <div class="d-flex align-items-center">
@@ -84,43 +71,58 @@
                   scope.row.commentTime
                 }}</span></small
               >
-              <el-button type="danger" size="mini" class="ml-auto" v-auth
-                >删除</el-button
+              <el-button
+                v-if="replyIndex === -1"
+                type="info"
+                size="mini"
+                class="ml-auto"
+                @click="reply(scope)"
+                >{{ scope.row.reply ? '修改' : '回复' }}</el-button
               >
             </div>
-            <span>评论内容:</span>
-            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus
-            scelerisque ante sollicitudin. Cras purus odio, vestibulum in
-            vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-            vulputate fringilla. Donec lacinia congue felis in faucibus.
-            <div class="media mt-3">
-              <a class="pr-3" href="#">
-                <img
-                  class="rounded-circle"
-                  style="height: 48px; width: 48px;"
-                  src="http://imgs.aixifan.com/cms/2017-12-05/1512447096114.jpg"
-                />
-              </a>
+            <p class="w-75">{{ scope.row.content }}</p>
+            <!-- 回复开始 -->
+            <div class="media" v-if="scope.row.reply || replyIndex > -1">
+              <img
+                class="mr-3 rounded-circle"
+                style="height: 48px; width: 48px;"
+                :src="$store.state.user.user.avatar"
+              />
               <div class="media-body">
                 <div class="d-flex align-items-center">
-                  <small class="text-danger mr-2">客服</small>
-                  <small class="text-muted"
+                  <small class="text-danger mr-2">{{
+                    $store.state.user.user.username
+                  }}</small>
+                  <small class="text-muted" v-if="scope.row.replyTime"
                     >回复于<span class="ml-2">{{
-                      scope.row.commentTime
+                      scope.row.replyTime
                     }}</span></small
                   >
-                  <el-button type="danger" size="mini" class="ml-auto" v-auth
-                    >删除</el-button
-                  >
                 </div>
-                <span>回复内容:</span>
-                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus
-                scelerisque ante sollicitudin. Cras purus odio, vestibulum in
-                vulputate at, tempus viverra turpis. Fusce condimentum nunc ac
-                nisi vulputate fringilla. Donec lacinia congue felis in
-                faucibus.
+                <div v-if="replyIndex > -1" class="w-75">
+                  <el-input
+                    type="textarea"
+                    v-model="replyContent"
+                    placeholder="请输入回复内容"
+                    rows="3"
+                  ></el-input>
+                  <div class="mt-2 text-center">
+                    <el-button
+                      type="success"
+                      size="mini"
+                      :disabled="replyContent === ''"
+                      @click="replySubmit"
+                      >提交</el-button
+                    >
+                    <el-button type="info" size="mini" @click="replyCancel"
+                      >取消</el-button
+                    >
+                  </div>
+                </div>
+                <p v-else class="w-75">{{ scope.row.reply }}</p>
               </div>
             </div>
+            <!-- 回复结束 -->
           </div>
         </div>
       </el-table-column>
@@ -129,11 +131,16 @@
       <el-table-column
         #default="scope"
         label="商品"
-        width="350"
+        min-width="350"
         header-align="center"
       >
         <div class="media d-flex align-items-center justify-content-center">
-          <img class="mr-3" :src="scope.row.cover" style="width: 60px;" />
+          <img
+            class="mr-3"
+            :src="scope.row.cover"
+            @click="preView(scope.row.cover)"
+            style="width: 60px; cursor: pointer;"
+          />
           <div class="media-body">
             <p class="mb-0 font-weight-bold text-primary">
               {{ scope.row.title }}
@@ -141,7 +148,12 @@
           </div>
         </div>
       </el-table-column>
-      <el-table-column #default="scope" label="评价信息" header-align="center">
+      <el-table-column
+        #default="scope"
+        label="评价信息"
+        header-align="center"
+        min-width="250"
+      >
         <div class="d-flex flex-column">
           <div class="mb-1">
             用户名:
@@ -157,17 +169,23 @@
           </div>
         </div>
       </el-table-column>
-      <el-table-column label="评价时间" prop="commentTime" align="center">
+      <el-table-column
+        label="评价时间"
+        prop="commentTime"
+        align="center"
+        width="200"
+      >
       </el-table-column>
       <el-table-column
         #default="scope"
         label="是否显示"
         align="center"
-        width="150"
+        width="100"
       >
         <el-switch
-          v-model="scope.row.isShow"
+          v-model="scope.row.status"
           active-color="#13ce66"
+          @change="statusChange('comment/UPDATE_status', scope)"
         ></el-switch>
       </el-table-column>
     </el-table>
@@ -179,79 +197,162 @@
     >
       <div class="text-center flex-fill">
         <el-pagination
-          :current-page="currentPage"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :current-page="page.current"
+          :page-sizes="page.sizes"
+          :page-size="page.size"
+          :total="page.total"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+          @size-change="pageSizeChange"
+          @current-change="curPageChange"
         ></el-pagination>
       </div>
     </el-footer>
+    <!-- 图片预览 -->
+    <el-dialog
+      :visible.sync="previewModel"
+      @close="closePreviewModel"
+      width="70vw"
+      top="5vh"
+      :show-close="false"
+      :destroy-on-close="true"
+    >
+      <div style="margin: -60px -20px -30px">
+        <img :src="previewUrl" class="w-100" />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import buttonSearch from '@/components/common/button-search'
+import common from '@/common/mixins/common.js'
+import { Random } from 'mockjs'
+import { mapState } from 'vuex'
 export default {
   name: 'Comment',
+  inject: ['$layout'],
+  mixins: [common],
   components: {
     buttonSearch,
   },
   data() {
     return {
-      tableData: [
-        {
-          id: 1,
-          title: 'iPhone X',
-          cover:
-            'https://img10.360buyimg.com/n1/s450x450_jfs/t1/99856/30/11456/249736/5e33b2d2E8d404e63/a1da190926517d79.jpg',
-          username: '煎蛋',
-          star: 4.4,
-          commentTime: '2020-03-05 11:43:31',
-          isShow: true,
-        },
-      ],
-      currentPage: 1,
-      multipleSelection: [],
       form: {
         username: '',
-        type: '',
-        time: '',
+        time: [],
       },
+      replyIndex: -1,
+      replyContent: '',
+      previewModel: false,
+      previewUrl: '',
+      searchList: [],
     }
   },
-  methods: {
-    searchEvent(e) {
-      console.log(e)
+  watch: {
+    'form.username'(e) {
+      this.getCurPageData = this.form
     },
-    advancedSearch() {
-      this.$refs.buttonSearch.advancedSearch = true
+    'form.time'(e) {
+      if (!e) {
+        this.form.time = []
+      }
+      this.getCurPageData = this.form
     },
-    deleteItem(index) {
-      this.tableData.splice(index, 1)
-    },
-    deleteAll() {
-      this.multipleSelection.forEach((data) => {
-        const index = this.tableData.findIndex((v) => v.id === data.id)
-        if (index !== -1) {
-          this.tableData.splice(index, 1)
+  },
+  computed: {
+    ...mapState({
+      dataList: (state) => state.comment.commentList,
+    }),
+    getCurPageData: {
+      get() {
+        const curData = []
+        const dataList =
+          this.searchList.length || this.form.username || this.form.time.length
+            ? this.searchList
+            : this.dataList
+        const totalPage = Math.ceil(dataList.length / this.page.size)
+        for (let i = 0; i < totalPage; i++) {
+          curData[i] = dataList.slice(
+            this.page.size * i,
+            this.page.size * (i + 1),
+          )
         }
+        return curData[this.page.current - 1]
+      },
+      set(value) {
+        let searchList = this.dataList
+        let { username, time } = value
+        username = username.trim()
+        if (username) {
+          searchList = searchList.filter((v) => {
+            if (v.username.indexOf(username) !== -1) {
+              return v
+            }
+          })
+        }
+        if (time.length) {
+          const from = new Date(time[0]).getTime()
+          const to = new Date(time[1]).getTime()
+          searchList = searchList.filter((v) => {
+            const target = new Date(v.commentTime).getTime()
+            if (target >= from && target <= to) {
+              return v
+            }
+          })
+        }
+        this.searchList = searchList.length ? searchList : []
+        this.page.current = 1
+        this.page.total = searchList.length
+      },
+    },
+  },
+  created() {
+    this.__init()
+  },
+  methods: {
+    // 初始化数据
+    __init() {
+      this.$layout.showLoading()
+      this.$store.dispatch('comment/getComment').then((res) => {
+        this.page.total = res.length
       })
-      this.multipleSelection = []
+      this.$layout.hideLoading()
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
+    // searchEvent(e) {
+    //   console.log(e)
+    // },
+    // advancedSearch() {
+    //   this.$refs.buttonSearch.advancedSearch = true
+    // },
+    // resetForm(formName) {
+    //   this.$refs[formName].resetFields()
+    // },
+    preView(url) {
+      this.previewUrl = url
+      this.previewModel = true
     },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
+    closePreviewModel() {
+      this.previewUrl = ''
+      this.previewModel = false
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+    reply(data) {
+      const index = this.dataList.findIndex((v) => v.id === data.row.id)
+      this.replyIndex = index
+      this.replyContent = data.row.reply
     },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
+    replySubmit() {
+      if (this.replyContent !== '') {
+        this.$store.commit('comment/SET_reply', {
+          index: this.replyIndex,
+          value: this.replyContent,
+          time: Random.datetime(),
+        })
+      }
+      this.replyCancel()
+    },
+    replyCancel() {
+      this.replyIndex = -1
+      this.replyContent = ''
     },
   },
 }

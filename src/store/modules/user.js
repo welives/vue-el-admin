@@ -8,13 +8,13 @@ export default {
     roles: [],
   },
   mutations: {
-    SET_USER(state, user) {
+    SET_user(state, user) {
       state.user = user
     },
-    SET_TOKEN(state, token) {
+    SET_token(state, token) {
       state.token = token
     },
-    SET_ROLES(state, roles) {
+    SET_roles(state, roles) {
       state.roles = roles
     },
   },
@@ -25,8 +25,8 @@ export default {
         login({ username: username.trim(), password })
           .then((response) => {
             const { data } = response
-            commit('SET_USER', data.data)
-            commit('SET_TOKEN', data.token)
+            commit('SET_user', data.data)
+            commit('SET_token', data.token)
             set('user', JSON.stringify(data.data))
             set('token', data.token, false)
             resolve()
@@ -40,9 +40,9 @@ export default {
       return new Promise((resolve, reject) => {
         logout({ token: state.token })
           .then(() => {
-            commit('SET_USER', {})
-            commit('SET_TOKEN', false)
-            commit('SET_ROLES', [])
+            commit('SET_user', {})
+            commit('SET_token', false)
+            commit('SET_roles', [])
             remove('token', false)
             clear()
             resolve()
@@ -54,9 +54,9 @@ export default {
     },
     removeToken({ commit }) {
       return new Promise((resolve) => {
-        commit('SET_USER', {})
-        commit('SET_TOKEN', false)
-        commit('SET_ROLES', [])
+        commit('SET_user', {})
+        commit('SET_token', false)
+        commit('SET_roles', [])
         remove('token', false)
         clear()
         resolve()
@@ -68,7 +68,7 @@ export default {
         getRoles({ username, token: state.token })
           .then((response) => {
             const { data } = response
-            commit('SET_ROLES', data.roles)
+            commit('SET_roles', data.roles)
             resolve(data)
           })
           .catch((error) => {

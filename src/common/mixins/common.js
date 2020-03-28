@@ -1,5 +1,12 @@
 import { get, set } from '@/utils/auth'
 export default {
+  filters: {
+    // 格式化规格值
+    formatSpecValue(value) {
+      const arr = value.map((v) => v.name)
+      return arr.join(',')
+    },
+  },
   data() {
     return {
       page: {
@@ -15,9 +22,9 @@ export default {
     // 表格分页
     getCurPageData() {
       const curData = []
-      const totalPage = Math.ceil(this.tableData.length / this.page.size)
+      const totalPage = Math.ceil(this.dataList.length / this.page.size)
       for (let i = 0; i < totalPage; i++) {
-        curData[i] = this.tableData.slice(
+        curData[i] = this.dataList.slice(
           this.page.size * i,
           this.page.size * (i + 1),
         )
@@ -43,11 +50,11 @@ export default {
           if (v.name === this.$route.name) {
             this.navBar.active = navI
             this.sideMenuActive = sideI
-            this.$store.commit('menu/SET_NAVBAR', {
+            this.$store.commit('menu/SET_navbar', {
               key: 'active',
               value: navI,
             })
-            this.$store.commit('menu/SET_SIDEACTIVE', sideI)
+            this.$store.commit('menu/SET_sideActive', sideI)
             return true
           }
         })
@@ -67,29 +74,29 @@ export default {
     },
     // 删除单个
     deleteItem(mutations, data) {
-      const index = this.tableData.findIndex((v) => v.id === data.row.id)
+      const index = this.dataList.findIndex((v) => v.id === data.row.id)
       this.$store.commit(mutations, index)
       if (!this.getCurPageData) {
-        const totalPage = Math.ceil(this.tableData.length / this.page.size)
+        const totalPage = Math.ceil(this.dataList.length / this.page.size)
         if (totalPage < this.page.current) {
           this.page.current--
         }
       }
-      this.page.total = this.tableData.length
+      this.page.total = this.dataList.length
     },
     // 批量删除
     deleteAll(mutations) {
-      const list = this.tableData.filter((type) => {
+      const list = this.dataList.filter((type) => {
         return !this.chooseList.some((v) => v.id === type.id)
       })
       this.$store.commit(mutations, list)
       if (!this.getCurPageData) {
-        const totalPage = Math.ceil(this.tableData.length / this.page.size)
+        const totalPage = Math.ceil(this.dataList.length / this.page.size)
         if (totalPage < this.page.current) {
           this.page.current--
         }
       }
-      this.page.total = this.tableData.length
+      this.page.total = this.dataList.length
       this.chooseList = []
     },
     // 选择表格数据

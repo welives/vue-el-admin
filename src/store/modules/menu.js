@@ -10,13 +10,13 @@ export default {
     accessBtns: JSON.parse(get('btns')) || [],
   },
   mutations: {
-    SET_NAVBAR(state, { key, value }) {
+    SET_navbar(state, { key, value }) {
       state.navBar[key] = value
     },
-    SET_SIDEACTIVE(state, value) {
+    SET_sideActive(state, value) {
       state.navBar.list[state.navBar.active].sideActive = value
     },
-    SET_ACCESSBTNS(state, value) {
+    SET_accessBtns(state, value) {
       state.accessBtns = value
     },
   },
@@ -26,10 +26,10 @@ export default {
         getMenus({ roles, token: rootState.user.token })
           .then((response) => {
             const { data } = response
-            commit('SET_NAVBAR', { key: 'list', value: data.list })
+            commit('SET_navbar', { key: 'list', value: data.list })
             set('menus', JSON.stringify(data.list))
             if (data.accessBtns) {
-              commit('SET_ACCESSBTNS', data.accessBtns)
+              commit('SET_accessBtns', data.accessBtns)
               set('btns', JSON.stringify(data.accessBtns))
             }
             resolve(data.list)

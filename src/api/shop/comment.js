@@ -1,11 +1,11 @@
 import request from '@/plugins/axios'
 
-function getSpecList(data) {
+function getComment(data) {
   return request({
-    url: '/api/shop/spec',
+    url: '/api/shop/comment',
     method: 'get',
     data,
   })
 }
 
-export { getSpecList }
+export { getComment }

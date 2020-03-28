@@ -29,6 +29,7 @@ Object.defineProperties(Vue.prototype, {
   },
 })
 
+// 按钮权限
 Vue.directive('auth', {
   inserted(el) {
     const user = JSON.parse(sessionStorage.getItem('user')) || {}

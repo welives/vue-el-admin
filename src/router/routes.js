@@ -40,7 +40,7 @@ const routes = [
         component: 'shop/type/index',
       },
       {
-        meta: { title: '商品评论' },
+        meta: { title: '商品评价' },
         component: 'shop/comment/index',
       },
       {

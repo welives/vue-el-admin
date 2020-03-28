@@ -93,7 +93,7 @@
 
 <script>
 import common from '@/common/mixins/common.js'
-import { mapState, mapMutations } from 'vuex'
+import { mapState } from 'vuex'
 export default {
   name: 'Layout',
   provide() {
@@ -132,7 +132,6 @@ export default {
     this.__initNavbar()
   },
   methods: {
-    ...mapMutations('menu', ['SET_NAVBAR', 'SET_SIDEACTIVE']),
     // 选择导航项
     navbarSelect(index) {
       if (index === '10-1') {
@@ -144,7 +143,7 @@ export default {
       }
       if (this.navBar.active === index) return
       this.navBar.active = index
-      this.SET_NAVBAR({ key: 'active', value: index })
+      this.$store.commit('menu/SET_navbar', { key: 'active', value: index })
       // 默认选中侧栏菜单的第一项
       this.sideMenuActive = 0
       if (this.sideMenus.length > 0) {
@@ -155,7 +154,7 @@ export default {
     sideSelect(index) {
       if (this.sideMenuActive === index) return
       this.sideMenuActive = index
-      this.SET_SIDEACTIVE(index)
+      this.$store.commit('menu/SET_sideActive', index)
       this.$router.push({ name: this.sideMenus[index].name })
     },
     // 获取面包屑导航

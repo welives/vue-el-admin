@@ -45,26 +45,18 @@
         </el-container>
       </el-container>
       <el-footer class="border-top d-flex align-items-center px-0">
-        <div
-          style="width: 200px;"
-          class="h-100 d-flex align-items-center justify-content-center border-right flex-shrink-0"
-        >
-          <el-button-group>
-            <el-button
-              size="mini"
-              icon="el-icon-arrow-left"
-              :disabled="albumPage === 1"
-              @click="changeAlbum('prev')"
-              >上一页</el-button
-            >
-            <el-button
-              size="mini"
-              @click="changeAlbum('next')"
-              :disabled="albumPage === Math.ceil(albumList.length / albumSize)"
-              >下一页<i class="el-icon-arrow-right el-icon--right"></i
-            ></el-button>
-          </el-button-group>
-        </div>
+        <!-- 相册分页 -->
+        <el-aside width="200px" class="border-right album-pagination">
+          <el-pagination
+            layout="prev, next"
+            :page-size="album.size"
+            :total="album.total"
+            class="d-flex align-items-center justify-content-center"
+            @current-change="albumPageChange"
+          >
+          </el-pagination>
+        </el-aside>
+        <!-- 图片分页 -->
         <div class="text-center flex-fill">
           <el-pagination
             :current-page="page.current"
@@ -102,7 +94,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeAlbumModel">取 消</el-button>
+        <el-button @click="albumModel = false">取 消</el-button>
         <el-button
           type="primary"
           :disabled="albumForm.name === ''"
@@ -154,8 +146,12 @@ export default {
       },
       albumIndex: 0,
       albumEditIndex: -1,
-      albumPage: 1,
-      albumSize: 5,
+      // 相册分页相关数据
+      album: {
+        current: 1,
+        size: 5,
+        total: 0,
+      },
       // 图片分页相关数据
       page: {
         current: 1,
@@ -180,7 +176,7 @@ export default {
     // 图片分页处理和搜索结果
     getCurPageImage: {
       get() {
-        const curAlbumImage = []
+        const imageShow = []
         // 如果有搜索结果或输入框有值,则取searchList的值,否则取imageList的值
         const imageList =
           this.searchList.length || this.keyword
@@ -188,13 +184,12 @@ export default {
             : this.imageList
         const totalPage = Math.ceil(imageList.length / this.page.size)
         for (let index = 0; index < totalPage; index++) {
-          curAlbumImage[index] = imageList.slice(
+          imageShow[index] = imageList.slice(
             this.page.size * index,
             this.page.size * (index + 1),
           )
         }
-        const imageShow = curAlbumImage[this.page.current - 1]
-        return imageShow
+        return imageShow[this.page.current - 1]
       },
       set(value) {
         let searchList = this.imageList
@@ -215,16 +210,15 @@ export default {
     },
     // 相册分页处理
     getCurPageAlbum() {
-      const curAlbum = []
-      const totalPage = Math.ceil(this.albumList.length / this.albumSize)
+      const albumShow = []
+      const totalPage = Math.ceil(this.albumList.length / this.album.size)
       for (let index = 0; index < totalPage; index++) {
-        curAlbum[index] = this.albumList.slice(
-          this.albumSize * index,
-          this.albumSize * (index + 1),
+        albumShow[index] = this.albumList.slice(
+          this.album.size * index,
+          this.album.size * (index + 1),
         )
       }
-      const albumShow = curAlbum[this.albumPage - 1]
-      return albumShow
+      return albumShow[this.album.current - 1]
     },
   },
   created() {
@@ -233,14 +227,25 @@ export default {
   methods: {
     // 页面数据初始化
     __init() {
-      this.$store.dispatch('image/getAlbums').then(async (res) => {
-        const { imageList } = await this.$store.dispatch(
-          'image/getImages',
-          this.albumList[0].id,
-        )
-        this.page.total = this.albumList[0].imagesCount
-        this.imageList = imageList
-      })
+      this.$layout.showLoading()
+      // vuex中没有数据
+      if (!this.albumList.length) {
+        this.$store.dispatch('image/getAlbums').then(async (res) => {
+          this.album.total = this.albumList.length
+          const { imageList } = await this.$store.dispatch(
+            'image/getImages',
+            this.albumList[0].id,
+          )
+          this.imageList = imageList
+          this.page.total = imageList.length
+        })
+      } else {
+        // vuex中有数据
+        this.album.total = this.albumList.length
+        this.imageList = this.albumList[0].imageList
+        this.page.total = this.imageList.length
+      }
+      this.$layout.hideLoading()
     },
     // 编辑相册
     updateAlbum() {
@@ -292,15 +297,16 @@ export default {
         this.albumList.unshift({ ...this.albumForm })
         this.$store
           .dispatch('image/getImages', this.albumForm.id)
-          .then(async (response) => {
+          .then((response) => {
             const { imageList } = response
             this.albumList[0].imageList = imageList
             this.albumList[0].imagesCount = imageList.length
-            await this.$store.commit('image/SET_albumList', this.albumList)
+            this.$store.commit('image/SET_albumList', this.albumList)
           })
         this.albumIndex++
+        this.album.total = this.albumList.length
         if (this.albumIndex === this.getCurPageAlbum.length) {
-          this.changeAlbum('next')
+          this.albumPageChange(++this.album.current)
         }
       }
       this.closeAlbumModel()
@@ -342,12 +348,9 @@ export default {
     curPageChange(val) {
       this.page.current = val
     },
-    changeAlbum(type) {
-      if (type === 'prev') {
-        this.albumPage--
-      } else {
-        this.albumPage++
-      }
+    // 切换相册页码
+    albumPageChange(val) {
+      this.album.current = val
       this.albumIndex = 0
       this.page.current = 1
       this.getImageList()
@@ -357,4 +360,23 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.album-pagination {
+  height: 60px;
+  .el-pagination {
+    height: 100%;
+    .btn-prev {
+      padding-right: 20px;
+      .el-icon {
+        font-size: 20px;
+      }
+    }
+    .btn-next {
+      padding-left: 20px;
+      .el-icon {
+        font-size: 20px;
+      }
+    }
+  }
+}
+</style>

@@ -91,7 +91,7 @@ const menus = [
         status: true,
         create_time: Random.datetime('yyyy-MM-dd A HH:mm:ss'),
         update_time: Random.datetime('yyyy-MM-dd A HH:mm:ss'),
-        title: '商品评论',
+        title: '商品评价',
         name: 'shop_comment',
         path: '/shop/comment',
         icon: 'el-icon-document',

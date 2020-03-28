@@ -45,7 +45,9 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="text-center">
-        <el-button size="small" @click="hide">取 消</el-button>
+        <el-button size="small" @click="specFormDialog = false"
+          >取 消</el-button
+        >
         <el-button type="primary" size="small" @click="submitForm"
           >确 定</el-button
         >
@@ -55,8 +57,10 @@
 </template>
 
 <script>
+import { Random } from 'mockjs'
 export default {
   name: 'SpecDialog',
+  filters: {},
   data() {
     return {
       specFormDialog: false,
@@ -64,10 +68,10 @@ export default {
       specForm: {
         id: 0,
         name: '',
-        value: '',
         order: 100,
         status: true,
         type: 0,
+        value: '',
       },
       rules: {
         name: [
@@ -85,8 +89,8 @@ export default {
       } else {
         // 修改
         this.specForm = { ...data.row }
-        this.specForm.value = data.row.value.join(',')
-        this.editIndex = this.$parent.tableData.findIndex(
+        this.specForm.value = this.formatSpecValue(this.specForm.value)
+        this.editIndex = this.$parent.dataList.findIndex(
           (v) => v.id === data.row.id,
         )
       }
@@ -96,10 +100,10 @@ export default {
       this.specForm = {
         id: 0,
         name: '',
-        value: '',
         order: 100,
         status: true,
         type: 0,
+        value: '',
       }
       this.specFormDialog = false
     },
@@ -110,13 +114,13 @@ export default {
           const msg = this.editIndex > -1 ? '修改成功' : '添加成功'
           if (this.editIndex === -1) {
             this.specForm.id =
-              this.$parent.tableData[this.$parent.tableData.length - 1].id + 1
-            this.specForm.value = this.specForm.value.split(',')
+              this.$parent.dataList[this.$parent.dataList.length - 1].id + 1
+            this.specForm.value = this.formatSpecValue(this.specForm.value)
             this.$store.commit('spec/ADD_spec', this.specForm)
-            this.$parent.page.total = this.$parent.tableData.length
+            this.$parent.page.total = this.$parent.dataList.length
           } else {
             // 修改
-            this.specForm.value = this.specForm.value.split(',')
+            this.specForm.value = this.formatSpecValue(this.specForm.value)
             this.$store.commit('spec/UPDATE_spec', this.specForm)
           }
           this.$message({
@@ -126,6 +130,25 @@ export default {
           this.hide()
         }
       })
+    },
+    // 格式化规格值
+    formatSpecValue(value) {
+      if (typeof value === 'object') {
+        const arr = value.map((v) => v.name)
+        return arr.join(',')
+      }
+      if (typeof value === 'string') {
+        let arr = value.split(',')
+        arr = arr.map((v) => {
+          return {
+            name: v,
+            color: '',
+            image: '',
+            isCheck: false,
+          }
+        })
+        return arr
+      }
     },
   },
 }

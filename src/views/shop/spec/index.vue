@@ -30,8 +30,8 @@
       </el-table-column>
       <el-table-column prop="name" label="规格名称" width="200" align="center">
       </el-table-column>
-      <el-table-column #default="scope" label="规格值" header-align="center">{{
-        scope.row.value.join(',')
+      <el-table-column #default="scope" label="规格值" align="center">{{
+        scope.row.value | formatSpecValue
       }}</el-table-column>
       <el-table-column
         prop="order"
@@ -117,7 +117,7 @@ export default {
   },
   computed: {
     ...mapState({
-      tableData: (state) => state.spec.spec,
+      dataList: (state) => state.spec.specList,
     }),
   },
   created() {
@@ -127,8 +127,8 @@ export default {
     // 初始化数据
     __init() {
       this.$layout.showLoading()
-      this.$store.dispatch('spec/getSpec').then((res) => {
-        this.page.total = res.spec.length
+      this.$store.dispatch('spec/getSpecList').then((res) => {
+        this.page.total = res.length
       })
       this.$layout.hideLoading()
     },

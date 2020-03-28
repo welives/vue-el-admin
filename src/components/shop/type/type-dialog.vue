@@ -29,12 +29,13 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="关联规格">
-          <div class="d-flex">
+          <div class="d-flex text-center">
             <span
+              @click.stop="removeSpec(index)"
               v-for="(spec, index) in typeForm.specList"
               :key="index"
-              class="border rounded px-3 mr-2 spec-list-item"
-              style="cursor: pointer;"
+              class="border rounded px-2 mr-2 spec-list-item"
+              style="cursor: pointer; min-width: 70px;"
             >
               <span>{{ spec.name }}</span>
               <i class="el-icon-delete text-danger"></i>
@@ -43,7 +44,7 @@
               size="mini"
               icon="el-icon-plus"
               class="text-primary"
-              @click="addSpecList"
+              @click="chooseSpec"
             ></el-button>
           </div>
         </el-form-item>
@@ -159,7 +160,9 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="text-center">
-        <el-button size="small" @click="hide">取 消</el-button>
+        <el-button size="small" @click="typeFormDialog = false"
+          >取 消</el-button
+        >
         <el-button type="primary" size="small" @click="submitForm"
           >确 定</el-button
         >
@@ -171,6 +174,7 @@
 <script>
 export default {
   name: 'TypeDialog',
+  inject: ['$app'],
   data() {
     return {
       typeFormDialog: false,
@@ -203,7 +207,7 @@ export default {
             v.value = v.value.join(',')
           })
         }
-        this.editIndex = this.$parent.tableData.findIndex(
+        this.editIndex = this.$parent.dataList.findIndex(
           (v) => v.id === data.row.id,
         )
       }
@@ -220,6 +224,14 @@ export default {
         valueList: [],
       }
       this.typeFormDialog = false
+    },
+    chooseSpec() {
+      this.$app.chooseSpec((e) => {
+        const index = this.typeForm.specList.findIndex((v) => v.id === e.id)
+        if (index === -1) {
+          this.typeForm.specList.push(e)
+        }
+      })
     },
     submitForm() {
       this.$refs.addTypeForm.validate((valid) => {
@@ -256,10 +268,10 @@ export default {
           // 新增
           if (this.editIndex === -1) {
             this.typeForm.id =
-              this.$parent.tableData[this.$parent.tableData.length - 1].id + 1
+              this.$parent.dataList[this.$parent.dataList.length - 1].id + 1
             this.formatValue()
             this.$store.commit('type/ADD_type', this.typeForm)
-            this.$parent.page.total = this.$parent.tableData.length
+            this.$parent.page.total = this.$parent.dataList.length
           } else {
             // 修改
             this.formatValue()
@@ -282,13 +294,13 @@ export default {
         })
       }
     },
+    removeSpec(index) {
+      this.typeForm.specList.splice(index, 1)
+    },
     changeType(data, e) {
       if (e !== 'input') {
         data.row.isEdit = true
       }
-    },
-    addSpecList() {
-      this.typeForm.specList.push({ name: '' })
     },
     addValueList() {
       this.typeForm.valueList.push({

@@ -119,7 +119,6 @@ export default {
       const curAlbum = image.getCurPageAlbum[image.albumIndex]
       const albumIdx = image.albumList.findIndex((v) => v.id === curAlbum.id)
       const index = image.imageList.findIndex((v) => v.id === img.id)
-      console.log(albumIdx)
       if (index !== -1) {
         this.$store.commit('image/DELETE_image', {
           albumIdx,

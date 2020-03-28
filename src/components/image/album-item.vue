@@ -66,12 +66,12 @@ export default {
             this.$store.commit('image/DELETE_albumList', delIndex)
             image.getImageList()
           } else {
-            // index等于0且数组长度大于1
+            // index等于0且相册数量大于1
             if (image.getCurPageAlbum.length > 1) {
               this.$store.commit('image/DELETE_albumList', delIndex)
               image.getImageList()
             } else if (image.getCurPageAlbum.length === 1) {
-              // index等于0且数组长度等于1
+              // 删除最后一个相册的时候
               this.$store.commit('image/DELETE_albumList', delIndex)
               image.page.total = 0
               image.imageList = []
@@ -81,9 +81,9 @@ export default {
             type: 'success',
             message: '删除成功!',
           })
-          image.page.current = 1
-          if (!image.getCurPageAlbum && image.albumPage > 1) {
-            image.changeAlbum('prev')
+          image.album.total = image.albumList.length
+          if (!image.getCurPageAlbum && image.album.current > 1) {
+            image.albumPageChange(--image.album.current)
           }
         })
         .catch(() => {})

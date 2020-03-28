@@ -31,7 +31,7 @@
       <el-table-column prop="name" label="类型名称" width="200" align="center">
       </el-table-column>
       <el-table-column #default="scope" label="属性标签" align="center">
-        {{ scope.row.valueList | formatValue }}</el-table-column
+        {{ scope.row.valueList | formatSpecValue }}</el-table-column
       >
       <el-table-column
         prop="order"
@@ -101,18 +101,12 @@ export default {
     typeDialog,
   },
   mixins: [common],
-  filters: {
-    formatValue(value) {
-      const arr = value.map((v) => v.name)
-      return arr.join(',')
-    },
-  },
   data() {
     return {}
   },
   computed: {
     ...mapState({
-      tableData: (state) => state.type.type,
+      dataList: (state) => state.type.typeList,
     }),
   },
   created() {
@@ -122,8 +116,8 @@ export default {
     // 初始化数据
     __init() {
       this.$layout.showLoading()
-      this.$store.dispatch('type/getType').then((res) => {
-        this.page.total = res.type.length
+      this.$store.dispatch('type/getTypeList').then((res) => {
+        this.page.total = res.length
       })
       this.$layout.hideLoading()
     },

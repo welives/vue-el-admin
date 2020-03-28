@@ -14,7 +14,10 @@
           <el-button type="info" size="mini" @click="$emit('search', keyword)"
             >搜索</el-button
           >
-          <el-button size="mini" @click="advancedSearch = true"
+          <el-button
+            size="mini"
+            @click="advancedSearch = true"
+            v-if="showAdvancedSearch"
             >高级搜索<i class="el-icon-arrow-down el-icon--right"></i
           ></el-button>
         </slot>
@@ -41,6 +44,7 @@ export default {
   props: {
     placeholder: { type: String, default: '' },
     showSearch: { type: Boolean, default: true },
+    showAdvancedSearch: { type: Boolean, default: true },
   },
   data() {
     return {

@@ -1,11 +1,11 @@
 import request from '@/plugins/axios'
 
-function getSpecList(data) {
+function getUsers(data) {
   return request({
-    url: '/api/shop/spec',
+    url: '/api/user',
     method: 'get',
     data,
   })
 }
 
-export { getSpecList }
+export { getUsers }
