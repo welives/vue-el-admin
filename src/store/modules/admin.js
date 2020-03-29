@@ -3,13 +3,13 @@ import { get, set, remove, clear } from '@/utils/auth'
 export default {
   namespaced: true,
   state: {
-    user: JSON.parse(get('user')) || {},
+    admin: JSON.parse(get('admin')) || {},
     token: get('token', false) || false,
     roles: [],
   },
   mutations: {
-    SET_user(state, user) {
-      state.user = user
+    SET_admin(state, admin) {
+      state.admin = admin
     },
     SET_token(state, token) {
       state.token = token
@@ -19,15 +19,15 @@ export default {
     },
   },
   actions: {
-    login({ commit }, userInfo) {
-      const { username, password } = userInfo
+    login({ commit }, adminInfo) {
+      const { username, password } = adminInfo
       return new Promise((resolve, reject) => {
         login({ username: username.trim(), password })
           .then((response) => {
             const { data } = response
-            commit('SET_user', data.data)
+            commit('SET_admin', data.admin)
             commit('SET_token', data.token)
-            set('user', JSON.stringify(data.data))
+            set('admin', JSON.stringify(data.admin))
             set('token', data.token, false)
             resolve()
           })
@@ -40,7 +40,7 @@ export default {
       return new Promise((resolve, reject) => {
         logout({ token: state.token })
           .then(() => {
-            commit('SET_user', {})
+            commit('SET_admin', {})
             commit('SET_token', false)
             commit('SET_roles', [])
             remove('token', false)
@@ -54,7 +54,7 @@ export default {
     },
     removeToken({ commit }) {
       return new Promise((resolve) => {
-        commit('SET_user', {})
+        commit('SET_admin', {})
         commit('SET_token', false)
         commit('SET_roles', [])
         remove('token', false)
@@ -64,7 +64,7 @@ export default {
     },
     getRoles({ commit, state }) {
       return new Promise((resolve, reject) => {
-        const { username } = state.user
+        const { username } = state.admin
         getRoles({ username, token: state.token })
           .then((response) => {
             const { data } = response

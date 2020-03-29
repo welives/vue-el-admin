@@ -118,7 +118,7 @@ export default {
         if (!valid) return
         this.loading = true
         this.$store
-          .dispatch('user/login', this.form)
+          .dispatch('admin/login', this.form)
           .then(() => {
             this.loading = false
             this.$router.push({ name: 'index' })

@@ -23,7 +23,7 @@ export default {
   actions: {
     getMenus({ commit, rootState }, roles) {
       return new Promise((resolve, reject) => {
-        getMenus({ roles, token: rootState.user.token })
+        getMenus({ roles, token: rootState.admin.token })
           .then((response) => {
             const { data } = response
             commit('SET_navbar', { key: 'list', value: data.list })

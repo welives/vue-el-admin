@@ -23,7 +23,7 @@ export default {
     getComment({ commit, state, rootState }) {
       if (!state.commentList.length) {
         return new Promise((resolve, reject) => {
-          getComment({ token: rootState.user.token })
+          getComment({ token: rootState.admin.token })
             .then((response) => {
               const { data } = response
               commit('SET_commentList', data.commentList)

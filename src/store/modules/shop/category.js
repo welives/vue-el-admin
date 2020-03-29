@@ -81,7 +81,7 @@ export default {
     // 获取分类
     getCategory({ commit, rootState }) {
       return new Promise((resolve, reject) => {
-        getCategory({ token: rootState.user.token })
+        getCategory({ token: rootState.admin.token })
           .then((response) => {
             const { data } = response
             commit('SET_category', data.category)

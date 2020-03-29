@@ -37,7 +37,7 @@ export default {
     getTypeList({ commit, state, rootState }) {
       if (!state.typeList.length) {
         return new Promise((resolve, reject) => {
-          getTypeList({ token: rootState.user.token })
+          getTypeList({ token: rootState.admin.token })
             .then((response) => {
               const { data } = response
               commit('SET_typeList', data.typeList)

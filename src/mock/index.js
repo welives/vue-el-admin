@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-import * as userAPI from './modules/user'
+import * as adminAPI from './modules/admin'
 import * as menuAPI from './modules/menu'
 import * as imageAPI from './modules/image'
 import * as categoryAPI from './modules/shop/category'
@@ -8,9 +8,9 @@ import * as typeAPI from './modules/shop/type'
 import * as commentAPI from './modules/shop/comment'
 
 // 登录相关
-Mock.mock(/\/api\/login/, 'post', userAPI.login)
-Mock.mock(/\/api\/logout/, 'get', userAPI.logout)
-Mock.mock(/\/api\/getRoles/, 'get', userAPI.getRoles)
+Mock.mock(/\/api\/login/, 'post', adminAPI.login)
+Mock.mock(/\/api\/logout/, 'get', adminAPI.logout)
+Mock.mock(/\/api\/getRoles/, 'get', adminAPI.getRoles)
 
 Mock.mock(/\/api\/getMenus/, 'get', menuAPI.getMenus)
 

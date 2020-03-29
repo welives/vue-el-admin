@@ -38,7 +38,7 @@ export default {
     getSpecList({ commit, state, rootState }) {
       if (!state.specList.length) {
         return new Promise((resolve, reject) => {
-          getSpecList({ token: rootState.user.token })
+          getSpecList({ token: rootState.admin.token })
             .then((response) => {
               const { data } = response
               commit('SET_specList', data.specList)

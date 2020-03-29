@@ -32,8 +32,8 @@ Object.defineProperties(Vue.prototype, {
 // 按钮权限
 Vue.directive('auth', {
   inserted(el) {
-    const user = JSON.parse(sessionStorage.getItem('user')) || {}
-    if (user.role !== 'admin') {
+    const admin = JSON.parse(sessionStorage.getItem('admin')) || {}
+    if (admin.role !== 'admin') {
       const btns = JSON.parse(sessionStorage.getItem('btns')) || []
       const res = btns.find((v) => v === el.textContent)
       // 在权限列表里没找到

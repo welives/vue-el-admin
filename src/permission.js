@@ -19,17 +19,17 @@ router.beforeEach(async (to, from, next) => {
       NProgress.done()
     } else {
       const hasRoles =
-        store.state.user.roles && store.state.user.roles.length > 0
+        store.state.admin.roles && store.state.admin.roles.length > 0
       if (hasRoles) {
         next()
       } else {
         // 刷新页面和通过链接直接访问的情况下需要重新验权
         let accessRoutes = []
         try {
-          const { roles } = await store.dispatch('user/getRoles')
+          const { roles } = await store.dispatch('admin/getRoles')
           accessRoutes = await store.dispatch('menu/getMenus', roles)
         } catch (error) {
-          await store.dispatch('user/removeToken')
+          await store.dispatch('admin/removeToken')
           console.log(error)
           NProgress.done()
         }

@@ -75,7 +75,7 @@ export default {
     // 获取相册列表
     getAlbums({ commit, rootState }) {
       return new Promise((resolve, reject) => {
-        getAlbums({ token: rootState.user.token })
+        getAlbums({ token: rootState.admin.token })
           .then((response) => {
             const { data } = response
             commit('SET_albumList', data.albumList)
@@ -89,7 +89,7 @@ export default {
     // 获取图片列表
     getImages({ commit, state, rootState }, id) {
       return new Promise((resolve, reject) => {
-        getImages({ token: rootState.user.token, id })
+        getImages({ token: rootState.admin.token, id })
           .then((response) => {
             const { data } = response
             commit('SET_curAlbumImageList', { id, value: data.imageList })

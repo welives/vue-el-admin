@@ -38,7 +38,6 @@ const getters = {
       }
     })
   },
-  imageList: (state) => state.goods.imageList,
   goodsType: (state) => state.goods.goodsType,
   goodsAttrs: (state) => state.goods.goodsAttrs,
   discountRate: (state) => state.goods.discountRate,

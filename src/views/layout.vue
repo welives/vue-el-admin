@@ -32,12 +32,12 @@
               <el-avatar
                 size="small"
                 :src="
-                  user.avatar
-                    ? user.avatar
+                  admin.avatar
+                    ? admin.avatar
                     : 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
                 "
               ></el-avatar>
-              {{ user.username }}</template
+              {{ admin.username }}</template
             >
             <el-menu-item index="10-1">修改</el-menu-item>
             <el-menu-item index="10-2">退出</el-menu-item>
@@ -110,7 +110,7 @@ export default {
   },
   computed: {
     ...mapState({
-      user: (state) => state.user.user,
+      admin: (state) => state.admin.admin,
       navBar: (state) => state.menu.navBar,
     }),
     // 获取,设置当前激活的侧栏菜单
@@ -172,12 +172,12 @@ export default {
     },
     logout() {
       this.$store
-        .dispatch('user/logout')
+        .dispatch('admin/logout')
         .then(() => {
           this.$router.push({ name: 'login' })
         })
         .catch((error) => {
-          this.$store.dispatch('user/removeToken').then(() => {
+          this.$store.dispatch('admin/removeToken').then(() => {
             this.$router.push({ name: 'login' })
           })
         })
