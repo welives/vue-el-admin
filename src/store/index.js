@@ -9,6 +9,7 @@ import category from './modules/shop/category'
 import spec from './modules/shop/spec'
 import type from './modules/shop/type'
 import comment from './modules/shop/comment'
+import users from './modules/user/index'
 
 Vue.use(Vuex)
 
@@ -23,5 +24,6 @@ export default new Vuex.Store({
     spec,
     type,
     comment,
+    users,
   },
 })

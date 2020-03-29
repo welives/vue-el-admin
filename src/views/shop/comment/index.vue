@@ -5,7 +5,7 @@
         <el-input
           v-model="form.username"
           size="mini"
-          class="w-25"
+          class="mr-2 w-50"
           placeholder="请输入要搜索的用户名"
         ></el-input>
         <el-date-picker
@@ -14,13 +14,12 @@
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          class="mx-2"
           size="mini"
           value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
         <!-- <el-button type="info" size="mini" @click="searchEvent">搜索</el-button>
-        <el-button size="mini" @click="advancedSearch"
+        <el-button size="mini" @click="$refs.buttonSearch.advancedSearch = true"
           >高级搜索<i class="el-icon-arrow-down el-icon--right"></i
         ></el-button> -->
       </template>
@@ -86,12 +85,12 @@
               <img
                 class="mr-3 rounded-circle"
                 style="height: 48px; width: 48px;"
-                :src="$store.state.user.user.avatar"
+                :src="$store.state.admin.admin.avatar"
               />
               <div class="media-body">
                 <div class="d-flex align-items-center">
                   <small class="text-danger mr-2">{{
-                    $store.state.user.user.username
+                    $store.state.admin.admin.username
                   }}</small>
                   <small class="text-muted" v-if="scope.row.replyTime"
                     >回复于<span class="ml-2">{{
@@ -320,9 +319,6 @@ export default {
     },
     // searchEvent(e) {
     //   console.log(e)
-    // },
-    // advancedSearch() {
-    //   this.$refs.buttonSearch.advancedSearch = true
     // },
     // resetForm(formName) {
     //   this.$refs[formName].resetFields()

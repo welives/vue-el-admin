@@ -1,11 +1,11 @@
 import request from '@/plugins/axios'
 
-function getUsers(data) {
+function getUserList(data) {
   return request({
-    url: '/api/user',
+    url: '/api/userList',
     method: 'get',
     data,
   })
 }
 
-export { getUsers }
+export { getUserList }

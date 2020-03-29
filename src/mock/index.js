@@ -6,6 +6,7 @@ import * as categoryAPI from './modules/shop/category'
 import * as specAPI from './modules/shop/spec'
 import * as typeAPI from './modules/shop/type'
 import * as commentAPI from './modules/shop/comment'
+import * as usersAPI from './modules/user/index'
 
 // 登录相关
 Mock.mock(/\/api\/login/, 'post', adminAPI.login)
@@ -24,5 +25,8 @@ Mock.mock(/\/api\/shop\/category/, 'get', categoryAPI.getCategory)
 Mock.mock(/\/api\/shop\/spec/, 'get', specAPI.getSpecList)
 Mock.mock(/\/api\/shop\/type/, 'get', typeAPI.getTypeList)
 Mock.mock(/\/api\/shop\/comment/, 'get', commentAPI.getComment)
+
+// 会员相关
+Mock.mock(/\/api\/userList/, 'get', usersAPI.getUserList)
 
 export default Mock

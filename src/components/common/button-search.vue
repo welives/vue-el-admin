@@ -2,7 +2,10 @@
   <div>
     <div class="d-flex align-items-center">
       <slot name="left"></slot>
-      <div v-show="!advancedSearch" v-if="showSearch" class="ml-auto">
+      <div
+        v-if="showSearch && !advancedSearch"
+        class="ml-auto d-flex justify-content-end w-50"
+      >
         <slot name="right">
           <el-input
             v-model="keyword"
@@ -51,6 +54,13 @@ export default {
       keyword: '',
       advancedSearch: false,
     }
+  },
+  watch: {
+    advancedSearch(e) {
+      if (!e) {
+        this.$parent.$emit('advanced', e)
+      }
+    },
   },
 }
 </script>
