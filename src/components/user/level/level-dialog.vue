@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      :title="levelDialogTitle"
+      :title="editIndex > -1 ? '修改会员等级' : '添加会员等级'"
       :visible.sync="levelDialog"
       width="50vw"
       @close="hide"
@@ -17,11 +17,11 @@
           <el-input v-model="levelForm.name" placeholder="等级名称"></el-input>
           <small class="text-muted d-block">设置会员等级名称</small>
         </el-form-item>
-        <el-form-item label="等级权重" prop="order">
+        <el-form-item label="排序" prop="order">
           <el-input-number v-model="levelForm.order" :min="0"></el-input-number>
-          <small class="text-muted d-block"
+          <!-- <small class="text-muted d-block"
             >设置会员等级排序(此参数决定的等级的高低,排序越大等级越高,请谨慎选择)</small
-          >
+          > -->
         </el-form-item>
         <el-form-item label="升级条件">
           <div class="mb-2">
@@ -77,7 +77,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="text-center">
-        <el-button size="small" @click="hide">取 消</el-button>
+        <el-button size="small" @click="levelDialog = false">取 消</el-button>
         <el-button type="primary" size="small" @click="submitForm"
           >确 定</el-button
         >
@@ -93,9 +93,8 @@ export default {
     return {
       levelDialog: false,
       editIndex: -1,
-      nextId: 10,
       levelForm: {
-        id: '',
+        id: 0,
         name: '',
         consume: 0,
         times: 0,
@@ -110,11 +109,7 @@ export default {
       },
     }
   },
-  computed: {
-    levelDialogTitle() {
-      return this.editIndex === -1 ? '添加会员等级' : '修改会员等级'
-    },
-  },
+  computed: {},
   methods: {
     showDialog(data) {
       // 新增
@@ -122,15 +117,16 @@ export default {
         this.editIndex = -1
       } else {
         // 修改
-        // Object.assign(this.levelForm, data.row)
         this.levelForm = { ...data.row }
-        this.editIndex = data.$index
+        this.editIndex = this.$parent.dataList.findIndex(
+          (v) => v.id === data.row.id,
+        )
       }
       this.levelDialog = true
     },
     hide() {
       this.levelForm = {
-        id: this.nextId,
+        id: 0,
         name: '',
         consume: 0,
         times: 0,
@@ -143,22 +139,23 @@ export default {
     submitForm() {
       this.$refs.addLevelForm.validate((valid) => {
         if (valid) {
-          let msg = '添加'
+          const msg = this.editIndex > -1 ? '修改成功' : '添加成功'
           if (this.editIndex === -1) {
             // 新增
-            this.levelForm.id = this.nextId
-            this.$parent.tableData.push(this.levelForm)
-            this.nextId++
+            this.levelForm.id =
+              this.$parent.dataList[this.$parent.dataList.length - 1].id + 1
+            this.$store.commit('level/ADD_level', this.levelForm)
+            // this.$parent.tableData.push(this.levelForm)
           } else {
             // 修改
-            msg = '修改'
-            Object.assign(
-              this.$parent.tableData[this.editIndex],
-              this.levelForm,
-            )
+            this.$store.commit('level/UPDATE_level', this.levelForm)
+            // Object.assign(
+            //   this.$parent.tableData[this.editIndex],
+            //   this.levelForm,
+            // )
           }
           this.$message({
-            message: msg + '成功',
+            message: msg,
             type: 'success',
           })
           this.hide()

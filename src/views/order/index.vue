@@ -13,8 +13,17 @@
           @search="searchEvent"
         >
           <template #left>
-            <el-button type="primary" size="mini">导出数据</el-button>
-            <el-button type="danger" size="mini" v-auth>批量删除</el-button>
+            <el-button type="primary" size="mini" class="mr-2"
+              >导出数据</el-button
+            >
+            <el-popconfirm
+              title="是否删除选中的数据？"
+              @onConfirm="deleteAll('order/DELETE_batch')"
+            >
+              <el-button slot="reference" type="danger" size="mini" v-auth
+                >批量删除</el-button
+              >
+            </el-popconfirm>
           </template>
           <template #form>
             <el-form
@@ -32,12 +41,11 @@
                     placeholder="要搜索的订单编号"
                   ></el-input>
                 </el-form-item>
-                <el-form-item label="订单状态" prop="status">
-                  <el-select v-model="form.status" placeholder="请选择订单状态">
-                    <el-option label="状态一" value="1"></el-option>
-                    <el-option label="状态二" value="2"></el-option>
-                    <el-option label="状态三" value="3"></el-option>
-                  </el-select>
+                <el-form-item label="买家" prop="username">
+                  <el-input v-model="form.username"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号" prop="phone">
+                  <el-input v-model="form.phone"></el-input>
                 </el-form-item>
                 <el-form-item label="下单时间" prop="time">
                   <el-date-picker
@@ -49,12 +57,6 @@
                     size="mini"
                   >
                   </el-date-picker>
-                </el-form-item>
-                <el-form-item label="收货人" prop="username">
-                  <el-input v-model="form.username"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号" prop="phone">
-                  <el-input v-model="form.phone"></el-input>
                 </el-form-item>
               </div>
               <el-form-item class="float-right">
@@ -68,10 +70,10 @@
         </button-search>
         <!-- 表格数据 -->
         <el-table
-          :data="tableData[index].list"
+          :data="getCurPageData"
           border
           class="mt-2"
-          @selection-change="handleSelectionChange"
+          @selection-change="chooseData"
         >
           <el-table-column type="selection" width="40" align="center">
           </el-table-column>
@@ -82,22 +84,41 @@
             label="商品信息"
             header-align="center"
           >
-            <div class="d-flex align-items-center mb-2">
+            <div class="d-flex align-items-center justify-content-center mb-2">
               <div class="flex-fill">
                 <div>订单编号</div>
                 <small>{{ scope.row.serial }}</small>
               </div>
               <div class="flex-fill">
                 <div>下单时间</div>
-                <small>{{ scope.row.create_time }}</small>
+                <small>{{ scope.row.createTime }}</small>
               </div>
             </div>
             <div class="media d-flex align-items-center justify-content-center">
-              <img class="mr-3" :src="scope.row.cover" style="width: 48px;" />
+              <img
+                class="mr-3"
+                :src="scope.row.cover"
+                style="width: 48px; cursor: pointer;"
+              />
               <div class="media-body">
                 <span class="font-weight-bold text-primary">
                   {{ scope.row.title }}
                 </span>
+              </div>
+            </div>
+          </el-table-column>
+          <el-table-column
+            #default="scope"
+            label="买家"
+            align="center"
+            width="150"
+          >
+            <div>
+              <span>{{ scope.row.username }}</span>
+              <div>
+                <small class="text-muted"
+                  >手机号: <small>{{ scope.row.phone }}</small></small
+                >
               </div>
             </div>
           </el-table-column>
@@ -116,30 +137,22 @@
           </el-table-column>
           <el-table-column
             #default="scope"
-            label="买家"
-            align="center"
-            width="100"
-          >
-            <div>
-              <span>{{ scope.row.username }}</span>
-              <div>
-                <small>(用户ID: {{ scope.row.uid }})</small>
-              </div>
-            </div>
-          </el-table-column>
-          <el-table-column
-            #default="scope"
             label="支付方式"
             align="center"
             width="100"
           >
-            <span v-if="scope.row.payType === 0" class="badge badge-success"
+            <span
+              v-if="scope.row.payType === 'wechat'"
+              class="badge badge-success"
               >微信支付</span
             >
-            <span v-else class="badge badge-primary"
+            <span
+              v-else-if="scope.row.payType === 'alipay'"
+              class="badge badge-primary"
               >支付宝</span
-            ></el-table-column
-          >
+            >
+            <span v-else class="badge badge-secondary">未支付</span>
+          </el-table-column>
           <el-table-column
             prop="express"
             label="配送方式"
@@ -198,13 +211,13 @@
         >
           <div class="text-center flex-fill">
             <el-pagination
-              :current-page="tableData[index].currentPage"
-              :page-sizes="[100, 200, 300, 400]"
-              :page-size="100"
+              :current-page="page.current"
+              :page-sizes="page.sizes"
+              :page-size="page.size"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="400"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
+              :total="page.total"
+              @size-change="pageSizeChange"
+              @current-change="curPageChange"
             ></el-pagination>
           </div>
         </el-footer>
@@ -214,68 +227,128 @@
 </template>
 
 <script>
-import common from '@/common/mixins/common.js'
 import buttonSearch from '@/components/common/button-search'
+import common from '@/common/mixins/common.js'
+import { mapState } from 'vuex'
 export default {
   name: 'Order',
+  inject: ['$layout'],
   components: {
     buttonSearch,
   },
   mixins: [common],
   data() {
     return {
-      tabIndex: 0,
-      currentPage: 1,
       tabBars: [
-        { name: '全部' },
-        { name: '待付款' },
-        { name: '待发货' },
-        { name: '已发货' },
-        { name: '已收货' },
-        { name: '已完成' },
-        { name: '已关闭' },
-        { name: '退款中' },
+        { name: '全部', key: 'all' },
+        { name: '待付款', key: 'nopay' },
+        { name: '待发货', key: 'noship' },
+        { name: '已发货', key: 'shiped' },
+        { name: '已收货', key: 'received' },
+        { name: '已完成', key: 'finish' },
+        { name: '已关闭', key: 'closed' },
+        { name: '退款中', key: 'refunding' },
       ],
       form: {
         serial: '',
-        status: '',
         time: '',
         username: '',
         phone: '',
       },
-      tableData: [],
-      multipleSelection: [],
+      searchList: [],
     }
   },
-  created() {
-    this.__initTabBar(this.$options.name)
-    this.__getData()
-  },
-  methods: {
-    __getData() {
-      for (let i = 0; i < this.tabBars.length; i++) {
-        this.tableData.push({
-          currentPage: 1,
-          list: [],
-        })
-        for (let j = 0; j < 10; j++) {
-          this.tableData[i].list.push({
-            id: j,
-            uid: Math.floor(Math.random() * 1000 + 1),
-            username: '用户 ' + i + ' - ' + j,
-            title: 'iPhone X ' + i + ' - ' + j,
-            cover:
-              'https://img10.360buyimg.com/n1/s450x450_jfs/t1/99856/30/11456/249736/5e33b2d2E8d404e63/a1da190926517d79.jpg',
-            serial: Math.floor(Math.random() * 1000000000),
-            create_time: '2020-02-02 12:12:12',
-            payment: (Math.random() * 100 + 1).toFixed(2),
-            freight: (Math.random() * 10 + 1).toFixed(2),
-            express: '顺丰快递',
-            payType: Math.floor(Math.random() * (1 - 0 + 1)) + 0,
-            status: Math.floor(Math.random() * (3 - 0 + 1)) + 0,
+  computed: {
+    ...mapState({
+      dataList: (state) => state.order.orderList,
+    }),
+    curTab() {
+      return this.tabBars[this.tabIndex].key
+    },
+    getCurPageData: {
+      get() {
+        const curData = []
+        const dataList =
+          this.searchList.length || this.curTab !== 'all'
+            ? this.searchList
+            : this.dataList
+        const totalPage = Math.ceil(dataList.length / this.page.size)
+        for (let i = 0; i < totalPage; i++) {
+          curData[i] = dataList.slice(
+            this.page.size * i,
+            this.page.size * (i + 1),
+          )
+        }
+        return curData[this.page.current - 1]
+      },
+      // 0未付款,1已付款,2已发货,3已收货,4已完成,5已关闭
+      set(value) {
+        let searchList = this.dataList
+        if (value === 'nopay') {
+          searchList = searchList.filter((v) => {
+            if (v.status === 0) {
+              return v
+            }
+          })
+        } else if (value === 'noship') {
+          searchList = searchList.filter((v) => {
+            if (v.status === 1) {
+              return v
+            }
+          })
+        } else if (value === 'shiped') {
+          searchList = searchList.filter((v) => {
+            if (v.status === 2) {
+              return v
+            }
+          })
+        } else if (value === 'received') {
+          searchList = searchList.filter((v) => {
+            if (v.status === 3) {
+              return v
+            }
+          })
+        } else if (value === 'finish') {
+          searchList = searchList.filter((v) => {
+            if (v.status === 4) {
+              return v
+            }
+          })
+        } else if (value === 'closed') {
+          searchList = searchList.filter((v) => {
+            if (v.status === 5) {
+              return v
+            }
+          })
+        } else if (value === 'refunding') {
+          searchList = searchList.filter((v) => {
+            if (v.status === 6) {
+              return v
+            }
           })
         }
-      }
+        this.searchList = searchList.length ? searchList : []
+        this.page.current = 1
+        this.page.total = searchList.length
+      },
+    },
+  },
+  watch: {
+    curTab(e) {
+      this.getCurPageData = e
+    },
+  },
+  created() {
+    this.__initTabBar()
+    this.__init()
+  },
+  methods: {
+    __init() {
+      this.$layout.showLoading()
+      this.$store.dispatch('order/getOrderList').then((res) => {
+        this.page.total = res.length
+      })
+      this.$layout.hideLoading()
     },
     tabClick() {
       this.$refs.buttonSearch.filter((v, index) => {
@@ -292,25 +365,6 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName][0].resetFields()
-    },
-    deleteItem(index) {
-      this.tableData[this.tabIndex].list.splice(index, 1)
-    },
-    putaway(item) {
-      item.isPutaway = !item.isPutaway
-      this.$message({
-        message: item.isPutaway ? '上架' : '下架',
-        type: 'success',
-      })
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
     },
   },
 }

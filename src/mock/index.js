@@ -7,6 +7,8 @@ import * as specAPI from './modules/shop/spec'
 import * as typeAPI from './modules/shop/type'
 import * as commentAPI from './modules/shop/comment'
 import * as usersAPI from './modules/user/index'
+import * as levelAPI from './modules/user/level'
+import * as orderAPI from './modules/order/index'
 
 // 登录相关
 Mock.mock(/\/api\/login/, 'post', adminAPI.login)
@@ -28,5 +30,9 @@ Mock.mock(/\/api\/shop\/comment/, 'get', commentAPI.getComment)
 
 // 会员相关
 Mock.mock(/\/api\/userList/, 'get', usersAPI.getUserList)
+Mock.mock(/\/api\/user\/level/, 'get', levelAPI.getLevelList)
+
+// 订单相关
+Mock.mock(/\/api\/order/, 'get', orderAPI.getOrderList)
 
 export default Mock

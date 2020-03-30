@@ -17,7 +17,7 @@
       </template>
     </button-search>
     <!-- 表格数据 -->
-    <el-table :data="tableData" border class="mt-2">
+    <el-table :data="getCurPageData" border class="mt-2">
       <el-table-column prop="id" label="ID" width="60" align="center">
       </el-table-column>
       <el-table-column prop="name" label="会员等级" align="center">
@@ -26,12 +26,18 @@
         {{ type === 0 ? '累计消费' : '累计次数' }}:
         {{ type === 0 ? scope.row.consume : scope.row.times }}
       </el-table-column>
-      <el-table-column prop="discount" label="折扣率(%)" align="center">
+      <el-table-column
+        prop="discount"
+        label="折扣率(%)"
+        align="center"
+        width="150"
+      >
       </el-table-column>
-      <el-table-column #default="scope" label="状态" align="center">
+      <el-table-column #default="scope" label="状态" align="center" width="150">
         <el-switch
           v-model="scope.row.status"
           active-color="#13ce66"
+          @change="statusChange('level/UPDATE_status', scope)"
         ></el-switch>
       </el-table-column>
       <el-table-column #default="scope" label="操作" align="center" width="180">
@@ -45,7 +51,7 @@
         >
         <el-popconfirm
           title="是否删除该条数据？"
-          @onConfirm="deleteItem(scope.$index)"
+          @onConfirm="deleteItem('level/DELETE_single', scope)"
         >
           <el-button slot="reference" type="danger" size="mini" plain v-auth
             >删除</el-button
@@ -61,13 +67,13 @@
     >
       <div class="text-center flex-fill">
         <el-pagination
-          :current-page="currentPage"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :current-page="page.current"
+          :page-sizes="page.sizes"
+          :page-size="page.size"
+          :total="page.total"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+          @size-change="pageSizeChange"
+          @current-change="curPageChange"
         ></el-pagination>
       </div>
     </el-footer>
@@ -79,41 +85,39 @@
 <script>
 import buttonSearch from '@/components/common/button-search'
 import levelDialog from '@/components/user/level/level-dialog'
+import common from '@/common/mixins/common.js'
+import { mapState } from 'vuex'
 export default {
   name: 'UserLevel',
+  inject: ['$layout'],
   components: {
     buttonSearch,
     levelDialog,
   },
+  mixins: [common],
   data() {
     return {
-      tableData: [
-        {
-          id: 1,
-          name: '普通会员',
-          consume: 100,
-          times: 10,
-          discount: 10,
-          order: 0,
-          status: true,
-        },
-      ],
-      currentPage: 1,
       type: 0,
     }
   },
+  computed: {
+    ...mapState({
+      dataList: (state) => state.level.levelList,
+    }),
+  },
+  created() {
+    this.__init()
+  },
   methods: {
+    __init() {
+      this.$layout.showLoading()
+      this.$store.dispatch('level/getLevelList').then((res) => {
+        this.page.total = res.length
+      })
+      this.$layout.hideLoading()
+    },
     showDialog(data) {
       this.$refs.levelDialog.showDialog(data)
-    },
-    deleteItem(index) {
-      this.tableData.splice(index, 1)
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
     },
   },
 }

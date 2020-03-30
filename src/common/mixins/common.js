@@ -9,6 +9,7 @@ export default {
   },
   data() {
     return {
+      tabIndex: 0,
       page: {
         current: 1,
         sizes: [10, 20, 50],
