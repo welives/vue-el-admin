@@ -8,7 +8,7 @@
       </template>
     </button-search>
     <!-- 表格数据 -->
-    <el-table :data="tableData" border class="mt-2">
+    <el-table :data="getCurPageData" border class="mt-2">
       <el-table-column prop="name" label="角色名称" align="center">
       </el-table-column>
       <el-table-column prop="createTime" label="添加时间" align="center">
@@ -17,10 +17,11 @@
         <el-switch
           v-model="scope.row.status"
           active-color="#13ce66"
+          @change="statusChange('role/UPDATE_status', scope)"
         ></el-switch>
       </el-table-column>
       <el-table-column #default="scope" label="操作" align="center">
-        <el-button type="primary" size="mini" plain>配置权限</el-button>
+        <!-- <el-button type="primary" size="mini" plain>配置权限</el-button> -->
         <el-button
           type="warning"
           size="mini"
@@ -31,7 +32,7 @@
         >
         <el-popconfirm
           title="是否删除该条数据？"
-          @onConfirm="deleteItem(scope.$index)"
+          @onConfirm="deleteItem('role/DELETE_single', scope)"
         >
           <el-button slot="reference" type="danger" size="mini" plain
             >删除</el-button
@@ -47,13 +48,13 @@
     >
       <div class="text-center flex-fill">
         <el-pagination
-          :current-page="currentPage"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :current-page="page.current"
+          :page-sizes="page.sizes"
+          :page-size="page.size"
+          :total="page.total"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+          @size-change="pageSizeChange"
+          @current-change="curPageChange"
         ></el-pagination>
       </div>
     </el-footer>
@@ -64,37 +65,37 @@
 <script>
 import buttonSearch from '@/components/common/button-search'
 import roleDialog from '@/components/setting/manager/role-dialog'
+import common from '@/common/mixins/common'
+import { mapState } from 'vuex'
 export default {
   name: 'RoleList',
+  inject: ['$layout'],
   components: {
     buttonSearch,
     roleDialog,
   },
+  mixins: [common],
   data() {
-    return {
-      tableData: [
-        {
-          id: 1,
-          name: '超级管理员',
-          createTime: '2020-03-07 03:08:31',
-          status: true,
-        },
-      ],
-      currentPage: 1,
-    }
+    return {}
+  },
+  computed: {
+    ...mapState({
+      dataList: (state) => state.role.roleList,
+    }),
+  },
+  created() {
+    this.__init()
   },
   methods: {
+    __init() {
+      this.$layout.showLoading()
+      this.$store.dispatch('role/getRoleList').then((res) => {
+        this.page.total = res.length
+      })
+      this.$layout.hideLoading()
+    },
     showDialog(data) {
       this.$refs.roleDialog.showDialog(data)
-    },
-    deleteItem(index) {
-      this.tableData.splice(index, 1)
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
     },
   },
 }

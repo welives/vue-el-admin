@@ -9,6 +9,7 @@ import * as commentAPI from './modules/shop/comment'
 import * as usersAPI from './modules/user/index'
 import * as levelAPI from './modules/user/level'
 import * as orderAPI from './modules/order/index'
+import * as managerAPI from './modules/setting/manager'
 
 // 登录相关
 Mock.mock(/\/api\/login/, 'post', adminAPI.login)
@@ -34,5 +35,9 @@ Mock.mock(/\/api\/user\/level/, 'get', levelAPI.getLevelList)
 
 // 订单相关
 Mock.mock(/\/api\/order/, 'get', orderAPI.getOrderList)
+
+// 设置相关
+Mock.mock(/\/api\/setting\/manager/, 'get', managerAPI.getAdminList)
+Mock.mock(/\/api\/setting\/role/, 'get', managerAPI.getRoleList)
 
 export default Mock

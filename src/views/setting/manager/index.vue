@@ -29,14 +29,14 @@ export default {
     return {
       tabIndex: 0,
       tabBars: [
-        { name: '管理员列表', component: adminList },
-        { name: '角色列表', component: roleList },
-        { name: '权限列表', component: permissionList },
+        { name: '管理员列表', component: adminList, key: 'admin' },
+        { name: '角色列表', component: roleList, key: 'role' },
+        { name: '权限列表', component: permissionList, key: 'permission' },
       ],
     }
   },
   created() {
-    this.__initTabBar(this.$options.name)
+    this.__initTabBar()
   },
 }
 </script>

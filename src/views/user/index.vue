@@ -49,12 +49,13 @@
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
+                value-format="yyyy-MM-dd HH:mm:ss"
               >
               </el-date-picker>
             </el-form-item>
           </div>
           <el-form-item class="float-right">
-            <el-button type="info" @click="searchEvent">搜索</el-button>
+            <el-button type="info" @click="advancedSearch">搜索</el-button>
             <el-button @click="resetForm('searchForm')">清空筛选条件</el-button>
           </el-form-item>
         </el-form>
@@ -287,7 +288,7 @@ export default {
     showDialog(data) {
       this.$refs.userDialog.showDialog(data)
     },
-    searchEvent() {
+    advancedSearch() {
       this.getCurPageData = this.search
       this.isAdvancedSearch = true
     },

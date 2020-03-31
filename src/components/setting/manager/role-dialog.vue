@@ -1,9 +1,9 @@
 <template>
   <div>
     <el-dialog
-      :title="roleDialogTitle"
+      :title="editIndex > -1 ? '修改角色' : '添加角色'"
       :visible.sync="roleDialog"
-      width="80vw"
+      width="30vw"
       @close="hide"
     >
       <el-form
@@ -13,7 +13,7 @@
         label-width="80px"
         size="mini"
       >
-        <el-form-item label="角色名称" class="w-50" prop="name">
+        <el-form-item label="角色名称" class="w-100" prop="name">
           <el-input
             v-model="roleForm.name"
             placeholder="请输入角色名称"
@@ -27,8 +27,12 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="text-center">
-        <el-button size="small" @click="hide">取 消</el-button>
-        <el-button type="primary" size="small" @click="submitForm"
+        <el-button size="small" @click="roleDialog = false">取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="submitForm"
+          :disabled="roleForm.name === ''"
           >确 定</el-button
         >
       </div>
@@ -37,27 +41,23 @@
 </template>
 
 <script>
+import Mock from 'mockjs'
 export default {
   name: 'RoleDialog',
   data() {
     return {
-      roleDialog: false,
       editIndex: -1,
-      nextId: 10,
+      roleDialog: false,
       roleForm: {
-        id: '',
+        id: 0,
         name: '',
         status: true,
+        createTime: '',
       },
       rules: {
         name: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
       },
     }
-  },
-  computed: {
-    roleDialogTitle() {
-      return this.editIndex === -1 ? '添加管理员' : '修改管理员'
-    },
   },
   methods: {
     showDialog(data) {
@@ -66,17 +66,19 @@ export default {
         this.editIndex = -1
       } else {
         // 修改
-        // Object.assign(this.roleForm, data.row)
         this.roleForm = { ...data.row }
-        this.editIndex = data.$index
+        this.editIndex = this.$parent.dataList.findIndex(
+          (v) => v.id === data.row.id,
+        )
       }
       this.roleDialog = true
     },
     hide() {
       this.roleForm = {
-        id: this.nextId,
+        id: 0,
         name: '',
         status: true,
+        createTime: '',
       }
       this.roleDialog = false
     },
@@ -84,29 +86,24 @@ export default {
       this.$refs.addRoleForm.validate((valid) => {
         if (valid) {
           // 新增
-          let msg = '添加'
+          const msg = this.editIndex > -1 ? '修改成功' : '添加成功'
           if (this.editIndex === -1) {
-            this.roleForm.id = this.nextId
-            this.$parent.tableData.push(this.roleForm)
-            this.nextId++
+            this.roleForm.id =
+              this.$parent.dataList[this.$parent.dataList.length - 1].id + 1
+            this.roleForm.createTime = Mock.mock('@now')
+            this.$store.commit('role/ADD_role', this.roleForm)
+            this.$parent.page.total = this.$parent.dataList.length
           } else {
             // 修改
-            msg = '修改'
-            Object.assign(this.$parent.tableData[this.editIndex], this.roleForm)
+            this.$store.commit('role/UPDATE_role', this.roleForm)
           }
           this.$message({
-            message: msg + '成功',
+            message: msg,
             type: 'success',
           })
           this.hide()
         }
       })
-    },
-    handleAvatarSuccess(e) {
-      console.log(e)
-    },
-    beforeAvatarUpload(e) {
-      console.log(e)
     },
   },
 }

@@ -12,6 +12,8 @@ import comment from './modules/shop/comment'
 import users from './modules/user/index'
 import level from './modules/user/level'
 import order from './modules/order/index'
+import manager from './modules/setting/manager'
+import role from './modules/setting/role'
 
 Vue.use(Vuex)
 
@@ -29,5 +31,7 @@ export default new Vuex.Store({
     users,
     level,
     order,
+    manager,
+    role,
   },
 })

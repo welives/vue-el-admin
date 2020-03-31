@@ -15,6 +15,12 @@ export default {
     DELETE_batch(state, value) {
       state.orderList = value
     },
+    DO_ship(state, obj) {
+      const { index, data } = obj
+      state.orderList[index].status = 2
+      state.orderList[index].express = data.express
+      state.orderList[index].expressSerial = data.serial
+    },
   },
   actions: {
     getOrderList({ commit, state, rootState }) {

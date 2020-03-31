@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      :title="adminDialogTitle"
+      :title="editIndex > -1 ? '修改管理员' : '添加管理员'"
       :visible.sync="adminDialog"
       width="80vw"
       @close="hide"
@@ -50,8 +50,12 @@
         </el-form-item>
         <el-form-item label="用户组" class="w-50" prop="level">
           <el-select v-model="adminForm.groupId" placeholder="请选择用户组">
-            <el-option label="管理员" :value="0"></el-option>
-            <el-option label="业务员" :value="1"></el-option>
+            <el-option
+              v-for="(item, index) in groupName"
+              :key="index"
+              :label="item"
+              :value="index"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="手机" class="w-50" prop="phone">
@@ -74,7 +78,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="text-center">
-        <el-button size="small" @click="hide">取 消</el-button>
+        <el-button size="small" @click="adminDialog = false">取 消</el-button>
         <el-button type="primary" size="small" @click="submitForm"
           >确 定</el-button
         >
@@ -84,15 +88,15 @@
 </template>
 
 <script>
+import Mock from 'mockjs'
 export default {
   name: 'AdminDialog',
   data() {
     return {
       adminDialog: false,
       editIndex: -1,
-      nextId: 10,
       adminForm: {
-        id: '',
+        id: 0,
         username: '',
         password: '',
         nickname: '',
@@ -112,29 +116,28 @@ export default {
         ],
         phone: [{ required: true, message: '手机号不能为空', trigger: 'blur' }],
       },
+      groupName: ['管理员', '财务', '运营专员', '客服'],
     }
   },
-  computed: {
-    adminDialogTitle() {
-      return this.editIndex === -1 ? '添加管理员' : '修改管理员'
-    },
-  },
+  computed: {},
   methods: {
     showDialog(data) {
       // 新增
       if (!data) {
         this.editIndex = -1
+        this.adminForm.avatar = Mock.mock('@dataImage("60x60")')
       } else {
         // 修改
-        // Object.assign(this.adminForm, data.row)
         this.adminForm = { ...data.row }
-        this.editIndex = data.$index
+        this.editIndex = this.$parent.dataList.findIndex(
+          (v) => v.id === data.row.id,
+        )
       }
       this.adminDialog = true
     },
     hide() {
       this.adminForm = {
-        id: this.nextId,
+        id: 0,
         username: '',
         password: '',
         nickname: '',
@@ -151,21 +154,20 @@ export default {
       this.$refs.addAdminForm.validate((valid) => {
         if (valid) {
           // 新增
-          let msg = '添加'
+          const msg = this.editIndex > -1 ? '修改成功' : '添加成功'
           if (this.editIndex === -1) {
-            this.adminForm.id = this.nextId
-            this.$parent.tableData.push(this.adminForm)
-            this.nextId++
+            this.adminForm.id =
+              this.$parent.dataList[this.$parent.dataList.length - 1].id + 1
+            this.adminForm.createTime = Mock.mock('@now')
+            this.adminForm.lastTime = Mock.mock('@now')
+            this.$store.commit('manager/ADD_admin', this.adminForm)
+            this.$parent.page.total = this.$parent.dataList.length
           } else {
             // 修改
-            msg = '修改'
-            Object.assign(
-              this.$parent.tableData[this.editIndex],
-              this.adminForm,
-            )
+            this.$store.commit('manager/UPDATE_admin', this.adminForm)
           }
           this.$message({
-            message: msg + '成功',
+            message: msg,
             type: 'success',
           })
           this.hide()
