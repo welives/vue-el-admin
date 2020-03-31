@@ -36,7 +36,7 @@ export default {
     }
   },
   created() {
-    this.__initTabBar(this.$options.name)
+    this.__initTabBar()
   },
 }
 </script>

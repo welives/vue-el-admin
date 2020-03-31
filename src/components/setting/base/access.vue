@@ -23,19 +23,22 @@
           v-model="accessForm.passLen"
           type="number"
           :min="0"
+          :max="32"
         ></el-input>
       </el-form-item>
       <el-form-item label="强制密码复杂度" prop="isRegistry">
         <el-checkbox-group v-model="accessForm.passEncrypt">
           <el-checkbox-button label="number">数字</el-checkbox-button>
-          <el-checkbox-button label="lowercase">小写字母</el-checkbox-button>
-          <el-checkbox-button label="uppercase">大写字母</el-checkbox-button>
+          <el-checkbox-button label="lower">小写字母</el-checkbox-button>
+          <el-checkbox-button label="upper">大写字母</el-checkbox-button>
           <el-checkbox-button label="symbol">符号</el-checkbox-button>
         </el-checkbox-group>
       </el-form-item>
 
       <el-form-item class="text-center">
-        <el-button type="primary" size="medium">确定</el-button>
+        <el-button type="primary" size="medium" @click="submitForm"
+          >确定</el-button
+        >
         <el-button size="medium" @click="resetForm('accessForm')"
           >重填</el-button
         >
@@ -47,19 +50,36 @@
 <script>
 export default {
   name: 'Access',
+  inject: ['$layout'],
   data() {
     return {
       accessForm: {
-        isReg: true,
-        regType: 'normal',
-        passLen: 6,
-        passEncrypt: ['number'],
+        isReg: '',
+        regType: '',
+        passLen: '',
+        passEncrypt: '',
       },
     }
   },
+  created() {
+    this.__init()
+  },
   methods: {
+    __init() {
+      this.$layout.showLoading()
+      this.$store.dispatch('base/getBase', 'access').then((res) => {
+        this.accessForm = { ...res }
+      })
+      this.$layout.hideLoading()
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields()
+    },
+    submitForm() {
+      this.$store.commit('base/UPLOAD_data', {
+        key: 'access',
+        value: this.accessForm,
+      })
     },
   },
 }

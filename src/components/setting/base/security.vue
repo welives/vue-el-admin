@@ -24,7 +24,9 @@
         </small>
       </el-form-item>
       <el-form-item class="text-center w-50">
-        <el-button type="primary" size="medium">确定</el-button>
+        <el-button type="primary" size="medium" @click="submitForm"
+          >确定</el-button
+        >
         <el-button size="medium" @click="resetForm('securityForm')"
           >重填
         </el-button>
@@ -36,17 +38,34 @@
 <script>
 export default {
   name: 'Security',
+  inject: ['$layout'],
   data() {
     return {
       securityForm: {
-        apiGuard: true,
+        apiGuard: '',
         apiKey: '',
       },
     }
   },
+  created() {
+    this.__init()
+  },
   methods: {
+    __init() {
+      this.$layout.showLoading()
+      this.$store.dispatch('base/getBase', 'security').then((res) => {
+        this.securityForm = { ...res }
+      })
+      this.$layout.hideLoading()
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields()
+    },
+    submitForm() {
+      this.$store.commit('base/UPLOAD_data', {
+        key: 'security',
+        value: this.securityForm,
+      })
     },
   },
 }

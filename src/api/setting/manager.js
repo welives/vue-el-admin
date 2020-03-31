@@ -16,12 +16,4 @@ function getRoleList(data) {
   })
 }
 
-function getPermissionList(data) {
-  return request({
-    url: '/api/setting/permission',
-    method: 'get',
-    data,
-  })
-}
-
-export { getAdminList, getRoleList, getPermissionList }
+export { getAdminList, getRoleList }

@@ -11,7 +11,6 @@
       default-expand-all
       :expand-on-click-node="false"
       draggable
-      @node-click="handleNodeClick"
       @node-drop="nodeDrop"
     >
       <span slot-scope="{ node, data }" class="custom-tree-node">
@@ -92,9 +91,6 @@ export default {
       this.$layout.showLoading()
       this.$store.dispatch('category/getCategory')
       this.$layout.hideLoading()
-    },
-    handleNodeClick(data) {
-      console.log(data)
     },
     // 显示或隐藏
     updateStatus(data) {

@@ -10,6 +10,7 @@ import * as usersAPI from './modules/user/index'
 import * as levelAPI from './modules/user/level'
 import * as orderAPI from './modules/order/index'
 import * as managerAPI from './modules/setting/manager'
+import * as baseAPI from './modules/setting/base'
 
 // 登录相关
 Mock.mock(/\/api\/login/, 'post', adminAPI.login)
@@ -37,6 +38,7 @@ Mock.mock(/\/api\/user\/level/, 'get', levelAPI.getLevelList)
 Mock.mock(/\/api\/order/, 'get', orderAPI.getOrderList)
 
 // 设置相关
+Mock.mock(/\/api\/setting\/base/, 'get', baseAPI.getBase)
 Mock.mock(/\/api\/setting\/manager/, 'get', managerAPI.getAdminList)
 Mock.mock(/\/api\/setting\/role/, 'get', managerAPI.getRoleList)
 

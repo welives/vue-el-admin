@@ -21,7 +21,6 @@
         ></el-switch>
       </el-table-column>
       <el-table-column #default="scope" label="操作" align="center">
-        <!-- <el-button type="primary" size="mini" plain>配置权限</el-button> -->
         <el-button
           type="warning"
           size="mini"
