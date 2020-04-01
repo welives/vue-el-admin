@@ -25,7 +25,6 @@ export default {
   mixins: [common],
   data() {
     return {
-      tabIndex: 0,
       tabBars: [
         { name: '运费模板', component: freight },
         { name: '物流跟踪', component: expressTrack },
@@ -33,7 +32,7 @@ export default {
     }
   },
   created() {
-    this.__initTabBar(this.$options.name)
+    this.__initTabBar()
   },
 }
 </script>

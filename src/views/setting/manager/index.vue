@@ -25,7 +25,6 @@ export default {
   mixins: [common],
   data() {
     return {
-      tabIndex: 0,
       tabBars: [
         { name: '管理员列表', component: adminList, key: 'admin' },
         { name: '角色列表', component: roleList, key: 'role' },

@@ -15,6 +15,7 @@ import order from './modules/order/index'
 import manager from './modules/setting/manager'
 import role from './modules/setting/role'
 import base from './modules/setting/base'
+import trade from './modules/setting/trade'
 
 Vue.use(Vuex)
 
@@ -35,5 +36,6 @@ export default new Vuex.Store({
     manager,
     role,
     base,
+    trade,
   },
 })

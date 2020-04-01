@@ -25,7 +25,6 @@ export default {
   mixins: [common],
   data() {
     return {
-      tabIndex: 0,
       tabBars: [
         { name: '支付设置', component: payment },
         { name: '购物设置', component: shopping },
@@ -33,7 +32,7 @@ export default {
     }
   },
   created() {
-    this.__initTabBar(this.$options.name)
+    this.__initTabBar()
   },
 }
 </script>

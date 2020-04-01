@@ -173,7 +173,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .custom-tree-node {
   flex: 1;
   display: flex;
@@ -182,7 +182,7 @@ export default {
   font-size: 14px;
   padding-right: 8px;
 }
-/* .el-tree-node__content {
+.el-tree-node__content {
   margin: 5px 0;
-} */
+}
 </style>

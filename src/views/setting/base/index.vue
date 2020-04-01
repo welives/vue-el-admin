@@ -27,7 +27,6 @@ export default {
   mixins: [common],
   data() {
     return {
-      tabIndex: 0,
       tabBars: [
         { name: '注册与访问', component: access },
         { name: '上传设置', component: upload },

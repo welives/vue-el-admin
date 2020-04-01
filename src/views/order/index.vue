@@ -8,9 +8,6 @@
       >
         <button-search ref="buttonSearch" :key="index" :showSearch="true">
           <template #left>
-            <el-button type="primary" size="mini" class="mr-2"
-              >导出数据</el-button
-            >
             <el-popconfirm
               title="是否删除选中的数据？"
               @onConfirm="deleteAll('order/DELETE_batch')"
