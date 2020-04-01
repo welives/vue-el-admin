@@ -16,7 +16,10 @@ export default {
         size: 10,
         total: 0,
       },
+      keyword: '',
+      isAdvancedSearch: false,
       chooseList: [],
+      searchList: [],
     }
   },
   computed: {

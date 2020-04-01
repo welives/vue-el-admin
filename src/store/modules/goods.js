@@ -1,4 +1,5 @@
 import options from './options'
+import { getGoodsList } from '@/api/shop/goods'
 import * as $utils from '@/utils'
 export default {
   namespaced: true,
@@ -81,6 +82,7 @@ export default {
       { name: '重量', rowspan: 2, width: 100 },
       { name: '编码', rowspan: 2, width: 100 },
     ],
+    goodsList: [],
   },
   mutations: {
     basicFormModel(state, { key, value }) {
@@ -132,6 +134,35 @@ export default {
     updateGoodsAttrs(state, { key, value }) {
       state.goodsAttrs[key] = value
     },
+    SET_goodsList(state, value) {
+      state.goodsList = value
+    },
+    UPDATE_putway(state, data) {
+      const index = state.goodsList.findIndex((v) => v.id === data.row.id)
+      state.goodsList[index].isPutaway = data.row.isPutaway
+    },
+    DELETE_single(state, index) {
+      state.goodsList.splice(index, 1)
+    },
+    DELETE_batch(state, value) {
+      state.goodsList = value
+    },
   },
-  actions: {},
+  actions: {
+    getGoodsList({ commit, state, rootState }) {
+      if (!state.goodsList.length) {
+        return new Promise((resolve, reject) => {
+          getGoodsList({ token: rootState.admin.token })
+            .then((response) => {
+              const { data } = response
+              commit('SET_goodsList', data.goodsList)
+              resolve(data.goodsList)
+            })
+            .catch((error) => reject(error))
+        })
+      } else {
+        return state.goodsList
+      }
+    },
+  },
 }

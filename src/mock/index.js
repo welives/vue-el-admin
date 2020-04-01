@@ -2,6 +2,7 @@ import Mock from 'mockjs'
 import * as adminAPI from './modules/admin'
 import * as menuAPI from './modules/menu'
 import * as imageAPI from './modules/image'
+import * as goodsAPI from './modules/shop/goods'
 import * as categoryAPI from './modules/shop/category'
 import * as specAPI from './modules/shop/spec'
 import * as typeAPI from './modules/shop/type'
@@ -26,6 +27,7 @@ Mock.mock(/\/api\/getImages/, 'post', imageAPI.getImages)
 Mock.mock(/\/api\/uploadImage/, 'post', imageAPI.uploadImage)
 
 // 商品相关
+Mock.mock(/\/api\/shop\/goods/, 'get', goodsAPI.getGoodsList)
 Mock.mock(/\/api\/shop\/category/, 'get', categoryAPI.getCategory)
 Mock.mock(/\/api\/shop\/spec/, 'get', specAPI.getSpecList)
 Mock.mock(/\/api\/shop\/type/, 'get', typeAPI.getTypeList)
