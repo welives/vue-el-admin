@@ -9,7 +9,7 @@ const base = Mock.mock({
     passEncrypt: ['number', 'lower'],
   },
   upload: {
-    'uploadType|1': ['local', 'qiniu', 'aliyun'],
+    'uploadType|1': ['local', 'aliyun'],
     uploadConfig: function() {
       if (this.uploadType === 'local') {
         return {

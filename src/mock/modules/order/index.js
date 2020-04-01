@@ -1,11 +1,24 @@
 import Mock from 'mockjs'
 import { get } from '@/utils/auth'
 
+const expressList = [
+  '顺丰快递',
+  '圆通快递',
+  '申通快递',
+  '中通快递',
+  '百世快递',
+  '韵达快递',
+  '京东快递',
+  '天天快递',
+  '中国邮政',
+  '宅急送',
+  '全峰快递',
+]
+
 const { orderList } = Mock.mock({
   'orderList|100-200': [
     {
-      id: '@increment',
-      'uid|+1': 1,
+      'id|+1': 1,
       username: '@cname',
       phone: /^1[3578][1-9]\d{8}$/,
       title: '@ctitle',
@@ -13,12 +26,6 @@ const { orderList } = Mock.mock({
       serial: '@natural(15)',
       createTime: '@datetime',
       'closed|1-10': true,
-      refunding: function() {
-        const { Random } = Mock
-        if (!this.closed) {
-          return Random.boolean(1, 10, true)
-        }
-      },
       payType: function() {
         if (!this.closed) {
           const { payType } = Mock.mock({
@@ -51,19 +58,7 @@ const { orderList } = Mock.mock({
           return 0
         }
       },
-      'express|1': [
-        '顺丰快递',
-        '圆通快递',
-        '申通快递',
-        '中通快递',
-        '百世快递',
-        '韵达快递',
-        '京东快递',
-        '天天快递',
-        '中国邮政',
-        '宅急送',
-        '全峰快递',
-      ],
+      'express|1': expressList,
       expressSerial: function() {
         const { Random } = Mock
         if (!this.closed && this.status >= 2) {
@@ -85,6 +80,12 @@ const { orderList } = Mock.mock({
           return 0
         }
       },
+      refunding: function() {
+        const { Random } = Mock
+        if (!this.closed && this.status > 0) {
+          return Random.boolean(1, 10, true)
+        }
+      },
     },
   ],
 })
@@ -97,4 +98,12 @@ function getOrderList(request) {
   return { code: 20000, orderList }
 }
 
-export { getOrderList }
+function getExpressList(request) {
+  const { token } = JSON.parse(request.body)
+  if (token && get('token', false) !== token) {
+    return { code: 20002, msg: '非法操作' }
+  }
+  return { code: 20000, expressList }
+}
+
+export { getOrderList, getExpressList }

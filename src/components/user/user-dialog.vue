@@ -141,12 +141,7 @@ export default {
       // 新增
       if (!data) {
         this.editIndex = -1
-        this.userForm.username = Mock.mock('@cname')
-        this.userForm.nickname = Mock.mock('@first')
-        this.userForm.password = Mock.mock('@string(16,32)')
         this.userForm.avatar = Mock.mock('@dataImage("60x60")')
-        this.userForm.email = Mock.mock('@email')
-        this.userForm.phone = Mock.mock(/^1[3578][1-9]\d{8}$/)
       } else {
         // 修改
         this.userForm = { ...data.row }

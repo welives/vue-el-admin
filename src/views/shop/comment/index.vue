@@ -228,7 +228,7 @@ import common from '@/common/mixins/common.js'
 import { Random } from 'mockjs'
 import { mapState } from 'vuex'
 export default {
-  name: 'Comment',
+  name: 'commentList',
   inject: ['$layout'],
   mixins: [common],
   components: {
@@ -317,12 +317,6 @@ export default {
       })
       this.$layout.hideLoading()
     },
-    // searchEvent(e) {
-    //   console.log(e)
-    // },
-    // resetForm(formName) {
-    //   this.$refs[formName].resetFields()
-    // },
     preView(url) {
       this.previewUrl = url
       this.previewModel = true

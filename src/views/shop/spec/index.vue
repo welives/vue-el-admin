@@ -103,7 +103,7 @@ import specDialog from '@/components/shop/spec/spec-dialog'
 import common from '@/common/mixins/common.js'
 import { mapState } from 'vuex'
 export default {
-  name: 'Spec',
+  name: 'specList',
   inject: ['$layout'],
   components: {
     buttonSearch,

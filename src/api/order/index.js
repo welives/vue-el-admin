@@ -8,4 +8,12 @@ function getOrderList(data) {
   })
 }
 
-export { getOrderList }
+function getExpressList(data) {
+  return request({
+    url: '/api/express',
+    method: 'get',
+    data,
+  })
+}
+
+export { getOrderList, getExpressList }

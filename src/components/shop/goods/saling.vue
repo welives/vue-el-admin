@@ -166,9 +166,9 @@
         </el-switch>
       </el-table-column>
       <el-table-column #default="scope" label="操作" align="center" width="150">
-        <el-button type="warning" size="mini" plain class="mr-2"
+        <!-- <el-button type="warning" size="mini" plain class="mr-2"
           >编辑</el-button
-        >
+        > -->
         <el-popconfirm
           title="是否删除这个商品？"
           @onConfirm="deleteItem('goods/DELETE_single', scope)"
@@ -205,7 +205,7 @@ import buttonSearch from '@/components/common/button-search'
 import common from '@/common/mixins/common.js'
 import { mapState } from 'vuex'
 export default {
-  name: 'allGoods',
+  name: 'salingGoods',
   inject: ['$layout'],
   components: {
     buttonSearch,
@@ -216,7 +216,7 @@ export default {
       search: {
         title: '',
         serial: '',
-        cate: '',
+        cate: 0,
       },
       cate: ['分类一', '分类二', '分类三', '分类四'],
     }
@@ -285,6 +285,9 @@ export default {
     keyword(e) {
       this.getCurPageData = e.trim()
     },
+    tabIndex() {
+      this.$ref.buttonSearch.advancedSearch = false
+    },
   },
   created() {
     this.__init()
@@ -301,53 +304,8 @@ export default {
       })
       this.$layout.hideLoading()
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
-      this.getCurPageData = ''
-    },
-    advancedSearch() {
-      this.getCurPageData = this.search
-      this.isAdvancedSearch = true
-    },
     putaway(data) {
       this.$store.commit('goods/UPDATE_putway', data)
-    },
-    // 删除单个
-    deleteItem(mutations, data) {
-      const index = this.dataList.findIndex((v) => v.id === data.row.id)
-      this.$store.commit(mutations, index)
-      this.deleteSearchHandle(data)
-    },
-    // 批量删除
-    deleteAll(mutations) {
-      const list = this.dataList.filter((data) => {
-        return !this.chooseList.some((c) => c.id === data.id)
-      })
-      this.$store.commit(mutations, list)
-      this.deleteSearchHandle()
-      this.chooseList = []
-    },
-    deleteSearchHandle(data = false) {
-      if (this.searchList.length) {
-        if (!data) {
-          this.searchList = this.searchList.filter((s) => {
-            return !this.chooseList.some((c) => c.id === s.id)
-          })
-        } else {
-          this.searchList = this.searchList.filter((s) => s.id !== data.row.id)
-        }
-      }
-      const dataList =
-        this.searchList.length || this.keyword || this.isAdvancedSearch
-          ? this.searchList
-          : this.dataList
-      if (!this.getCurPageData) {
-        const totalPage = Math.ceil(dataList.length / this.page.size)
-        if (totalPage < this.page.current) {
-          this.page.current--
-        }
-      }
-      this.page.total = dataList.length
     },
   },
 }

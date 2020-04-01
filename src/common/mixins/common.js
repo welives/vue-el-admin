@@ -72,6 +72,16 @@ export default {
         this.tabIndex = tab.tab
       }
     },
+    // 重置表单
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+      this.getCurPageData = ''
+    },
+    // 高级搜索
+    advancedSearch() {
+      this.getCurPageData = this.search
+      this.isAdvancedSearch = true
+    },
     // 更新状态
     statusChange(mutations, data) {
       this.$store.commit(mutations, data)
@@ -80,28 +90,38 @@ export default {
     deleteItem(mutations, data) {
       const index = this.dataList.findIndex((v) => v.id === data.row.id)
       this.$store.commit(mutations, index)
-      if (!this.getCurPageData) {
-        const totalPage = Math.ceil(this.dataList.length / this.page.size)
-        if (totalPage < this.page.current) {
-          this.page.current--
-        }
-      }
-      this.page.total = this.dataList.length
+      this.deleteSearchHandle(data)
     },
     // 批量删除
     deleteAll(mutations) {
-      const list = this.dataList.filter((type) => {
-        return !this.chooseList.some((v) => v.id === type.id)
+      const list = this.dataList.filter((data) => {
+        return !this.chooseList.some((c) => c.id === data.id)
       })
       this.$store.commit(mutations, list)
+      this.deleteSearchHandle()
+      this.chooseList = []
+    },
+    deleteSearchHandle(data = false) {
+      if (this.searchList.length) {
+        if (!data) {
+          this.searchList = this.searchList.filter((s) => {
+            return !this.chooseList.some((c) => c.id === s.id)
+          })
+        } else {
+          this.searchList = this.searchList.filter((s) => s.id !== data.row.id)
+        }
+      }
+      const dataList =
+        this.searchList.length || this.keyword || this.isAdvancedSearch
+          ? this.searchList
+          : this.dataList
       if (!this.getCurPageData) {
-        const totalPage = Math.ceil(this.dataList.length / this.page.size)
+        const totalPage = Math.ceil(dataList.length / this.page.size)
         if (totalPage < this.page.current) {
           this.page.current--
         }
       }
-      this.page.total = this.dataList.length
-      this.chooseList = []
+      this.page.total = dataList.length
     },
     // 选择表格数据
     chooseData(val) {

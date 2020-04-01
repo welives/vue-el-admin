@@ -39,6 +39,7 @@ Mock.mock(/\/api\/user\/level/, 'get', levelAPI.getLevelList)
 
 // 订单相关
 Mock.mock(/\/api\/order/, 'get', orderAPI.getOrderList)
+Mock.mock(/\/api\/express/, 'get', orderAPI.getExpressList)
 
 // 设置相关
 Mock.mock(/\/api\/setting\/base/, 'get', baseAPI.getBase)

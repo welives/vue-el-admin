@@ -94,7 +94,7 @@ import typeDialog from '@/components/shop/type/type-dialog'
 import common from '@/common/mixins/common.js'
 import { mapState } from 'vuex'
 export default {
-  name: 'Type',
+  name: 'typeList',
   inject: ['$layout'],
   components: {
     buttonSearch,

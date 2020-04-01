@@ -13,7 +13,10 @@
           class="mr-2 w-50"
           placeholder="请输入用户名/手机号/邮箱进行搜索"
         ></el-input>
-        <el-button size="mini" @click="$refs.buttonSearch.advancedSearch = true"
+        <el-button
+          type="primary"
+          size="mini"
+          @click="$refs.buttonSearch.advancedSearch = true"
           >高级搜索<i class="el-icon-arrow-down el-icon--right"></i
         ></el-button>
       </template>
@@ -177,16 +180,13 @@ export default {
   mixins: [common],
   data() {
     return {
-      keyword: '',
       search: {
         keyword: '',
         level: 0,
         time: [],
       },
-      searchList: [],
       levelName: ['普通会员', 'VIP会员', '白银会员', '黄金会员', '钻石会员'],
       sex: ['保密', '男', '女'],
-      isAdvancedSearch: false,
     }
   },
   computed: {
@@ -254,7 +254,7 @@ export default {
               return v
             } else if (v.nickname.indexOf(this.keyword) !== -1) {
               return v
-            } else if (v.phone.search(this.keyword) !== -1) {
+            } else if (v.phone.indexOf(this.keyword) !== -1) {
               return v
             }
           })
@@ -287,14 +287,6 @@ export default {
     },
     showDialog(data) {
       this.$refs.userDialog.showDialog(data)
-    },
-    advancedSearch() {
-      this.getCurPageData = this.search
-      this.isAdvancedSearch = true
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
-      this.getCurPageData = ''
     },
   },
 }

@@ -1,7 +1,13 @@
 <template>
   <div class="bg-white px-3 mt-2" style="margin: 0 -20px 40px;">
-    <button-search :showSearch="true">
+    <button-search ref="buttonSearch">
       <template #right>
+        <el-input
+          v-model="search.keyword"
+          placeholder="请输入订单号"
+          size="mini"
+          class="mr-2 w-50"
+        ></el-input>
         <el-date-picker
           v-model="search.time"
           type="daterange"
@@ -9,16 +15,9 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           size="mini"
+          value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
-        <el-input
-          v-model="search.keyword"
-          placeholder="请输入订单号"
-          size="mini"
-          style="width: 200px;"
-          class="mx-2"
-        ></el-input>
-        <el-button type="info" size="mini" @click="searchEvent">搜索</el-button>
       </template>
     </button-search>
     <!-- 表格数据 -->
@@ -26,7 +25,7 @@
       :data="tableData"
       border
       class="mt-2"
-      @selection-change="handleSelectionChange"
+      @selection-change="chooseData"
     >
       <el-table-column type="selection" width="40" align="center">
       </el-table-column>
@@ -81,13 +80,13 @@
     >
       <div class="text-center flex-fill">
         <el-pagination
-          :current-page="currentPage"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :current-page="page.current"
+          :page-sizes="page.sizes"
+          :page-size="page.size"
+          :total="page.total"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+          @size-change="pageSizeChange"
+          @current-change="curPageChange"
         ></el-pagination>
       </div>
     </el-footer>
@@ -96,39 +95,23 @@
 
 <script>
 import buttonSearch from '@/components/common/button-search'
+import common from '@/common/mixins/common.js'
 export default {
   name: 'Invoice',
   components: {
     buttonSearch,
   },
+  mixins: [common],
   data() {
     return {
       tableData: [],
-      currentPage: 1,
-      multipleSelection: [],
       search: {
         time: '',
         keyword: '',
       },
     }
   },
-  methods: {
-    searchEvent(e) {
-      console.log(e)
-    },
-    deleteItem(index) {
-      this.tableData.splice(index, 1)
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-    },
-  },
+  methods: {},
 }
 </script>
 
