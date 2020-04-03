@@ -24,8 +24,12 @@ const routes = [
         component: 'shop/goods/index',
       },
       {
-        meta: { title: '新增商品' },
-        component: 'shop/goods/add',
+        meta: { title: '商品详情' },
+        component: 'shop/goods/content',
+      },
+      {
+        meta: { title: '媒体设置' },
+        component: 'shop/goods/banner',
       },
       {
         meta: { title: '商品分类' },

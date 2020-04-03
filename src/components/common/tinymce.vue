@@ -21,6 +21,7 @@ import 'tinymce/plugins/lists' // 列表插件
 import 'tinymce/plugins/wordcount' // 字数统计插件
 export default {
   name: 'Tinymce',
+  inject: ['$app'],
   components: {
     Editor,
   },
@@ -49,7 +50,7 @@ export default {
         language_url: '/tinymce/langs/zh_CN.js',
         language: 'zh_CN',
         skin_url: '/tinymce/skins/ui/oxide',
-        height: 300,
+        height: 800,
         plugins: this.plugins,
         toolbar: this.toolbar,
         branding: false,
@@ -59,6 +60,19 @@ export default {
         images_upload_handler: (blobInfo, success, failure) => {
           const img = 'data:image/jpeg;base64,' + blobInfo.base64()
           success(img)
+        },
+        setup: (editor) => {
+          editor.ui.registry.addButton('imageUpload', {
+            tooltip: '插入图片',
+            icon: 'image',
+            onAction: () => {
+              this.$app.chooseImage((data) => {
+                data.forEach((item) => {
+                  editor.insertContent(`&nbsp;<img src="${item.url}">&nbsp;`)
+                })
+              }, 100)
+            },
+          })
         },
       },
       myValue: this.value,

@@ -102,6 +102,12 @@ export default {
       const image = this.$image
       // 之前没选中
       if (!img.isCheck) {
+        if (image.chooseList.length >= image.max) {
+          return this.$message({
+            message: '最多选择' + image.max + '张图片',
+            type: 'warning',
+          })
+        }
         image.chooseList.push({ ...img })
         img.isCheck = true
         return

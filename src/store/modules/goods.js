@@ -147,6 +147,14 @@ export default {
     DELETE_batch(state, value) {
       state.goodsList = value
     },
+    UPDATE_content(state, { id, value }) {
+      const index = state.goodsList.findIndex((v) => v.id === id)
+      state.goodsList[index].goodsContent = value
+    },
+    UPDATE_banner(state, { id, value }) {
+      const index = state.goodsList.findIndex((v) => v.id === id)
+      state.goodsList[index].goodsBanner = value
+    },
   },
   actions: {
     getGoodsList({ commit, state, rootState }) {
@@ -163,6 +171,10 @@ export default {
       } else {
         return state.goodsList
       }
+    },
+    getGoods({ state }, id) {
+      const data = state.goodsList.filter((v) => v.id === id)
+      return data[0]
     },
   },
 }

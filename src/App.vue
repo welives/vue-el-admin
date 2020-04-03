@@ -1,13 +1,13 @@
 <template>
   <div id="app">
     <router-view></router-view>
-    <image-dialog ref="imageDialog" :max="maxChooseImage"></image-dialog>
+    <choose-image ref="chooseImage" :max="maxChooseImage"></choose-image>
     <choose-spec ref="chooseSpec"></choose-spec>
   </div>
 </template>
 
 <script>
-import imageDialog from '@/components/image/image-dialog'
+import chooseImage from '@/components/image/choose-image'
 import chooseSpec from '@/components/shop/spec/choose-spec'
 export default {
   name: 'App',
@@ -17,7 +17,7 @@ export default {
     }
   },
   components: {
-    imageDialog,
+    chooseImage,
     chooseSpec,
   },
   data() {
@@ -28,7 +28,7 @@ export default {
   methods: {
     chooseImage(callback, max = 9) {
       this.maxChooseImage = max
-      this.$refs.imageDialog.showDialog(callback)
+      this.$refs.chooseImage.showDialog(callback)
     },
     chooseSpec(callback) {
       this.$refs.chooseSpec.showDialog(callback)

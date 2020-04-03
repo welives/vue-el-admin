@@ -72,7 +72,7 @@
     </el-container>
     <!-- 创建 | 修改相册 -->
     <el-dialog
-      :title="albumModelTitle"
+      :title="albumEditIndex > -1 ? '修改相册' : '创建相册'"
       :visible.sync="albumModel"
       :destroy-on-close="true"
       @close="closeAlbumModel"
@@ -110,6 +110,7 @@
 import albumItem from '@/components/image/album-item'
 import imageItem from '@/components/image/image-item'
 import imageHeader from '@/components/image/image-header'
+import common from '@/common/mixins/common.js'
 import { mapState } from 'vuex'
 export default {
   name: 'ImageManager',
@@ -124,12 +125,10 @@ export default {
     imageItem,
     imageHeader,
   },
+  mixins: [common],
   data() {
     return {
-      keyword: '',
       imageList: [],
-      chooseList: [],
-      searchList: [],
       // 相册表单数据
       albumModel: false,
       albumForm: {
@@ -146,19 +145,6 @@ export default {
       },
       albumIndex: 0,
       albumEditIndex: -1,
-      // 相册分页相关数据
-      album: {
-        current: 1,
-        size: 5,
-        total: 0,
-      },
-      // 图片分页相关数据
-      page: {
-        current: 1,
-        sizes: [10, 20, 50],
-        size: 10,
-        total: 0,
-      },
     }
   },
   watch: {
@@ -170,42 +156,42 @@ export default {
     ...mapState({
       albumList: (state) => state.image.albumList,
     }),
-    albumModelTitle() {
-      return this.albumEditIndex > -1 ? '修改相册' : '创建相册'
-    },
     // 图片分页处理和搜索结果
     getCurPageImage: {
       get() {
-        const imageShow = []
+        const curData = []
         // 如果有搜索结果或输入框有值,则取searchList的值,否则取imageList的值
-        const imageList =
+        const dataList =
           this.searchList.length || this.keyword
             ? this.searchList
             : this.imageList
-        const totalPage = Math.ceil(imageList.length / this.page.size)
+        const totalPage = Math.ceil(dataList.length / this.page.size)
         for (let index = 0; index < totalPage; index++) {
-          imageShow[index] = imageList.slice(
+          curData[index] = dataList.slice(
             this.page.size * index,
             this.page.size * (index + 1),
           )
         }
-        return imageShow[this.page.current - 1]
+        return curData[this.page.current - 1]
       },
       set(value) {
         let searchList = this.imageList
-        const str = value.trim().toLowerCase()
+        const str = value.trim()
         if (str) {
           searchList = searchList.filter((v) => {
-            if (v.name.toLowerCase().indexOf(str) !== -1) {
+            if (v.name.indexOf(str) !== -1) {
               return v
             }
           })
         }
         // 如果搜索结果有值,则取searchList的值,否则为空数组
         this.searchList = searchList.length ? searchList : []
+        if (this.searchList.length === this.imageList.length) {
+          this.searchList = []
+        }
         this.page.current = 1
         this.page.total = searchList.length
-        this.$refs.imageHeader.unChoose()
+        this.unChoose()
       },
     },
     // 相册分页处理
@@ -342,19 +328,18 @@ export default {
       }
       this.$layout.hideLoading()
     },
-    pageSizeChange(val) {
-      this.page.size = val
-    },
-    curPageChange(val) {
-      this.page.current = val
-    },
     // 切换相册页码
     albumPageChange(val) {
+      this.keyword = ''
       this.album.current = val
       this.albumIndex = 0
       this.page.current = 1
       this.getImageList()
-      this.$refs.imageHeader.unChoose()
+      this.unChoose()
+    },
+    unChoose() {
+      this.imageList.forEach((img) => (img.isCheck = false))
+      this.chooseList = []
     },
   },
 }

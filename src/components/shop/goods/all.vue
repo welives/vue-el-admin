@@ -5,19 +5,14 @@
         <router-link :to="{ name: 'shop_goods_add' }" class="mr-2">
           <el-button type="primary" size="mini">发布商品</el-button>
         </router-link>
-        <!-- <el-button type="warning" size="mini">恢复商品</el-button> -->
         <el-popconfirm
           title="是否删除选中的商品？"
-          class="mx-2"
           @onConfirm="deleteAll('goods/DELETE_batch')"
         >
           <el-button slot="reference" type="danger" size="mini" v-auth
             >批量删除</el-button
           >
         </el-popconfirm>
-        <!-- <el-button size="mini">上架</el-button>
-        <el-button size="mini">下架</el-button>
-        <el-button size="mini">推荐</el-button> -->
       </template>
       <template #right>
         <el-input
@@ -85,7 +80,7 @@
       <el-table-column
         #default="scope"
         label="商品"
-        min-width="350"
+        width="350"
         header-align="center"
       >
         <div class="media d-flex align-items-center justify-content-center">
@@ -111,7 +106,7 @@
         #default="scope"
         label="审核状态"
         align="center"
-        width="120"
+        width="100"
       >
         <div class="d-flex flex-column" v-if="!scope.row.isChecked">
           <el-button
@@ -139,18 +134,21 @@
       </el-table-column>
       <el-table-column
         prop="sale_count"
-        label="实际销量"
+        label="实际销量(件)"
         align="center"
+        width="120"
       ></el-table-column>
       <el-table-column
         prop="stock"
         label="总库存(件)"
         align="center"
+        width="120"
       ></el-table-column>
       <el-table-column
         prop="price"
         label="价格(元)"
         align="center"
+        width="120"
       ></el-table-column>
       <el-table-column
         #default="scope"
@@ -165,24 +163,29 @@
         >
         </el-switch>
       </el-table-column>
-      <el-table-column #default="scope" label="操作" align="center" width="150">
-        <!-- <el-button type="warning" size="mini" plain class="mr-2"
-          >编辑</el-button
-        > -->
-        <el-popconfirm
-          title="是否删除这个商品？"
-          @onConfirm="deleteItem('goods/DELETE_single', scope)"
+      <el-table-column #default="scope" label="操作" align="center">
+        <el-button type="text" size="mini">基础设置</el-button>
+        <el-button type="text" size="mini">商品规格</el-button>
+        <el-button type="text" size="mini">商品属性</el-button>
+        <el-button
+          type="text"
+          size="mini"
+          @click="navigate('shop_goods_banner', scope.row.id)"
+          >媒体设置</el-button
         >
-          <el-button slot="reference" type="danger" size="mini" plain v-auth
-            >删除</el-button
-          >
-        </el-popconfirm>
+        <el-button
+          type="text"
+          size="mini"
+          @click="navigate('shop_goods_content', scope.row.id)"
+          >商品详情</el-button
+        >
+        <el-button type="text" size="mini">折扣设置</el-button>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
     <div style="height: 60px;"></div>
     <el-footer
-      class="border-top d-flex align-items-center px-0 position-fixed bg-white fixed-bottom"
+      class="border-top d-flex align-items-center px-0 bg-white fixed-bottom"
       style="left: 200px;"
     >
       <div class="text-center flex-fill">
@@ -303,6 +306,12 @@ export default {
     },
     putaway(data) {
       this.$store.commit('goods/UPDATE_putway', data)
+    },
+    navigate(name, id) {
+      this.$router.push({
+        name,
+        params: { id },
+      })
     },
   },
 }

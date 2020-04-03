@@ -16,10 +16,15 @@ export default {
         size: 10,
         total: 0,
       },
+      album: {
+        current: 1,
+        size: 5,
+        total: 0,
+      },
       keyword: '',
-      isAdvancedSearch: false,
       chooseList: [],
       searchList: [],
+      isAdvancedSearch: false,
     }
   },
   computed: {

@@ -12,6 +12,8 @@ const { goodsList } = Mock.mock({
       sale_count: '@integer(1,100)',
       order: '@integer(1,100)',
       status: '@boolean',
+      goodsContent: '@cparagraph',
+      goodsBanner: [],
       // 0待处理,1通过,2拒绝
       isChecked: function() {
         if (this.isPutaway) {

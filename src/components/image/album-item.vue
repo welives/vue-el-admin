@@ -9,10 +9,12 @@
       <el-badge :value="album.imagesCount" class="p-1" type="primary">
         <span>{{ album.name }}</span>
       </el-badge>
-      <span v-if="!showOptions" class="btn btn-light btn-sm ml-auto">
-        {{ album.imagesCount }}
-      </span>
-      <el-dropdown v-else class="ml-auto" trigger="click" placement="bottom">
+      <el-dropdown
+        v-if="showOptions"
+        class="ml-auto"
+        trigger="click"
+        placement="bottom"
+      >
         <button class="btn btn-link text-body">
           <i class="el-icon-arrow-down"></i>
         </button>
@@ -45,10 +47,11 @@ export default {
     chooseAlbum(index) {
       const image = this.$image
       if (image.albumIndex === index) return
+      image.keyword = ''
       image.albumIndex = index
       image.page.current = 1
       image.getImageList()
-      image.$refs.imageHeader.unChoose()
+      image.unChoose()
     },
     // 删除相册
     delAlbum(index) {

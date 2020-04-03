@@ -1,6 +1,11 @@
 <template>
-  <div>
-    商品详情
+  <div class="px-3" style="margin: 0 -20px 40px;">
+    <router-link
+      :to="{ name: 'shop_goods' }"
+      style="position: absolute;top: 11px;left: 170px;"
+    >
+      <el-button size="small">回到商品列表页</el-button>
+    </router-link>
     <tinymce ref="editor" v-model="msg" @onClick="onClick"></tinymce>
   </div>
 </template>

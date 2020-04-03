@@ -2,22 +2,14 @@
   <div>
     <button-search ref="buttonSearch">
       <template #left>
-        <router-link :to="{ name: 'shop_goods_add' }" class="mr-2">
-          <!-- <el-button type="primary" size="mini">发布商品</el-button> -->
-        </router-link>
-        <el-button type="warning" size="mini">恢复商品</el-button>
         <el-popconfirm
           title="是否删除选中的商品？"
-          class="mx-2"
           @onConfirm="deleteAll('goods/DELETE_batch')"
         >
           <el-button slot="reference" type="danger" size="mini" v-auth
             >批量删除</el-button
           >
         </el-popconfirm>
-        <!-- <el-button size="mini">上架</el-button>
-        <el-button size="mini">下架</el-button>
-        <el-button size="mini">推荐</el-button> -->
       </template>
       <template #right>
         <el-input
@@ -166,9 +158,6 @@
         </el-switch>
       </el-table-column>
       <el-table-column #default="scope" label="操作" align="center" width="150">
-        <!-- <el-button type="warning" size="mini" plain class="mr-2"
-          >编辑</el-button
-        > -->
         <el-popconfirm
           title="是否删除这个商品？"
           @onConfirm="deleteItem('goods/DELETE_single', scope)"

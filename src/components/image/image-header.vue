@@ -13,7 +13,7 @@
         </el-select>
         <el-input
           v-model="$image.keyword"
-          placeholder="请输入要搜索的图片名(不区分大小写)"
+          placeholder="请输入要搜索的图片名"
           size="small"
           class="mx-2 w-50"
         ></el-input>
@@ -28,7 +28,7 @@
         v-if="$image.chooseList.length"
         type="warning"
         size="small"
-        @click="unChoose"
+        @click="$image.unChoose"
         >取消选中</el-button
       >
       <el-button
@@ -142,10 +142,6 @@ export default {
           }
         })
         .catch(() => {})
-    },
-    unChoose() {
-      this.$image.imageList.forEach((img) => (img.isCheck = false))
-      this.$image.chooseList = []
     },
     closePreviewModel() {
       this.previewUrl = ''
